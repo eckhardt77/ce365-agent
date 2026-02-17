@@ -63,13 +63,36 @@ pip install -r requirements.txt
 # Bot installieren
 pip install -e .
 
-# API Key konfigurieren
-cp .env.example .env
-# Dann ANTHROPIC_API_KEY in .env eintragen
-
-# Bot starten
+# Bot starten (Setup-Wizard startet automatisch beim ersten Start)
 techcare
 ```
+
+### 🎯 Setup-Wizard (Erster Start)
+
+Beim ersten Start führt dich ein **interaktiver Assistent** durch die Einrichtung:
+
+1. **Name & Firma** eingeben
+2. **Anthropic API Key** konfigurieren
+3. **API Key testen** (optional)
+4. **.env automatisch erstellen**
+
+```
+╔════════════════════════════════════════════════════════╗
+║  🔧 TechCare Bot - Einrichtungsassistent               ║
+║                                                        ║
+║  Willkommen! Lass uns TechCare Bot einrichten.        ║
+║  Das dauert nur 2 Minuten.                            ║
+╚════════════════════════════════════════════════════════╝
+
+1. Dein Name: Max Mustermann
+2. Firma/Team: IT-Abteilung GmbH
+3. API Key: sk-ant-api03-xxxxx
+4. Briefing: IT-Support für Büro
+
+✅ Setup abgeschlossen!
+```
+
+Siehe `docs/SETUP_WIZARD.md` für Details.
 
 **Vollständige Anleitung**: Siehe `docs/INSTALLATION.md`
 
