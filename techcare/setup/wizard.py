@@ -20,6 +20,7 @@ from rich.panel import Panel
 from rich.prompt import Prompt, Confirm
 from rich.text import Text
 from anthropic import Anthropic
+from passlib.context import CryptContext
 
 
 class SetupWizard:
@@ -54,22 +55,54 @@ class SetupWizard:
 
         company = self._ask_company()
 
-        # 2. API Key
+        # 2. Edition
+        edition = self._ask_edition()
+
+        # 3. API Key
         api_key = self._ask_api_key()
         if not api_key:
             return False
 
-        # 3. Use-Case / Briefing (optional)
+        # 4. Lizenzschlüssel (für Pro/Enterprise)
+        license_key = ""
+        if edition in ["pro", "pro_business", "enterprise"]:
+            license_key = self._ask_license_key()
+            if not license_key:
+                return False
+
+        # 5. Netzwerkverbindung (für Remote Services)
+        network_config = {}
+        if edition in ["pro_business", "enterprise"]:
+            network_config = self._ask_network_connection()
+            if network_config is None:
+                return False
+
+        # 6. Learning Database (nur für Enterprise)
+        db_config = {}
+        if edition == "enterprise":
+            db_config = self._ask_database()
+            if db_config is None:  # User abgebrochen
+                return False
+
+        # 7. Techniker-Passwort (optional aber empfohlen)
+        technician_password = self._ask_technician_password()
+
+        # 8. Use-Case / Briefing (optional)
         briefing = self._ask_briefing()
 
-        # 4. .env erstellen
+        # 9. .env erstellen
         self.console.print()
         with self.console.status("[bold green]Erstelle Konfiguration..."):
             success = self._create_env_file(
                 user_name=user_name,
                 company=company,
                 api_key=api_key,
-                briefing=briefing
+                briefing=briefing,
+                edition=edition,
+                license_key=license_key,
+                network_config=network_config,
+                db_config=db_config,
+                technician_password=technician_password
             )
 
         if not success:
@@ -139,6 +172,146 @@ class SetupWizard:
 
         return company.strip()
 
+    def _ask_edition(self) -> str:
+        """Fragt nach Edition"""
+        self.console.print("\n[bold]2. Edition[/bold]")
+        self.console.print("   [dim]Welche Edition möchtest du nutzen?[/dim]\n")
+
+        self.console.print("   [cyan]1[/cyan] Community (kostenlos, max 10 Reparaturen/Monat)")
+        self.console.print("   [cyan]2[/cyan] Pro (€49/Monat, 1 System)")
+        self.console.print("   [cyan]3[/cyan] Pro Business (€99/Monat, ∞ Systeme)")
+        self.console.print("   [cyan]4[/cyan] Enterprise (ab €149/Monat, Team + Shared Learning)\n")
+
+        choice = Prompt.ask(
+            "   Deine Wahl",
+            choices=["1", "2", "3", "4"],
+            default="1"
+        )
+
+        edition_map = {
+            "1": "community",
+            "2": "pro",
+            "3": "pro_business",
+            "4": "enterprise"
+        }
+
+        edition = edition_map[choice]
+
+        # Info für Enterprise
+        if edition == "enterprise":
+            self.console.print("\n   [yellow]💡 Enterprise benötigt eine gemeinsame Datenbank für das Team-Learning![/yellow]")
+
+        return edition
+
+    def _ask_license_key(self) -> Optional[str]:
+        """Fragt nach Lizenzschlüssel"""
+        self.console.print("\n[bold]3a. Lizenzschlüssel[/bold] [red](erforderlich)[/red]")
+        self.console.print("   [dim]Erhältlich nach Kauf oder aus Admin-Panel[/dim]\n")
+
+        while True:
+            license_key = Prompt.ask(
+                "   Lizenzschlüssel",
+                password=True
+            )
+
+            if not license_key or license_key.lower() in ["exit", "quit", "q"]:
+                self.console.print("\n[yellow]Setup abgebrochen.[/yellow]")
+                return None
+
+            # Format-Validierung (TECHCARE-EDITION-...)
+            if not license_key.startswith("TECHCARE-"):
+                self.console.print("\n   [red]❌ Ungültiges Format. Keys beginnen mit 'TECHCARE-'[/red]")
+                if not Confirm.ask("   Nochmal versuchen?", default=True):
+                    return None
+                continue
+
+            return license_key.strip()
+
+    def _ask_network_connection(self) -> Optional[dict]:
+        """Fragt nach Netzwerkverbindung zu Backend-Services"""
+        self.console.print("\n[bold]🌐 Netzwerkverbindung[/bold]")
+        self.console.print("   [dim]Wie soll TechCare mit dem Backend verbinden?[/dim]\n")
+
+        self.console.print("   [cyan]1[/cyan] Cloudflare Tunnel (empfohlen, automatisches HTTPS)")
+        self.console.print("   [cyan]2[/cyan] Tailscale (Zero-Config VPN, Magic DNS)")
+        self.console.print("   [cyan]3[/cyan] VPN (WireGuard, OpenVPN, etc.)")
+        self.console.print("   [cyan]4[/cyan] Direkte IP/Hostname (LAN oder Port-Forwarding)\n")
+
+        method_choice = Prompt.ask(
+            "   Netzwerk-Methode",
+            choices=["1", "2", "3", "4"],
+            default="1"
+        )
+
+        method_map = {
+            "1": "cloudflare",
+            "2": "tailscale",
+            "3": "vpn",
+            "4": "direct"
+        }
+
+        method = method_map[method_choice]
+
+        # Backend-URL eingeben
+        self.console.print(f"\n   [bold]Backend-URL:[/bold]\n")
+
+        if method == "cloudflare":
+            self.console.print("   [dim]Beispiel: https://techcare.deinefirma.de[/dim]")
+        elif method == "tailscale":
+            self.console.print("   [dim]Beispiel: http://techcare (Magic DNS)[/dim]")
+        elif method == "vpn":
+            self.console.print("   [dim]Beispiel: http://192.168.1.100[/dim]")
+        else:  # direct
+            self.console.print("   [dim]Beispiel: http://192.168.1.100 oder https://techcare.firma.de[/dim]")
+
+        backend_url = Prompt.ask("   Backend-URL")
+
+        if not backend_url or backend_url.lower() in ["exit", "quit", "q"]:
+            self.console.print("\n[yellow]Setup abgebrochen.[/yellow]")
+            return None
+
+        self.console.print("\n   [green]✓ Netzwerk-Konfiguration gespeichert[/green]")
+
+        return {
+            "method": method,
+            "backend_url": backend_url.strip()
+        }
+
+    def _ask_technician_password(self) -> Optional[str]:
+        """Fragt nach Techniker-Passwort (bcrypt hash)"""
+        self.console.print("\n[bold]🔐 Techniker-Passwort[/bold] [dim](optional aber empfohlen)[/dim]")
+        self.console.print("   [dim]Schützt TechCare vor unbefugtem Zugriff[/dim]")
+        self.console.print("   [dim]Ohne Passwort kann jeder TechCare starten![/dim]\n")
+
+        if not Confirm.ask("   Passwort jetzt setzen?", default=True):
+            return None
+
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+        while True:
+            password = Prompt.ask("   Passwort", password=True)
+
+            if not password:
+                self.console.print("\n   [yellow]Kein Passwort gesetzt.[/yellow]")
+                return None
+
+            if len(password) < 6:
+                self.console.print("\n   [red]❌ Passwort zu kurz (min. 6 Zeichen)[/red]")
+                continue
+
+            # Bestätigung
+            confirm = Prompt.ask("   Passwort wiederholen", password=True)
+
+            if password != confirm:
+                self.console.print("\n   [red]❌ Passwörter stimmen nicht überein[/red]")
+                continue
+
+            # Hash erstellen
+            password_hash = pwd_context.hash(password)
+
+            self.console.print("\n   [green]✓ Passwort gespeichert[/green]")
+            return password_hash
+
     def _ask_api_key(self) -> Optional[str]:
         """Fragt nach Anthropic API Key"""
         self.console.print("\n[bold]3. Anthropic API Key[/bold] [red](erforderlich)[/red]")
@@ -163,9 +336,65 @@ class SetupWizard:
 
             return api_key.strip()
 
+    def _ask_database(self) -> Optional[dict]:
+        """Fragt nach Datenbank-Konfiguration (Enterprise)"""
+        self.console.print("\n[bold]🧠 Shared Learning Database[/bold] [red](Enterprise)[/red]")
+        self.console.print("   [dim]Dein Team braucht eine gemeinsame Datenbank.[/dim]")
+        self.console.print("   [dim]Jeder Techniker trägt zum kollektiven Wissen bei![/dim]\n")
+
+        self.console.print("   [cyan]1[/cyan] MySQL/MariaDB (empfohlen für Teams)")
+        self.console.print("   [cyan]2[/cyan] PostgreSQL")
+        self.console.print("   [cyan]3[/cyan] SQLite (nur für Testing/Demo)\n")
+
+        db_choice = Prompt.ask(
+            "   Datenbank-Typ",
+            choices=["1", "2", "3"],
+            default="1"
+        )
+
+        db_type_map = {
+            "1": "mysql",
+            "2": "postgresql",
+            "3": "sqlite"
+        }
+
+        db_type = db_type_map[db_choice]
+
+        if db_type == "sqlite":
+            self.console.print("\n   [yellow]⚠️  SQLite ist NICHT für Teams geeignet![/yellow]")
+            self.console.print("   [yellow]   Nutze MySQL oder PostgreSQL für Shared Learning.[/yellow]")
+
+            return {
+                "type": "sqlite",
+                "url": ""
+            }
+
+        # MySQL/PostgreSQL Verbindung konfigurieren
+        self.console.print(f"\n   [bold]{db_type.upper()} Verbindungs-Details:[/bold]\n")
+
+        host = Prompt.ask("   Host", default="localhost")
+        port = Prompt.ask("   Port", default="3306" if db_type == "mysql" else "5432")
+        database = Prompt.ask("   Database Name", default="techcare_learning")
+        user = Prompt.ask("   Username", default="techcare")
+        password = Prompt.ask("   Password", password=True)
+
+        # Connection String erstellen
+        if db_type == "mysql":
+            db_url = f"mysql+asyncmy://{user}:{password}@{host}:{port}/{database}"
+        else:  # postgresql
+            db_url = f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}"
+
+        self.console.print("\n   [green]✓ Datenbank-Konfiguration gespeichert[/green]")
+        self.console.print("   [dim]Verbindung wird beim ersten Start getestet[/dim]")
+
+        return {
+            "type": db_type,
+            "url": db_url
+        }
+
     def _ask_briefing(self) -> str:
         """Fragt nach Use-Case / Briefing (optional)"""
-        self.console.print("\n[bold]4. Briefing / Use-Case[/bold] [dim](optional)[/dim]")
+        self.console.print("\n[bold]5. Briefing / Use-Case[/bold] [dim](optional)[/dim]")
         self.console.print("   [dim]Beschreibe kurz wofür du TechCare nutzt[/dim]")
         self.console.print("   [dim]Beispiel: 'Windows-Support für 50 Clients'[/dim]\n")
 
@@ -181,7 +410,12 @@ class SetupWizard:
         user_name: str,
         company: str,
         api_key: str,
-        briefing: str
+        briefing: str,
+        edition: str = "community",
+        license_key: str = "",
+        network_config: dict = None,
+        db_config: dict = None,
+        technician_password: str = None
     ) -> bool:
         """
         Erstellt .env Datei aus Template
@@ -191,6 +425,8 @@ class SetupWizard:
             company: Firma/Team
             api_key: Anthropic API Key
             briefing: Use-Case Beschreibung
+            edition: Edition (community/pro/pro_business/enterprise)
+            db_config: Datenbank-Konfiguration (nur Enterprise)
 
         Returns:
             True wenn erfolgreich
@@ -207,6 +443,49 @@ class SetupWizard:
                 "ANTHROPIC_API_KEY=your_api_key_here",
                 f"ANTHROPIC_API_KEY={api_key}"
             )
+
+            # Edition hinzufügen
+            config = config.replace(
+                "EDITION=community",
+                f"EDITION={edition}"
+            )
+
+            # Lizenzschlüssel hinzufügen
+            if license_key:
+                config = config.replace(
+                    "LICENSE_KEY=",
+                    f"LICENSE_KEY={license_key}"
+                )
+
+            # Netzwerk-Config hinzufügen
+            if network_config:
+                config = config.replace(
+                    "BACKEND_URL=",
+                    f"BACKEND_URL={network_config['backend_url']}"
+                )
+                config = config.replace(
+                    "NETWORK_METHOD=direct",
+                    f"NETWORK_METHOD={network_config['method']}"
+                )
+
+            # Techniker-Passwort hinzufügen
+            if technician_password:
+                config = config.replace(
+                    "TECHNICIAN_PASSWORD_HASH=",
+                    f"TECHNICIAN_PASSWORD_HASH={technician_password}"
+                )
+
+            # Datenbank-Config hinzufügen (Enterprise)
+            if db_config:
+                config = config.replace(
+                    'LEARNING_DB_TYPE=sqlite',
+                    f'LEARNING_DB_TYPE={db_config["type"]}'
+                )
+                if db_config["url"]:
+                    config = config.replace(
+                        'LEARNING_DB_URL=',
+                        f'LEARNING_DB_URL={db_config["url"]}'
+                    )
 
             # User-Info als Kommentar hinzufügen
             header = f"""# ============================================================================

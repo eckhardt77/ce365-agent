@@ -7,6 +7,9 @@ __pycache__/
 *.pyd
 .Python
 
+# TechCare specific
+.techcare_tos_accepted
+
 # Data & Databases
 data/
 *.db

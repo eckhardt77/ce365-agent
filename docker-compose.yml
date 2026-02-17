@@ -1,0 +1,199 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Shared Team Learning)
+  postgres:
+    image: postgres:15-alpine
+    container_name: techcare-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-techcare}
+      POSTGRES_USER: ${POSTGRES_USER:-techcare}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - techcare-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-techcare}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (Session Storage & Caching)
+  redis:
+    image: redis:7-alpine
+    container_name: techcare-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - techcare-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # TechCare API (FastAPI Backend)
+  api:
+    image: ${DOCKER_REGISTRY:-registry.techcare.local}/techcare-api:${VERSION:-latest}
+    container_name: techcare-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Database
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-techcare}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-techcare}
+
+      # Redis
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+
+      # Anthropic API
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}
+
+      # Edition & License
+      EDITION: ${EDITION:-community}
+      LICENSE_KEY: ${LICENSE_KEY:-}
+      LICENSE_SERVER_URL: ${LICENSE_SERVER_URL:-}
+
+      # Security
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+
+      # Optional Features
+      PII_DETECTION_ENABLED: ${PII_DETECTION_ENABLED:-true}
+      WEB_SEARCH_ENABLED: ${WEB_SEARCH_ENABLED:-true}
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - techcare_data:/app/data
+      - techcare_logs:/app/logs
+    networks:
+      - techcare-internal
+      - techcare-external
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # TechCare Web UI (React/Next.js Frontend)
+  web:
+    image: ${DOCKER_REGISTRY:-registry.techcare.local}/techcare-web:${VERSION:-latest}
+    container_name: techcare-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NEXT_PUBLIC_API_URL: ${API_URL:-http://api:8000}
+      NEXT_PUBLIC_APP_NAME: TechCare Bot
+      NEXT_PUBLIC_EDITION: ${EDITION:-community}
+    networks:
+      - techcare-internal
+      - techcare-external
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: techcare-nginx
+    restart: unless-stopped
+    depends_on:
+      - web
+      - api
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx_cache:/var/cache/nginx
+    networks:
+      - techcare-external
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Cloudflare Tunnel (Optional - Profile: cloudflare)
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: techcare-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - techcare-external
+    profiles:
+      - cloudflare
+
+  # Tailscale (Optional - Profile: tailscale)
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: techcare-tailscale
+    restart: unless-stopped
+    privileged: true
+    environment:
+      TS_AUTHKEY: ${TAILSCALE_AUTH_KEY}
+      TS_HOSTNAME: ${TAILSCALE_HOSTNAME:-techcare}
+      TS_STATE_DIR: /var/lib/tailscale
+    volumes:
+      - tailscale_data:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    networks:
+      - techcare-external
+    profiles:
+      - tailscale
+
+  # Watchtower (Auto-Update)
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: techcare-watchtower
+    restart: unless-stopped
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_POLL_INTERVAL: 86400  # 24 hours
+      WATCHTOWER_INCLUDE_STOPPED: "false"
+      WATCHTOWER_NOTIFICATIONS: ${WATCHTOWER_NOTIFICATIONS:-}
+      REPO_USER: ${DOCKER_REGISTRY_USER}
+      REPO_PASS: ${DOCKER_REGISTRY_PASSWORD}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - techcare-internal
+    profiles:
+      - autoupdate
+
+networks:
+  techcare-internal:
+    driver: bridge
+    internal: true
+  techcare-external:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  techcare_data:
+    driver: local
+  techcare_logs:
+    driver: local
+  tailscale_data:
+    driver: local
+  nginx_cache:
+    driver: local

@@ -22,7 +22,12 @@ from techcare.ui.console import RichConsole
 from techcare.learning.case_library import CaseLibrary, Case
 
 # Security - PII Detection
-from techcare.security.pii_detector import get_pii_detector
+try:
+    from techcare.security.pii_detector import get_pii_detector
+    PII_AVAILABLE = True
+except ImportError:
+    PII_AVAILABLE = False
+    print("⚠️  PII Detection nicht verfügbar (Python 3.14 Kompatibilität)")
 
 # Tools importieren
 from techcare.tools.audit.system_info import SystemInfoTool
@@ -34,13 +39,25 @@ from techcare.tools.audit.stress_tests import (
     StressTestCPUTool, StressTestMemoryTool, TestDiskSpeedTool,
     CheckSystemTemperatureTool, RunStabilityTestTool
 )
+from techcare.tools.audit.reporting import GenerateSystemReportTool
+from techcare.tools.audit.security import CheckSecurityStatusTool
+from techcare.tools.audit.startup import CheckStartupProgramsTool
+from techcare.tools.audit.malware_scan import MalwareScanTool  # NEU
+from techcare.tools.audit.drivers import CheckDriversTool  # NEU - Driver Check
 from techcare.tools.repair.service_manager import ServiceManagerTool
 from techcare.tools.repair.disk_cleanup import DiskCleanupTool
 from techcare.tools.repair.network_tools import FlushDNSCacheTool, ResetNetworkStackTool
 from techcare.tools.repair.system_repair import RunSFCScanTool, RepairDiskPermissionsTool, RepairDiskTool
 from techcare.tools.repair.updates import InstallSystemUpdatesTool
 from techcare.tools.repair.backup import CreateRestorePointTool, TriggerTimeMachineBackupTool
+from techcare.tools.repair.startup import DisableStartupProgramTool, EnableStartupProgramTool
+from techcare.tools.repair.update_scheduler import ScheduleSystemUpdatesTool
 from techcare.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
+from techcare.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
+
+# License & Network
+from techcare.core.license import validate_license, check_edition_features
+from techcare.config.settings import get_settings
 
 
 class TechCareBot:
@@ -66,7 +83,10 @@ class TechCareBot:
         self.case_library = CaseLibrary()
 
         # Security - PII Detection
-        self.pii_detector = get_pii_detector()
+        if PII_AVAILABLE:
+            self.pii_detector = get_pii_detector()
+        else:
+            self.pii_detector = None
 
         # Session Tracking für Learning
         self.session_start_time = datetime.now()
@@ -107,6 +127,16 @@ class TechCareBot:
         self.tool_registry.register(CheckSystemTemperatureTool())
         self.tool_registry.register(RunStabilityTestTool())
 
+        # Audit Tools - Reporting & Security
+        self.tool_registry.register(GenerateSystemReportTool())
+        self.tool_registry.register(CheckSecurityStatusTool())
+        self.tool_registry.register(CheckStartupProgramsTool())
+        self.tool_registry.register(MalwareScanTool())  # NEU - Malware Scanner
+        self.tool_registry.register(CheckDriversTool())  # NEU - Driver Check
+
+        # AI Analysis Tools
+        self.tool_registry.register(RootCauseAnalyzer())  # NEU - Root Cause Analysis
+
         # Research Tools (Web Search)
         self.tool_registry.register(WebSearchTool())
         self.tool_registry.register(WebSearchInstantAnswerTool())
@@ -125,6 +155,11 @@ class TechCareBot:
         self.tool_registry.register(CreateRestorePointTool())
         self.tool_registry.register(TriggerTimeMachineBackupTool())
 
+        # Repair Tools - Startup Management & Update Scheduler
+        self.tool_registry.register(DisableStartupProgramTool())
+        self.tool_registry.register(EnableStartupProgramTool())
+        self.tool_registry.register(ScheduleSystemUpdatesTool())
+
         self.console.display_info(
             f"🔧 Tools registriert: {len(self.tool_registry)} "
             f"(Audit: {len(self.tool_registry.get_audit_tools())}, "
@@ -134,6 +169,14 @@ class TechCareBot:
     async def run(self):
         """Main Bot Loop"""
         self.console.display_logo()
+
+        # Lizenz-Check (wenn License Key gesetzt ist)
+        await self._check_license()
+
+        # ToS Akzeptanz prüfen (nur beim ersten Start)
+        if not self._check_tos_acceptance():
+            return
+
         self.console.display_info(f"Session ID: {self.session.session_id}")
         self.console.display_info("Tippe 'exit' oder 'quit' zum Beenden")
 
@@ -147,6 +190,11 @@ class TechCareBot:
                 )
         except:
             pass
+
+        self.console.display_separator()
+
+        # Automatischer System-Statusbericht beim Start
+        await self._display_initial_system_status()
 
         self.console.display_separator()
 
@@ -187,7 +235,6 @@ class TechCareBot:
                             continue
 
                 # Process Message
-                self.console.display_separator()
                 await self.process_message(user_input)
 
             except KeyboardInterrupt:
@@ -205,6 +252,190 @@ class TechCareBot:
             if self.state_machine.current_state.value == "completed":
                 await self._save_session_as_case(success=True)
 
+    def _check_tos_acceptance(self) -> bool:
+        """
+        Prüft ob User ToS akzeptiert hat
+
+        Returns:
+            True wenn akzeptiert, False wenn abgelehnt (Bot wird beendet)
+        """
+        import os
+        from pathlib import Path
+
+        # ToS-Acceptance File
+        tos_file = Path.home() / ".techcare_tos_accepted"
+
+        # Wenn Datei existiert: User hat schon zugestimmt
+        if tos_file.exists():
+            return True
+
+        # Disclaimer anzeigen
+        self.console.display_separator()
+        self.console.console.print("[bold red]⚠️  WICHTIG: HAFTUNGSAUSSCHLUSS[/bold red]\n")
+
+        disclaimer_path = Path(__file__).parent.parent.parent / "DISCLAIMER.txt"
+
+        if disclaimer_path.exists():
+            with open(disclaimer_path, 'r', encoding='utf-8') as f:
+                disclaimer = f.read()
+            self.console.console.print(disclaimer)
+        else:
+            # Fallback wenn Datei nicht gefunden
+            self.console.console.print("""
+TechCare Bot wird "AS IS" bereitgestellt, OHNE JEGLICHE GARANTIE.
+
+⚠️  KEINE HAFTUNG für:
+   - Datenverlust
+   - System-Schäden
+   - Fehlgeschlagene Reparaturen
+
+✅ Nutzung auf EIGENE VERANTWORTUNG
+✅ BACKUP-PFLICHT vor Reparaturen
+✅ Technisches Verständnis erforderlich
+
+Durch Nutzung akzeptieren Sie diese Bedingungen.
+            """)
+
+        self.console.display_separator()
+        self.console.console.print()
+
+        # User-Eingabe
+        while True:
+            response = self.console.get_input(
+                "Ich habe den Haftungsausschluss gelesen und akzeptiere die Bedingungen (ja/nein)"
+            ).strip().lower()
+
+            if response in ["ja", "yes", "y", "j"]:
+                # Akzeptanz speichern
+                try:
+                    tos_file.touch()
+                    self.console.display_success("✅ Bedingungen akzeptiert. Viel Erfolg!")
+                    self.console.console.print()
+                    return True
+                except Exception as e:
+                    self.console.display_warning(f"Konnte Akzeptanz nicht speichern: {e}")
+                    return True  # Trotzdem weitermachen
+
+            elif response in ["nein", "no", "n"]:
+                self.console.console.print()
+                self.console.console.print("[yellow]ℹ️  Du hast die Bedingungen nicht akzeptiert.[/yellow]")
+                self.console.console.print("[yellow]   TechCare Bot wird beendet.[/yellow]")
+                self.console.console.print()
+                self.console.console.print("[dim]Bei Fragen: https://github.com/yourusername/techcare-bot/issues[/dim]")
+                self.console.console.print()
+                return False
+
+            else:
+                self.console.console.print("[red]❌ Bitte antworte mit 'ja' oder 'nein'[/red]\n")
+
+    async def _check_license(self):
+        """
+        Prüft Lizenz beim Start (wenn License Key gesetzt)
+
+        Features:
+        - Online-Validierung via Backend
+        - Offline-Fallback mit gecachter Lizenz
+        - Edition-Info anzeigen
+        """
+        settings = get_settings()
+
+        # Nur prüfen wenn License Key gesetzt
+        if not settings.license_key or not settings.backend_url:
+            # Community Edition ohne Remote-Backend
+            if settings.edition == "community":
+                self.console.display_info("📦 Edition: Community (keine Lizenz erforderlich)")
+            return
+
+        try:
+            self.console.console.print("[dim]🔑 Validiere Lizenz...[/dim]")
+
+            # Lizenz validieren
+            result = await validate_license(
+                license_key=settings.license_key,
+                backend_url=settings.backend_url,
+                timeout=5
+            )
+
+            if not result["valid"]:
+                self.console.display_error(f"❌ Ungültige Lizenz: {result.get('error', 'Unknown error')}")
+                self.console.console.print()
+                self.console.console.print("[yellow]Bitte kontaktiere den Support oder prüfe deine Lizenz.[/yellow]")
+                self.console.console.print()
+                import sys
+                sys.exit(1)
+
+            # Edition-Info anzeigen
+            edition_names = {
+                "community": "Community",
+                "pro": "Pro",
+                "pro_business": "Pro Business",
+                "enterprise": "Enterprise"
+            }
+
+            edition_display = edition_names.get(result["edition"], result["edition"])
+
+            self.console.display_success(f"✓ Lizenz gültig: {edition_display}")
+
+            # Offline-Hinweis wenn gecachte Lizenz verwendet
+            if result.get("_offline"):
+                self.console.display_warning("⚠️  Offline-Modus (gecachte Lizenz)")
+
+            # Ablaufdatum anzeigen
+            if result.get("expires_at") and result["expires_at"] != "never":
+                from datetime import datetime
+                expires_at = datetime.fromisoformat(result["expires_at"])
+                self.console.display_info(f"Gültig bis: {expires_at.strftime('%d.%m.%Y')}")
+
+            # Max Systems anzeigen
+            if result.get("max_systems") and result["max_systems"] > 0:
+                self.console.display_info(f"Max. Systeme: {result['max_systems']}")
+
+        except Exception as e:
+            self.console.display_error(f"❌ Lizenz-Check fehlgeschlagen: {str(e)}")
+            self.console.console.print()
+            import sys
+            sys.exit(1)
+
+    async def _display_initial_system_status(self):
+        """
+        Zeigt automatischen System-Statusbericht beim Start
+
+        Ruft auf:
+        - get_system_info (OS, Hardware, Disk)
+        - check_backup_status (Backup-Zustand)
+        - check_security_status (Firewall, Antivirus)
+        """
+        try:
+            self.console.display_info("🔍 Erstelle System-Statusbericht...")
+            self.console.display_info("")
+
+            # 1. System Info
+            system_info_tool = self.tool_registry.get_tool("get_system_info")
+            if system_info_tool:
+                result = await system_info_tool.execute()
+                self.console.display_tool_result("get_system_info", result)
+                self.console.display_info("")
+
+            # 2. Backup Status
+            backup_tool = self.tool_registry.get_tool("check_backup_status")
+            if backup_tool:
+                result = await backup_tool.execute()
+                self.console.display_tool_result("check_backup_status", result)
+                self.console.display_info("")
+
+            # 3. Security Status
+            security_tool = self.tool_registry.get_tool("check_security_status")
+            if security_tool:
+                result = await security_tool.execute()
+                self.console.display_tool_result("check_security_status", result)
+                self.console.display_info("")
+
+            self.console.display_success("✅ System-Statusbericht abgeschlossen")
+            self.console.display_info("💬 Wie kann ich dir helfen?")
+
+        except Exception as e:
+            self.console.display_warning(f"⚠️  Statusbericht konnte nicht vollständig erstellt werden: {str(e)}")
+
     async def process_message(self, user_input: str):
         """
         Message verarbeiten mit Tool Use Loop
@@ -218,15 +449,19 @@ class TechCareBot:
            - "tool_use" → handle_tool_use() → rekursiv fortsetzen
         """
         # 1. PII Detection & Anonymisierung
-        anonymized_input, detections = self.pii_detector.anonymize(user_input)
+        if self.pii_detector:
+            anonymized_input, detections = self.pii_detector.anonymize(user_input)
 
-        # User-Warning anzeigen wenn PII gefunden
-        if detections and self.pii_detector.show_warnings:
-            warning = self.pii_detector.format_detection_warning(detections)
-            self.console.display_warning(warning)
+            # User-Warning anzeigen wenn PII gefunden
+            if detections and self.pii_detector.show_warnings:
+                warning = self.pii_detector.format_detection_warning(detections)
+                self.console.display_warning(warning)
 
-        # Anonymisierten Input verwenden (für Claude API & Learning System)
-        processed_input = anonymized_input if detections else user_input
+            # Anonymisierten Input verwenden (für Claude API & Learning System)
+            processed_input = anonymized_input if detections else user_input
+        else:
+            # PII Detection deaktiviert
+            processed_input = user_input
 
         # 2. User Message zu History
         self.session.add_message(role="user", content=processed_input)
@@ -292,11 +527,17 @@ class TechCareBot:
             tool_input = tool_use.input
             tool_id = tool_use.id
 
-            self.console.display_tool_call(tool_name, tool_input)
+            # BUGFIX: XML-Tags aus Tool-Namen entfernen (Claude API Bug)
+            if '"' in tool_name or '<' in tool_name or '>' in tool_name:
+                # Tool-Name ist korrupt, extrahiere nur den ersten Teil
+                tool_name = tool_name.split('"')[0].split('<')[0].strip()
+                self.console.display_warning(f"Tool-Name korrigiert zu: {tool_name}")
 
-            # Tool ausführen
-            success, result = await self.executor.execute_tool(tool_name, tool_input)
+            # Tool ausführen mit Spinner
+            with self.console.show_spinner(f"🔧 Executing {tool_name}"):
+                success, result = await self.executor.execute_tool(tool_name, tool_input)
 
+            # Ergebnis anzeigen
             self.console.display_tool_result(tool_name, result, success)
 
             # Tool Result für API
@@ -315,7 +556,6 @@ class TechCareBot:
         self.session.add_message(role="user", content=tool_results)
 
         # Rekursiv fortsetzen (ohne User Input)
-        self.console.display_separator()
         await self.continue_after_tools()
 
     async def continue_after_tools(self):
