@@ -8,6 +8,8 @@ Validiert Lizenzschlüssel mit zentralem License Server
 """
 
 import asyncio
+import hashlib
+import hmac
 import httpx
 import json
 from pathlib import Path
@@ -25,6 +27,9 @@ class LicenseValidator:
     - Timeout Handling
     """
 
+    # HMAC key derived from machine-specific data (not a secret, but prevents simple file copy)
+    _CACHE_HMAC_SALT = b"techcare-license-cache-v1"
+
     def __init__(self, backend_url: str, cache_dir: Path = None):
         """
         Args:
@@ -35,6 +40,25 @@ class LicenseValidator:
         self.cache_dir = cache_dir or Path.home() / ".techcare" / "cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.cache_file = self.cache_dir / "license.json"
+        self._hmac_key = self._derive_hmac_key()
+
+    def _derive_hmac_key(self) -> bytes:
+        """Leitet HMAC-Key aus System-spezifischen Daten ab"""
+        import uuid
+        import platform
+        machine_data = f"{uuid.getnode()}|{platform.node()}|{platform.machine()}"
+        return hashlib.sha256(
+            self._CACHE_HMAC_SALT + machine_data.encode()
+        ).digest()
+
+    def _compute_hmac(self, data: str) -> str:
+        """Berechnet HMAC für Cache-Daten"""
+        return hmac.new(self._hmac_key, data.encode(), hashlib.sha256).hexdigest()
+
+    def _verify_hmac(self, data: str, signature: str) -> bool:
+        """Verifiziert HMAC-Signatur"""
+        expected = self._compute_hmac(data)
+        return hmac.compare_digest(expected, signature)
 
     async def validate(
         self,
@@ -121,7 +145,7 @@ class LicenseValidator:
             return data
 
     def _cache_license(self, license_key: str, result: Dict):
-        """Speichert Lizenz-Validierung im Cache"""
+        """Speichert Lizenz-Validierung im Cache mit HMAC-Signatur"""
         cache_data = {
             "license_key": license_key,
             "result": result,
@@ -129,15 +153,18 @@ class LicenseValidator:
         }
 
         try:
-            self.cache_file.write_text(
-                json.dumps(cache_data, indent=2)
-            )
+            payload = json.dumps(cache_data, sort_keys=True)
+            signed_data = {
+                "payload": payload,
+                "signature": self._compute_hmac(payload)
+            }
+            self.cache_file.write_text(json.dumps(signed_data, indent=2))
         except Exception:
             pass  # Cache-Fehler ignorieren
 
     def _load_cached_license(self, license_key: str) -> Optional[Dict]:
         """
-        Lädt gecachte Lizenz (Offline-Fallback)
+        Lädt gecachte Lizenz (Offline-Fallback) mit HMAC-Verifikation
 
         Returns:
             Lizenz-Info wenn gültig, sonst None
@@ -146,7 +173,17 @@ class LicenseValidator:
             return None
 
         try:
-            cache_data = json.loads(self.cache_file.read_text())
+            signed_data = json.loads(self.cache_file.read_text())
+
+            # HMAC-Signatur verifizieren
+            payload = signed_data.get("payload")
+            signature = signed_data.get("signature")
+            if not payload or not signature or not self._verify_hmac(payload, signature):
+                # Cache manipuliert oder ungültiges Format
+                self.cache_file.unlink(missing_ok=True)
+                return None
+
+            cache_data = json.loads(payload)
 
             # Prüfe ob gecachte Lizenz zum aktuellen Key passt
             if cache_data["license_key"] != license_key:

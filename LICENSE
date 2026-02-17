@@ -1,25 +1,42 @@
-MIT License with Non-Commercial Restriction
+TechCare Bot - Source Available License
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 
+1. GRANT OF LICENSE
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software for NON-COMMERCIAL purposes only, subject to the following conditions:
+of this software and associated documentation files (the "Software"), to use,
+copy, modify, and distribute the Software for NON-COMMERCIAL purposes only,
+subject to the following conditions:
+
+2. NON-COMMERCIAL USE
+
+This license permits use of the Software for personal, educational, academic,
+research, and other non-commercial purposes. You may:
+  - Use the Software for personal IT maintenance
+  - Study and learn from the source code
+  - Modify the Software for personal use
+  - Share the Software with others under this same license
+
+3. COMMERCIAL USE REQUIRES A SEPARATE LICENSE
+
+Commercial use requires a separate Commercial License. Commercial use includes,
+but is not limited to:
+  - Providing IT services for compensation
+  - Using the Software in a commercial IT support business
+  - Managed Service Provider (MSP) operations
+  - Enterprise IT department operations
+
+For commercial licensing options (Pro, Pro Business, Enterprise), please contact:
+  Email: licensing@eckhardt-marketing.de
+  Web: https://techcare.eckhardt-marketing.de
+
+4. CONDITIONS
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-NON-COMMERCIAL USE ONLY: This license permits use of the Software for personal,
-educational, academic, research, and other non-commercial purposes. Commercial use,
-including but not limited to:
-  - Providing IT services for compensation
-  - Using the Software in a commercial IT support business
-  - Managed Service Provider (MSP) operations
-  - Enterprise IT department operations where the company generates revenue
-
-requires a separate Commercial License. For commercial licensing options, please contact:
-  Email: licensing@eckhardt-marketing.de
-  Web: https://techcare.dev/pro
+5. DISCLAIMER
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

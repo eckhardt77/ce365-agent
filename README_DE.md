@@ -6,7 +6,7 @@
 
 TechCare Bot ist ein KI-gestützter IT-Wartungs-Assistent, der dir bei der Diagnose und Reparatur von Windows- und macOS-Systemen hilft. Mit natürlicher Sprachinteraktion und **über 30 integrierten Tools** wird IT-Wartung zum Kinderspiel!
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Source Available](https://img.shields.io/badge/License-Source%20Available-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20Sonnet%204.5-blueviolet)](https://anthropic.com)
 
@@ -626,20 +626,15 @@ pip install -r requirements-dev.txt  # Dev-Abhängigkeiten
 
 ## 📄 Lizenz
 
-**MIT License**
+**Source Available License** - Kostenlos für nicht-kommerzielle Nutzung.
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 
-Es wird hiermit kostenlos jeder Person, die eine Kopie der Software und der
-zugehörigen Dokumentationsdateien (die "Software") erhält, die Erlaubnis erteilt,
-sie uneingeschränkt zu nutzen, einschließlich und ohne Beschränkung der Rechte zur
-Verwendung, zum Kopieren, Ändern, Zusammenführen, Veröffentlichen, Verteilen,
-Unterlizenzieren und/oder Verkaufen von Kopien der Software, und Personen, denen
-die Software bereitgestellt wird, dies unter den folgenden Bedingungen zu gestatten:
+Die Community Edition ist kostenlos für persönliche, akademische und
+nicht-kommerzielle Nutzung. Kommerzielle Nutzung (IT-Dienstleister, MSPs,
+Unternehmens-IT) erfordert eine [Kommerzielle Lizenz](https://techcare.eckhardt-marketing.de).
 
-[Vollständiger MIT-Lizenztext...]
-
-**Hinweis:** Kommerzielle Support- und Lizenzierungsoptionen für Unternehmen verfügbar.
+Siehe [LICENSE](LICENSE) für vollständige Details.
 
 ---
 
@@ -685,7 +680,7 @@ Siehe [SECURITY.md](SECURITY.md) für Responsible Disclosure Policy.
 - **52 Error-Codes** - Integrierte Wissensdatenbank
 - **2 Sprachen** - Deutsch + Englisch
 - **3 Plattformen** - Windows, macOS, Linux (exp)
-- **100% Kostenlos** - Community Edition (MIT License)
+- **100% Kostenlos** - Community Edition (nicht-kommerzielle Nutzung)
 
 ---
 

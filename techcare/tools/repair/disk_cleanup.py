@@ -179,14 +179,19 @@ class DiskCleanupTool(RepairTool):
             # 4. Trash (optional)
             if include_trash:
                 try:
-                    subprocess.run(
-                        ["rm", "-rf", str(Path.home() / '.Trash' / '*')],
-                        capture_output=True,
-                        timeout=30,
-                        shell=True
-                    )
+                    trash_dir = Path.home() / '.Trash'
+                    if trash_dir.exists():
+                        import shutil
+                        for item in trash_dir.iterdir():
+                            try:
+                                if item.is_dir():
+                                    shutil.rmtree(item)
+                                else:
+                                    item.unlink()
+                            except Exception:
+                                pass
                     cleaned_items.append("Papierkorb geleert")
-                except:
+                except Exception:
                     pass
 
             # Ergebnis
