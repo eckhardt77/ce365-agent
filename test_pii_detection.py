@@ -11,7 +11,7 @@ Testet:
 6. IBAN
 """
 
-from techcare.security.pii_detector import PIIDetector
+from ce365.security.pii_detector import PIIDetector
 
 
 def test_pii_detection():

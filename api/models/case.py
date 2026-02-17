@@ -1,5 +1,5 @@
 """
-TechCare Bot - Case Model (Learning System)
+CE365 Agent - Case Model (Learning System)
 """
 
 from sqlalchemy import Column, String, DateTime, Text, Integer, Float, Boolean

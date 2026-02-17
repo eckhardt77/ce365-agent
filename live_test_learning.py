@@ -9,11 +9,11 @@ Testet:
 """
 
 import asyncio
-from techcare.core.bot import TechCareBot
-from techcare.learning.case_library import CaseLibrary, Case
+from ce365.core.bot import CE365Bot
+from ce365.learning.case_library import CaseLibrary, Case
 
 async def live_test():
-    """Live-Test mit echtem TechCare Bot"""
+    """Live-Test mit echtem CE365 Agent"""
 
     print("\n" + "="*80)
     print("  LEARNING SYSTEM - LIVE TEST")
@@ -77,13 +77,13 @@ Schritt 2: SoftwareDistribution Cache leeren
     print("="*80)
     print()
     print("Ich simuliere jetzt einen User, der ein Windows Update Problem hat.")
-    print("TechCare sollte das bekannte Problem erkennen!")
+    print("CE365 sollte das bekannte Problem erkennen!")
     print()
     input("Drücke ENTER um zu starten...")
     print()
 
     # Bot initialisieren
-    bot = TechCareBot()
+    bot = CE365Bot()
 
     print("\n" + "="*80)
     print("  SIMULATION: User meldet Windows Update Problem")
@@ -110,7 +110,7 @@ Bereits versucht: Neustart, Windows Update Troubleshooter, aber Problem besteht.
     # Problem-Info extrahieren (Learning!)
     bot._extract_problem_info(user_response)
 
-    # Jetzt sollte TechCare ähnlichen Fall finden!
+    # Jetzt sollte CE365 ähnlichen Fall finden!
     print("🔍 Learning System prüft auf bekannte Probleme...")
     print()
 
@@ -122,7 +122,7 @@ Bereits versucht: Neustart, Windows Update Troubleshooter, aber Problem besteht.
         print("  ✅ ERFOLG! Learning System hat bekanntes Problem erkannt!")
         print("="*80)
         print()
-        print("TechCare hat eine bekannte Lösung angeboten!")
+        print("CE365 hat eine bekannte Lösung angeboten!")
         print("User könnte jetzt wählen:")
         print("  1 = Bewährte Lösung (schnell)")
         print("  2 = Vollständiger Audit (gründlich)")

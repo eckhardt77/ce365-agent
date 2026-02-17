@@ -6,9 +6,9 @@ Testet State Validation, Tool Execution und Changelog Writing.
 
 import pytest
 from unittest.mock import MagicMock, AsyncMock
-from techcare.tools.executor import CommandExecutor
-from techcare.tools.registry import ToolRegistry
-from techcare.workflow.state_machine import WorkflowStateMachine, WorkflowState
+from ce365.tools.executor import CommandExecutor
+from ce365.tools.registry import ToolRegistry
+from ce365.workflow.state_machine import WorkflowStateMachine, WorkflowState
 
 
 @pytest.fixture
@@ -77,7 +77,7 @@ class TestErrorHandling:
 
     @pytest.mark.asyncio
     async def test_tool_execution_error(self, tool_registry, state_machine, mock_changelog_writer):
-        from techcare.tools.base import AuditTool
+        from ce365.tools.base import AuditTool
 
         class FailingTool(AuditTool):
             @property
@@ -102,7 +102,7 @@ class TestErrorHandling:
 
     @pytest.mark.asyncio
     async def test_repair_error_logged_to_changelog(self, tool_registry, state_machine, mock_changelog_writer):
-        from techcare.tools.base import RepairTool
+        from ce365.tools.base import RepairTool
 
         class FailingRepair(RepairTool):
             @property

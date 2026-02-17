@@ -9,9 +9,9 @@ Testet:
 4. Similarity-Suche
 """
 
-from techcare.learning.case_library import CaseLibrary, Case
-from techcare.learning.database import get_db_manager
-from techcare.ui.console import RichConsole
+from ce365.learning.case_library import CaseLibrary, Case
+from ce365.learning.database import get_db_manager
+from ce365.ui.console import RichConsole
 
 console = RichConsole()
 

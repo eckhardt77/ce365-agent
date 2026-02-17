@@ -1,5 +1,5 @@
 """
-TechCare Bot - Case Schemas (Learning System)
+CE365 Agent - Case Schemas (Learning System)
 """
 
 from pydantic import BaseModel, Field

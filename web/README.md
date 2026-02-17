@@ -1,4 +1,4 @@
-# TechCare Bot - Web Frontend
+# CE365 Agent - Web Frontend
 
 Next.js 14 Frontend mit TypeScript, Tailwind CSS und shadcn/ui.
 
@@ -53,12 +53,12 @@ npm start
 
 ```bash
 # Build
-docker build -t techcare-web:latest \
+docker build -t ce365-web:latest \
   --build-arg NEXT_PUBLIC_API_URL=http://api:8000 \
   -f Dockerfile .
 
 # Run
-docker run -p 3000:3000 techcare-web:latest
+docker run -p 3000:3000 ce365-web:latest
 ```
 
 ## Project Structure
@@ -247,7 +247,7 @@ In Docker/Production:
 ```bash
 NEXT_PUBLIC_API_URL=http://api:8000
 # oder
-NEXT_PUBLIC_API_URL=https://techcare.ihrefirma.de
+NEXT_PUBLIC_API_URL=https://ce365.ihrefirma.de
 ```
 
 ## Development Tips

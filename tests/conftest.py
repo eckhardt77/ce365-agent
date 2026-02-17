@@ -1,5 +1,5 @@
 """
-TechCare Bot - Shared Test Fixtures
+CE365 Agent - Shared Test Fixtures
 """
 
 import os
@@ -16,21 +16,21 @@ os.environ.setdefault("LICENSE_KEY", "")
 @pytest.fixture
 def state_machine():
     """Frische WorkflowStateMachine Instanz"""
-    from techcare.workflow.state_machine import WorkflowStateMachine
+    from ce365.workflow.state_machine import WorkflowStateMachine
     return WorkflowStateMachine()
 
 
 @pytest.fixture
 def tool_registry():
     """Leere ToolRegistry Instanz"""
-    from techcare.tools.registry import ToolRegistry
+    from ce365.tools.registry import ToolRegistry
     return ToolRegistry()
 
 
 @pytest.fixture
 def mock_audit_tool():
     """Mock AuditTool"""
-    from techcare.tools.base import AuditTool
+    from ce365.tools.base import AuditTool
 
     class MockAuditTool(AuditTool):
         @property
@@ -58,7 +58,7 @@ def mock_audit_tool():
 @pytest.fixture
 def mock_repair_tool():
     """Mock RepairTool"""
-    from techcare.tools.base import RepairTool
+    from ce365.tools.base import RepairTool
 
     class MockRepairTool(RepairTool):
         @property
@@ -94,16 +94,16 @@ def mock_changelog_writer():
 
 
 @pytest.fixture
-def tmp_techcare_dir(tmp_path):
-    """Temporäres .techcare Verzeichnis"""
-    techcare_dir = tmp_path / ".techcare"
-    techcare_dir.mkdir()
-    (techcare_dir / "cache").mkdir()
-    return techcare_dir
+def tmp_ce365_dir(tmp_path):
+    """Temporäres .ce365 Verzeichnis"""
+    ce365_dir = tmp_path / ".ce365"
+    ce365_dir.mkdir()
+    (ce365_dir / "cache").mkdir()
+    return ce365_dir
 
 
 @pytest.fixture
 def session():
     """Frische Session Instanz"""
-    from techcare.core.session import Session
+    from ce365.core.session import Session
     return Session()

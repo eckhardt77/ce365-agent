@@ -52,8 +52,8 @@ jobs:
           file: ./Dockerfile.api
           push: true
           tags: |
-            ${{ vars.DOCKER_REGISTRY }}/techcare-api:${{ steps.version.outputs.VERSION }}
-            ${{ vars.DOCKER_REGISTRY }}/techcare-api:latest
+            ${{ vars.DOCKER_REGISTRY }}/ce365-api:${{ steps.version.outputs.VERSION }}
+            ${{ vars.DOCKER_REGISTRY }}/ce365-api:latest
           platforms: linux/amd64
 
       - name: Build and push Web image
@@ -63,6 +63,6 @@ jobs:
           file: ./web/Dockerfile
           push: true
           tags: |
-            ${{ vars.DOCKER_REGISTRY }}/techcare-web:${{ steps.version.outputs.VERSION }}
-            ${{ vars.DOCKER_REGISTRY }}/techcare-web:latest
+            ${{ vars.DOCKER_REGISTRY }}/ce365-web:${{ steps.version.outputs.VERSION }}
+            ${{ vars.DOCKER_REGISTRY }}/ce365-web:latest
           platforms: linux/amd64

@@ -9,15 +9,15 @@ import pytest
 from pathlib import Path
 from datetime import datetime, timedelta
 from unittest.mock import patch, AsyncMock, MagicMock
-from techcare.core.license import LicenseValidator, check_edition_features
+from ce365.core.license import LicenseValidator, check_edition_features
 
 
 @pytest.fixture
-def license_validator(tmp_techcare_dir):
+def license_validator(tmp_ce365_dir):
     """LicenseValidator mit temporärem Cache"""
     return LicenseValidator(
         backend_url="http://test-backend:8000",
-        cache_dir=tmp_techcare_dir / "cache"
+        cache_dir=tmp_ce365_dir / "cache"
     )
 
 
@@ -175,6 +175,7 @@ class TestEditionFeatures:
         assert check_edition_features("free", "advanced_repair") is False
         assert check_edition_features("free", "web_search") is False
         assert check_edition_features("free", "root_cause_analysis") is False
+        assert check_edition_features("free", "commercial_use") is False
         assert check_edition_features("free", "monitoring") is False
         assert check_edition_features("free", "shared_learning") is False
 
@@ -188,6 +189,7 @@ class TestEditionFeatures:
         assert check_edition_features("pro", "root_cause_analysis") is True
         assert check_edition_features("pro", "system_report") is True
         assert check_edition_features("pro", "driver_management") is True
+        assert check_edition_features("pro", "commercial_use") is True
         assert check_edition_features("pro", "unlimited_systems") is False
         assert check_edition_features("pro", "monitoring") is False
         assert check_edition_features("pro", "shared_learning") is False
@@ -202,6 +204,7 @@ class TestEditionFeatures:
         assert check_edition_features("business", "root_cause_analysis") is True
         assert check_edition_features("business", "system_report") is True
         assert check_edition_features("business", "driver_management") is True
+        assert check_edition_features("business", "commercial_use") is True
         assert check_edition_features("business", "unlimited_systems") is True
         assert check_edition_features("business", "monitoring") is True
         assert check_edition_features("business", "shared_learning") is True

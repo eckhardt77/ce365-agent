@@ -1,5 +1,5 @@
 """
-TechCare Bot - Database Models
+CE365 Agent - Database Models
 """
 
 from api.models.database import Base, get_db, get_db_session

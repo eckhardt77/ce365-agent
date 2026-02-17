@@ -1,5 +1,5 @@
 """
-TechCare Bot - Database Connection & Base
+CE365 Agent - Database Connection & Base
 Async SQLAlchemy Setup
 """
 

@@ -1,5 +1,5 @@
 """
-TechCare Bot - ToolCall Schemas
+CE365 Agent - ToolCall Schemas
 """
 
 from pydantic import BaseModel, Field

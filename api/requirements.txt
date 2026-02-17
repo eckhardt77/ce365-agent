@@ -1,5 +1,5 @@
 # ============================================================================
-# TechCare Bot - API Requirements
+# CE365 Agent - API Requirements
 # ============================================================================
 
 # FastAPI & Dependencies
@@ -31,7 +31,7 @@ email-validator==2.1.0
 # Utilities
 python-dotenv==1.0.0
 
-# TechCare Core Dependencies
+# CE365 Core Dependencies
 psutil==5.9.7  # System info
 rich==13.7.0  # Console UI (für CLI-Kompatibilität)
 

@@ -1,5 +1,5 @@
 """
-TechCare Bot - Pydantic Schemas
+CE365 Agent - Pydantic Schemas
 Request/Response Validation
 """
 

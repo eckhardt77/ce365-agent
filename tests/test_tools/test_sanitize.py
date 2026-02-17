@@ -5,7 +5,7 @@ Testet Schutz gegen Command Injection in PowerShell, AppleScript, Paths.
 """
 
 import pytest
-from techcare.tools.sanitize import (
+from ce365.tools.sanitize import (
     sanitize_powershell_string,
     sanitize_applescript_string,
     validate_program_name,
@@ -138,8 +138,8 @@ class TestDescriptionValidation:
         assert validate_description("System-Wartung") == "System-Wartung"
 
     def test_empty_returns_default(self):
-        assert validate_description("") == "TechCare"
-        assert validate_description(None) == "TechCare"
+        assert validate_description("") == "CE365"
+        assert validate_description(None) == "CE365"
 
     def test_strips_dangerous_chars(self):
         result = validate_description("test;rm -rf /")

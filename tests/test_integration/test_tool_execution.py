@@ -6,16 +6,16 @@ Testet Audit-Tool Ausführung und Repair-Tool Blockade ohne Lock.
 
 import pytest
 from unittest.mock import MagicMock
-from techcare.tools.registry import ToolRegistry
-from techcare.tools.executor import CommandExecutor
-from techcare.workflow.state_machine import WorkflowStateMachine, WorkflowState
+from ce365.tools.registry import ToolRegistry
+from ce365.tools.executor import CommandExecutor
+from ce365.workflow.state_machine import WorkflowStateMachine, WorkflowState
 
 
 @pytest.fixture
 def full_executor():
     """Executor mit echten Audit- und Repair-Tools"""
-    from techcare.tools.audit.system_info import SystemInfoTool
-    from techcare.tools.repair.disk_cleanup import DiskCleanupTool
+    from ce365.tools.audit.system_info import SystemInfoTool
+    from ce365.tools.repair.disk_cleanup import DiskCleanupTool
 
     registry = ToolRegistry()
     registry.register(SystemInfoTool())

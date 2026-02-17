@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TechCare Bot - Demo Test (ohne echten API Key)
+CE365 Agent - Demo Test (ohne echten API Key)
 
 Simuliert einen kompletten Workflow:
 1. Startfragen
@@ -12,14 +12,14 @@ Simuliert einen kompletten Workflow:
 """
 
 import asyncio
-from techcare.tools.audit.system_info import SystemInfoTool
-from techcare.tools.repair.service_manager import ServiceManagerTool
-from techcare.tools.registry import ToolRegistry
-from techcare.workflow.state_machine import WorkflowStateMachine, WorkflowState
-from techcare.workflow.lock import ExecutionLock
-from techcare.storage.changelog import ChangelogWriter
-from techcare.ui.console import RichConsole
-from techcare.config.system_prompt import get_system_prompt
+from ce365.tools.audit.system_info import SystemInfoTool
+from ce365.tools.repair.service_manager import ServiceManagerTool
+from ce365.tools.registry import ToolRegistry
+from ce365.workflow.state_machine import WorkflowStateMachine, WorkflowState
+from ce365.workflow.lock import ExecutionLock
+from ce365.storage.changelog import ChangelogWriter
+from ce365.ui.console import RichConsole
+from ce365.config.system_prompt import get_system_prompt
 
 console = RichConsole()
 
@@ -34,10 +34,10 @@ def print_section(title: str):
 
 
 async def demo_test():
-    """Demo-Test des TechCare Bot Workflows"""
+    """Demo-Test des CE365 Agent Workflows"""
 
     console.display_logo()
-    console.display_info("DEMO-MODUS: Simuliert TechCare Bot Workflow")
+    console.display_info("DEMO-MODUS: Simuliert CE365 Agent Workflow")
     console.display_separator()
 
     # ==========================================
@@ -229,8 +229,8 @@ async def demo_test():
     console.console.print("[bold cyan]User:[/bold cyan] Neuer Fall")
     console.console.print()
 
-    # TechCare Antwort (simuliert)
-    console.display_assistant_message("""🔧 TechCare - Neue Diagnose-Session
+    # CE365 Antwort (simuliert)
+    console.display_assistant_message("""🔧 CE365 - Neue Diagnose-Session
 ──────────────────────────────────────
 
 Bitte beantworte folgende Fragen:
@@ -283,7 +283,7 @@ systeminfo | findstr /C:"OS Name" /C:"OS Version"
     console.console.print()
     console.console.print("[bold yellow]📝 NÄCHSTE SCHRITTE:[/bold yellow]")
     console.console.print("  1. API Key in .env eintragen")
-    console.console.print("  2. Bot mit 'techcare' starten")
+    console.console.print("  2. Bot mit 'ce365' starten")
     console.console.print("  3. Echten Fall testen")
 
     console.console.print()

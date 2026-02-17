@@ -1,5 +1,5 @@
 """
-TechCare Bot - Tools Router
+CE365 Agent - Tools Router
 Tool Registry & Execution
 """
 
@@ -8,7 +8,7 @@ from typing import List, Dict, Any
 
 from api.models import User
 from api.services.auth_service import get_current_user
-from techcare.tools.registry import ToolRegistry
+from ce365.tools.registry import ToolRegistry
 
 router = APIRouter()
 

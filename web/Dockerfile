@@ -1,5 +1,5 @@
 # ============================================================================
-# TechCare Bot - Web Frontend Dockerfile
+# CE365 Agent - Web Frontend Dockerfile
 # ============================================================================
 
 FROM node:20-alpine AS base

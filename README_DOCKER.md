@@ -1,4 +1,4 @@
-# TechCare Bot - Docker Deployment
+# CE365 Agent - Docker Deployment
 
 > 🔧 AI-powered IT-Wartungsassistent für Windows & macOS
 >
@@ -8,8 +8,8 @@
 
 ```bash
 # 1. Repository klonen
-git clone https://github.com/your-repo/techcare-bot.git
-cd techcare-bot
+git clone https://github.com/your-repo/ce365-agent.git
+cd ce365-agent
 
 # 2. Installer ausführen
 bash install.sh
@@ -21,7 +21,7 @@ Der Installer führt dich durch die komplette Konfiguration in **5-10 Minuten**.
 
 ## Netzwerkzugriff-Optionen
 
-TechCare bietet **4 Deployment-Methoden**:
+CE365 bietet **4 Deployment-Methoden**:
 
 ### 1. Cloudflare Tunnel (Empfohlen) ⭐
 
@@ -127,7 +127,7 @@ TechCare bietet **4 Deployment-Methoden**:
 
 ```
 ┌─────────────────────────────────────────┐
-│         TechCare Docker Stack           │
+│         CE365 Docker Stack           │
 ├─────────────────────────────────────────┤
 │                                         │
 │  Web (Next.js) → Nginx → Cloudflared   │
@@ -232,10 +232,10 @@ docker-compose up -d
 
 ```bash
 # Datenbank Backup
-docker-compose exec postgres pg_dump -U techcare techcare > backup.sql
+docker-compose exec postgres pg_dump -U ce365 ce365 > backup.sql
 
 # Restore
-cat backup.sql | docker-compose exec -T postgres psql -U techcare techcare
+cat backup.sql | docker-compose exec -T postgres psql -U ce365 ce365
 ```
 
 ## Editionen & Preise
@@ -295,7 +295,7 @@ curl http://localhost/health
 sudo ufw status
 
 # Prüfe Container Network
-docker network inspect techcare-bot_techcare-external
+docker network inspect ce365-agent_ce365-external
 ```
 
 ### Datenbank-Fehler
@@ -305,7 +305,7 @@ docker network inspect techcare-bot_techcare-external
 docker-compose logs postgres
 
 # In Container Shell
-docker-compose exec postgres psql -U techcare
+docker-compose exec postgres psql -U ce365
 
 # Datenbank neu initialisieren (⚠️ DATEN GEHEN VERLOREN!)
 docker-compose down -v
@@ -331,7 +331,7 @@ Falls du bereits die CLI-Version nutzt:
 
 ```bash
 # 1. CLI-Daten exportieren
-cp ~/.techcare/data/cases.db ~/backup/
+cp ~/.ce365/data/cases.db ~/backup/
 
 # 2. Docker installieren
 bash install.sh
@@ -362,10 +362,10 @@ npm run dev
 
 ```bash
 # API Image
-docker build -t techcare-api:dev -f Dockerfile.api .
+docker build -t ce365-api:dev -f Dockerfile.api .
 
 # Web Image
-docker build -t techcare-web:dev -f Dockerfile.web .
+docker build -t ce365-web:dev -f Dockerfile.web .
 
 # Mit Custom Images starten
 DOCKER_REGISTRY= VERSION=dev docker-compose up -d
@@ -383,10 +383,10 @@ DOCKER_REGISTRY= VERSION=dev docker-compose up -d
 
 ### Community
 
-- 💬 **GitHub Issues**: https://github.com/your-repo/techcare-bot/issues
-- 📧 **Email**: support@techcare.local
-- 📚 **Docs**: https://docs.techcare.local
-- 💡 **Feature Requests**: https://feedback.techcare.local
+- 💬 **GitHub Issues**: https://github.com/your-repo/ce365-agent/issues
+- 📧 **Email**: support@ce365.local
+- 📚 **Docs**: https://docs.ce365.local
+- 💡 **Feature Requests**: https://feedback.ce365.local
 
 ### Enterprise Support
 
@@ -398,7 +398,7 @@ Für Enterprise-Kunden:
 
 ## Lizenz
 
-TechCare Bot ist proprietäre Software.
+CE365 Agent ist proprietäre Software.
 
 - **Community Edition**: Kostenlos für max 10 Reparaturen/Monat
 - **Paid Editions**: Kommerzielle Lizenzen erforderlich
@@ -407,6 +407,6 @@ Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 
 ---
 
-**Viel Erfolg mit TechCare Bot! 🔧**
+**Viel Erfolg mit CE365 Agent! 🔧**
 
 *Made with ❤️ in Germany*

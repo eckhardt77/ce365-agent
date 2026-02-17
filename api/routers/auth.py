@@ -1,5 +1,5 @@
 """
-TechCare Bot - Auth Router
+CE365 Agent - Auth Router
 Authentication & User Management
 """
 

@@ -9,7 +9,7 @@ import sys
 import os
 from pathlib import Path
 from unittest.mock import patch
-from techcare.setup.wizard import SetupWizard
+from ce365.setup.wizard import SetupWizard
 
 
 def test_wizard_needs_setup():

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# TechCare Bot - Interaktiver Docker Installer
+# CE365 Agent - Interaktiver Docker Installer
 # Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 #
 
@@ -19,7 +19,7 @@ clear
 echo -e "${CYAN}"
 echo "╔════════════════════════════════════════════════════════════╗"
 echo "║                                                            ║"
-echo "║               🔧  TechCare Bot Installer                  ║"
+echo "║               🔧  CE365 Agent Installer                  ║"
 echo "║                                                            ║"
 echo "║         AI-powered IT-Wartungsassistent                    ║"
 echo "║         Docker-basierte Team-Lösung                        ║"
@@ -76,10 +76,10 @@ echo -e "${CYAN}═════════════════════�
 echo -e "${CYAN}1. LIZENZSCHLÜSSEL${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
-echo "TechCare Editionen:"
-echo "  • Free (kostenlos) - Basis-Tools, 5 Reparaturen/Monat"
-echo "  • Pro (€49/Monat) - alle Tools, 1 System"
-echo "  • Business (€99/Monat) - ∞ Systeme, Monitoring, Team-Learning"
+echo "CE365 Editionen (Lizenz pro Techniker/Seat):"
+echo "  • Free (kostenlos) - Basis-Diagnose, 5 Remediation Runs/Monat"
+echo "  • Pro (€49/Seat/Monat) - alle Tools, bis 10 Systeme"
+echo "  • Business (€99/Seat/Monat) - ∞ Systeme, Monitoring, Team"
 echo ""
 read -p "Lizenzschlüssel (leer für Free): " LICENSE_KEY
 echo ""
@@ -98,7 +98,7 @@ echo -e "${CYAN}═════════════════════�
 echo -e "${CYAN}2. NETZWERKZUGRIFF KONFIGURIEREN${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
-echo "Wie möchten Sie auf TechCare zugreifen?"
+echo "Wie möchten Sie auf CE365 zugreifen?"
 echo ""
 echo "  1) Cloudflare Tunnel (empfohlen)"
 echo "     → Kein VPN nötig, automatisches SSL, Zero Trust"
@@ -134,7 +134,7 @@ case $NETWORK_CHOICE in
         echo "3. Erstelle neuen Tunnel und kopiere das Token"
         echo ""
         read -p "Cloudflare Tunnel Token: " CLOUDFLARE_TUNNEL_TOKEN
-        read -p "Ihre Cloudflare Domain (z.B. techcare.ihrefirma.de): " DOMAIN
+        read -p "Ihre Cloudflare Domain (z.B. ce365.ihrefirma.de): " DOMAIN
         COMPOSE_PROFILES="cloudflare"
         API_URL="https://${DOMAIN}"
         echo ""
@@ -148,7 +148,7 @@ case $NETWORK_CHOICE in
         echo "2. Erstelle einen neuen Auth Key (einmalig verwendbar)"
         echo ""
         read -p "Tailscale Auth Key: " TAILSCALE_AUTH_KEY
-        read -p "Hostname für Tailscale (z.B. techcare): " TAILSCALE_HOSTNAME
+        read -p "Hostname für Tailscale (z.B. ce365): " TAILSCALE_HOSTNAME
         COMPOSE_PROFILES="tailscale"
         API_URL="http://${TAILSCALE_HOSTNAME}:80"
         echo ""
@@ -183,7 +183,7 @@ echo -e "${CYAN}═════════════════════�
 echo -e "${CYAN}3. ANTHROPIC API KONFIGURATION${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
-echo "TechCare nutzt Claude AI für intelligente Diagnose."
+echo "CE365 nutzt Claude AI für intelligente Diagnose."
 echo "Erstellen Sie einen API Key: https://console.anthropic.com"
 echo ""
 read -p "Anthropic API Key: " ANTHROPIC_API_KEY
@@ -206,10 +206,10 @@ if [ "$EDITION" == "business" ]; then
     echo "Shared Learning ermöglicht Team-Wissensaustausch."
     echo "Die PostgreSQL Datenbank wird automatisch erstellt."
     echo ""
-    read -p "Datenbank Name (Standard: techcare): " POSTGRES_DB
-    POSTGRES_DB=${POSTGRES_DB:-techcare}
-    read -p "Datenbank User (Standard: techcare): " POSTGRES_USER
-    POSTGRES_USER=${POSTGRES_USER:-techcare}
+    read -p "Datenbank Name (Standard: ce365): " POSTGRES_DB
+    POSTGRES_DB=${POSTGRES_DB:-ce365}
+    read -p "Datenbank User (Standard: ce365): " POSTGRES_USER
+    POSTGRES_USER=${POSTGRES_USER:-ce365}
     echo ""
     echo -e "${GREEN}✓ Datenbank wird beim Start initialisiert${NC}"
     echo -e "${YELLOW}ℹ️  Passwort: ${POSTGRES_PASSWORD}${NC}"
@@ -243,7 +243,7 @@ echo ""
 
 cat > $ENV_FILE <<EOF
 # ============================================================================
-# TechCare Bot - Docker Deployment Konfiguration
+# CE365 Agent - Docker Deployment Konfiguration
 # ============================================================================
 # Erstellt: $(date)
 # Installer Version: 1.0.0
@@ -252,10 +252,10 @@ cat > $ENV_FILE <<EOF
 # EDITION & LICENSE
 EDITION=${EDITION}
 LICENSE_KEY=${LICENSE_KEY}
-LICENSE_SERVER_URL=https://license.techcare.local
+LICENSE_SERVER_URL=https://license.ce365.local
 
 # DOCKER REGISTRY
-DOCKER_REGISTRY=registry.techcare.local
+DOCKER_REGISTRY=registry.ce365.local
 DOCKER_REGISTRY_USER=${LICENSE_KEY}
 DOCKER_REGISTRY_PASSWORD=${LICENSE_KEY}
 VERSION=latest
@@ -277,8 +277,8 @@ ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 
 # DATABASE
-POSTGRES_DB=${POSTGRES_DB:-techcare}
-POSTGRES_USER=${POSTGRES_USER:-techcare}
+POSTGRES_DB=${POSTGRES_DB:-ce365}
+POSTGRES_USER=${POSTGRES_USER:-ce365}
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
 # REDIS
@@ -406,10 +406,10 @@ if [ ! -z "$LICENSE_KEY" ]; then
     echo -e "${CYAN}DOCKER REGISTRY LOGIN${NC}"
     echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo "Verbinde mit TechCare Registry..."
+    echo "Verbinde mit CE365 Registry..."
     echo ""
 
-    if echo "${LICENSE_KEY}" | docker login registry.techcare.local -u "${LICENSE_KEY}" --password-stdin 2>/dev/null; then
+    if echo "${LICENSE_KEY}" | docker login registry.ce365.local -u "${LICENSE_KEY}" --password-stdin 2>/dev/null; then
         echo -e "${GREEN}✓ Registry Login erfolgreich${NC}"
     else
         echo -e "${YELLOW}⚠️  Registry Login fehlgeschlagen - Images werden später heruntergeladen${NC}"
@@ -429,13 +429,13 @@ fi
 
 $DOCKER_COMPOSE pull || {
     echo -e "${YELLOW}⚠️  Einige Images konnten nicht heruntergeladen werden${NC}"
-    echo -e "${YELLOW}   TechCare wird trotzdem versuchen zu starten${NC}"
+    echo -e "${YELLOW}   CE365 wird trotzdem versuchen zu starten${NC}"
     echo ""
 }
 
 # Docker Stack starten
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-echo -e "${CYAN}TECHCARE WIRD GESTARTET...${NC}"
+echo -e "${CYAN}CE365 WIRD GESTARTET...${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
 
@@ -468,7 +468,7 @@ case $NETWORK_CHOICE in
     2)
         echo -e "${YELLOW}WICHTIG: Tailscale${NC}"
         echo ""
-        echo "Nach dem ersten Start erscheint TechCare in Ihrem Tailscale Admin Panel."
+        echo "Nach dem ersten Start erscheint CE365 in Ihrem Tailscale Admin Panel."
         echo "Verbinden Sie sich über: ${API_URL}"
         echo ""
         ;;
@@ -486,5 +486,5 @@ echo "  Neustarten:       $DOCKER_COMPOSE restart"
 echo "  Herunterfahren:   $DOCKER_COMPOSE down"
 echo "  Updates:          $DOCKER_COMPOSE pull && $DOCKER_COMPOSE up -d"
 echo ""
-echo -e "${GREEN}Viel Erfolg mit TechCare Bot! 🔧${NC}"
+echo -e "${GREEN}Viel Erfolg mit CE365 Agent! 🔧${NC}"
 echo ""

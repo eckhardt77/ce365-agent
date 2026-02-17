@@ -1,5 +1,5 @@
 """
-TechCare Bot - Health Router
+CE365 Agent - Health Router
 Health Check Endpoints
 """
 

@@ -1,5 +1,5 @@
 """
-TechCare Bot - Auth Service
+CE365 Agent - Auth Service
 JWT Authentication & Password Hashing
 """
 

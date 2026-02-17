@@ -1,5 +1,5 @@
 """
-TechCare Bot - Message Model
+CE365 Agent - Message Model
 """
 
 from sqlalchemy import Column, String, DateTime, ForeignKey, Enum as SQLEnum, Text, Integer

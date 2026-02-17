@@ -5,7 +5,7 @@ Testet Session-Erstellung, Message History und Verwaltung.
 """
 
 import pytest
-from techcare.core.session import Session
+from ce365.core.session import Session
 
 
 class TestSessionInit:
