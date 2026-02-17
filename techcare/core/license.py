@@ -39,13 +39,15 @@ class LicenseValidator:
     async def validate(
         self,
         license_key: str,
+        system_fingerprint: str = None,
         timeout: int = 10
     ) -> Dict:
         """
-        Validiert Lizenzschlüssel
+        Validiert Lizenzschlüssel mit System-Fingerprint
 
         Args:
             license_key: Lizenzschlüssel
+            system_fingerprint: Hardware-basierter System-Fingerprint (optional)
             timeout: Request-Timeout in Sekunden
 
         Returns:
@@ -54,13 +56,14 @@ class LicenseValidator:
                 "edition": str,  # "community", "pro", "pro_business", "enterprise"
                 "expires_at": str,  # ISO timestamp oder "never"
                 "max_systems": int,  # 0 = unlimited
+                "registered_systems": int,  # Anzahl registrierter Systeme
                 "customer_name": str,
                 "error": str  # wenn valid=False
             }
         """
         # 1. Versuche Online-Validierung
         try:
-            result = await self._validate_online(license_key, timeout)
+            result = await self._validate_online(license_key, system_fingerprint, timeout)
 
             # Cache aktualisieren bei Erfolg
             if result["valid"]:
@@ -90,13 +93,22 @@ class LicenseValidator:
     async def _validate_online(
         self,
         license_key: str,
+        system_fingerprint: str,
         timeout: int
     ) -> Dict:
-        """Online-Validierung via Backend"""
+        """Online-Validierung via Backend mit System-Fingerprint"""
         async with httpx.AsyncClient(timeout=timeout) as client:
+            payload = {
+                "license_key": license_key
+            }
+
+            # System-Fingerprint mitschicken (für System-Limit Check)
+            if system_fingerprint:
+                payload["system_fingerprint"] = system_fingerprint
+
             response = await client.post(
                 f"{self.backend_url}/api/license/validate",
-                json={"license_key": license_key}
+                json=payload
             )
 
             if response.status_code != 200:
@@ -140,9 +152,10 @@ class LicenseValidator:
             if cache_data["license_key"] != license_key:
                 return None
 
-            # Prüfe ob Cache zu alt ist (max 7 Tage)
+            # Prüfe ob Cache zu alt ist (max 24 Stunden)
+            # Verhindert Offline-Missbrauch: User MUSS alle 24h online validieren
             cached_at = datetime.fromisoformat(cache_data["cached_at"])
-            if datetime.now() - cached_at > timedelta(days=7):
+            if datetime.now() - cached_at > timedelta(hours=24):
                 return None
 
             result = cache_data["result"]
@@ -169,21 +182,23 @@ class LicenseValidator:
 async def validate_license(
     license_key: str,
     backend_url: str,
+    system_fingerprint: str = None,
     timeout: int = 10
 ) -> Dict:
     """
-    Helper-Funktion für Lizenzvalidierung
+    Helper-Funktion für Lizenzvalidierung mit System-Fingerprint
 
     Args:
         license_key: Lizenzschlüssel
         backend_url: Backend URL
+        system_fingerprint: System-Fingerprint (für System-Limit Check)
         timeout: Request-Timeout
 
     Returns:
         Lizenz-Info Dict
     """
     validator = LicenseValidator(backend_url)
-    return await validator.validate(license_key, timeout)
+    return await validator.validate(license_key, system_fingerprint, timeout)
 
 
 def check_edition_features(edition: str, feature: str) -> bool:
