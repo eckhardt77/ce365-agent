@@ -28,10 +28,12 @@ from techcare.security.pii_detector import get_pii_detector
 from techcare.tools.audit.system_info import SystemInfoTool
 from techcare.tools.audit.logs import CheckSystemLogsTool
 from techcare.tools.audit.processes import CheckRunningProcessesTool
+from techcare.tools.audit.updates import CheckSystemUpdatesTool
 from techcare.tools.repair.service_manager import ServiceManagerTool
 from techcare.tools.repair.disk_cleanup import DiskCleanupTool
 from techcare.tools.repair.network_tools import FlushDNSCacheTool, ResetNetworkStackTool
 from techcare.tools.repair.system_repair import RunSFCScanTool, RepairDiskPermissionsTool, RepairDiskTool
+from techcare.tools.repair.updates import InstallSystemUpdatesTool
 from techcare.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 
 
@@ -89,6 +91,7 @@ class TechCareBot:
         self.tool_registry.register(SystemInfoTool())
         self.tool_registry.register(CheckSystemLogsTool())
         self.tool_registry.register(CheckRunningProcessesTool())
+        self.tool_registry.register(CheckSystemUpdatesTool())
 
         # Research Tools (Web Search)
         self.tool_registry.register(WebSearchTool())
@@ -102,6 +105,7 @@ class TechCareBot:
         self.tool_registry.register(RunSFCScanTool())
         self.tool_registry.register(RepairDiskPermissionsTool())
         self.tool_registry.register(RepairDiskTool())
+        self.tool_registry.register(InstallSystemUpdatesTool())
 
         self.console.display_info(
             f"🔧 Tools registriert: {len(self.tool_registry)} "
