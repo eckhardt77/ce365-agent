@@ -63,21 +63,21 @@ class SetupWizard:
         if not api_key:
             return False
 
-        # 4. Lizenzschlüssel (für Pro/Enterprise)
+        # 4. Lizenzschlüssel (für Pro/Enterprise) - ERFORDERLICH
         license_key = ""
         if edition in ["pro", "pro_business", "enterprise"]:
             license_key = self._ask_license_key()
             if not license_key:
                 return False
 
-        # 5. Netzwerkverbindung (für Remote Services)
+        # 5. Netzwerkverbindung (für Remote Services) - ERFORDERLICH
         network_config = {}
         if edition in ["pro_business", "enterprise"]:
             network_config = self._ask_network_connection()
             if network_config is None:
                 return False
 
-        # 6. Learning Database (nur für Enterprise)
+        # 6. Learning Database (nur für Enterprise) - ERFORDERLICH
         db_config = {}
         if edition == "enterprise":
             db_config = self._ask_database()
@@ -204,9 +204,10 @@ class SetupWizard:
         return edition
 
     def _ask_license_key(self) -> Optional[str]:
-        """Fragt nach Lizenzschlüssel"""
+        """Fragt nach Lizenzschlüssel (erforderlich)"""
         self.console.print("\n[bold]3a. Lizenzschlüssel[/bold] [red](erforderlich)[/red]")
-        self.console.print("   [dim]Erhältlich nach Kauf oder aus Admin-Panel[/dim]\n")
+        self.console.print("   [dim]Erhältlich nach Kauf bei: https://techcare.eckhardt-marketing.de[/dim]")
+        self.console.print("   [dim]💡 Für kostenloses Testen: Wähle 'Community Edition' beim Setup[/dim]\n")
 
         while True:
             license_key = Prompt.ask(
@@ -215,12 +216,13 @@ class SetupWizard:
             )
 
             if not license_key or license_key.lower() in ["exit", "quit", "q"]:
-                self.console.print("\n[yellow]Setup abgebrochen.[/yellow]")
+                self.console.print("\n[yellow]⚠️  Setup abgebrochen.[/yellow]")
+                self.console.print("   [dim]Tipp: Starte Setup neu und wähle 'Community Edition' für kostenloses Testen[/dim]")
                 return None
 
             # Format-Validierung (TECHCARE-EDITION-...)
             if not license_key.startswith("TECHCARE-"):
-                self.console.print("\n   [red]❌ Ungültiges Format. Keys beginnen mit 'TECHCARE-'[/red]")
+                self.console.print("\n   [red]❌ Ungültiges Format. Lizenzschlüssel beginnen mit 'TECHCARE-'[/red]")
                 if not Confirm.ask("   Nochmal versuchen?", default=True):
                     return None
                 continue
