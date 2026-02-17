@@ -41,29 +41,37 @@ TechCare Bot ist dein intelligenter Helfer für IT-Wartung und -Support. Mit Cla
 - Python 3.9+
 - Anthropic API Key ([hier erstellen](https://console.anthropic.com))
 
-### Installation
+### Installation - Ein Befehl! ⚡
 
+**macOS/Linux:**
 ```bash
-# Repository klonen
 git clone https://github.com/yourusername/techcare-bot.git
 cd techcare-bot
+bash install.sh
+```
 
-# Virtual Environment erstellen
-python -m venv venv
+**Windows:**
+```powershell
+git clone https://github.com/yourusername/techcare-bot.git
+cd techcare-bot
+install.bat
+```
 
-# Aktivieren
-# Windows:
-.\venv\Scripts\activate
+Das war's! Das Script installiert automatisch:
+- ✅ Virtual Environment
+- ✅ Alle Dependencies
+- ✅ Deutsches Sprachmodell (für PII Detection)
+- ✅ TechCare Bot
+
+### Bot starten
+
+```bash
 # macOS/Linux:
 source venv/bin/activate
+techcare
 
-# Dependencies installieren
-pip install -r requirements.txt
-
-# Bot installieren
-pip install -e .
-
-# Bot starten (Setup-Wizard startet automatisch beim ersten Start)
+# Windows:
+venv\Scripts\activate.bat
 techcare
 ```
 
