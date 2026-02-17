@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README_DE - TechCare Bot v2.0.0</title>
+    <style>
+        
+@page {
+    size: A4;
+    margin: 2cm;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #24292e;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    font-size: 11pt;
+}
+
+h1 {
+    color: #0366d6;
+    border-bottom: 3px solid #0366d6;
+    padding-bottom: 0.3em;
+    font-size: 24pt;
+    margin-top: 1em;
+}
+
+h2 {
+    color: #0366d6;
+    border-bottom: 1px solid #eaecef;
+    padding-bottom: 0.3em;
+    font-size: 18pt;
+    margin-top: 1.5em;
+}
+
+h3 {
+    color: #24292e;
+    font-size: 14pt;
+    margin-top: 1.2em;
+}
+
+h4 {
+    color: #586069;
+    font-size: 12pt;
+    margin-top: 1em;
+}
+
+a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+code {
+    background-color: #f6f8fa;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 9pt;
+}
+
+pre {
+    background-color: #f6f8fa;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 9pt;
+    line-height: 1.4;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+blockquote {
+    border-left: 4px solid #dfe2e5;
+    padding-left: 1em;
+    color: #6a737d;
+    margin-left: 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+    font-size: 10pt;
+}
+
+th, td {
+    border: 1px solid #dfe2e5;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f6f8fa;
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+ul, ol {
+    padding-left: 2em;
+}
+
+li {
+    margin: 0.5em 0;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid #eaecef;
+    margin: 2em 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.header {
+    text-align: center;
+    color: #586069;
+    font-size: 9pt;
+    margin-bottom: 2em;
+    padding-bottom: 1em;
+    border-bottom: 1px solid #eaecef;
+}
+
+.footer {
+    text-align: center;
+    color: #586069;
+    font-size: 9pt;
+    margin-top: 3em;
+    padding-top: 1em;
+    border-top: 1px solid #eaecef;
+}
+
+/* Emoji-Unterstützung */
+.emoji {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background-color: #0366d6;
+    color: white;
+    font-size: 9pt;
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+/* Print-spezifisch */
+@media print {
+    body {
+        font-size: 10pt;
+    }
+
+    h1 {
+        page-break-before: auto;
+        page-break-after: avoid;
+    }
+
+    h2, h3, h4 {
+        page-break-after: avoid;
+    }
+
+    pre, table {
+        page-break-inside: avoid;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <strong>TechCare Bot v2.0.0</strong><br>
+        README_DE<br>
+        Generiert: 17.02.2026 21:10
+    </div>
+
+    <h1 id="techcare-bot-community-edition-v200">🔧 TechCare Bot - Community Edition v2.0.0</h1>
+<p><strong>KI-gestützter IT-Wartungs-Assistent für Windows und macOS</strong></p>
+<p>🇩🇪 Deutsche Version | <a href="README.md">🇺🇸 English Version</a></p>
+<p>TechCare Bot ist ein KI-gestützter IT-Wartungs-Assistent, der dir bei der Diagnose und Reparatur von Windows- und macOS-Systemen hilft. Mit natürlicher Sprachinteraktion und <strong>über 30 integrierten Tools</strong> wird IT-Wartung zum Kinderspiel!</p>
+<p><a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a><br />
+<a href="https://www.python.org/downloads/"><img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11+-blue.svg" /></a><br />
+<a href="https://anthropic.com"><img alt="Powered by Claude" src="https://img.shields.io/badge/Powered%20by-Claude%20Sonnet%204.5-blueviolet" /></a></p>
+<hr />
+<h2 id="neuerungen-in-v20">🆕 Neuerungen in v2.0</h2>
+<h3 id="neue-features">✨ Neue Features</h3>
+<ul>
+<li>🔐 <strong>Techniker-Passwort-Schutz</strong> - Schütze TechCare vor unbefugtem Zugriff</li>
+<li>🔧 <strong>Treiber-Management</strong> - Prüfe auf Treiber-Updates (Windows Update + Eigene DB)</li>
+<li>📡 <strong>Monitoring-Sensor</strong> - Hintergrunddienst für proaktive Systemüberwachung</li>
+<li>🗑️ <strong>Einfache Deinstallation</strong> - Deinstallation mit <code>techcare --uninstall</code></li>
+<li>🔑 <strong>Lizenz-System</strong> - Optional für Pro/Enterprise (Community ist kostenlos!)</li>
+<li>🌐 <strong>Netzwerk-Optionen</strong> - Remote-Dienste via VPN/Cloudflare/Tailscale (optional)</li>
+</ul>
+<h3 id="alle-community-features-kostenlos">🎯 Alle Community-Features (Kostenlos)</h3>
+<p>✅ <strong>15 Basis-Tools</strong> - Grundlegende Diagnose und Reparatur<br />
+✅ <strong>KI-gestützte Analyse</strong> - Ursachenerkennung<br />
+✅ <strong>Treiber-Check</strong> - Automatische Treiber-Update-Erkennung<br />
+✅ <strong>Monitoring</strong> - Hintergrund-Systemüberwachung<br />
+✅ <strong>Passwort-Schutz</strong> - Sicherer TechCare-Zugang<br />
+✅ <strong>Max 10 Reparaturen/Monat</strong> - Ideal zum Testen<br />
+✅ <strong>Multi-Language</strong> - Deutsch + Englisch<br />
+✅ <strong>Cross-Platform</strong> - Windows, macOS, Linux (exp)</p>
+<hr />
+<h2 id="haftungsausschluss">⚠️ Haftungsausschluss</h2>
+<p><strong>WICHTIG: Nutzung auf eigene Verantwortung!</strong></p>
+<p>TechCare Bot wird "WIE BESEHEN" bereitgestellt, OHNE JEGLICHE GARANTIE.</p>
+<p><strong>Keine Haftung für:</strong><br />
+- ❌ Datenverlust<br />
+- ❌ Systemschäden<br />
+- ❌ Fehlerhafte Reparaturen<br />
+- ❌ Ausfallzeiten<br />
+- ❌ Sicherheitsvorfälle</p>
+<p><strong>Vor der Nutzung:</strong><br />
+- ✅ <strong>Immer Backups erstellen</strong><br />
+- ✅ <strong>Erst in Test-Umgebung testen</strong><br />
+- ✅ <strong>Alle Befehle vor Freigabe prüfen</strong><br />
+- ✅ <strong>Keine autonomen Reparaturen</strong> (GO REPAIR-Sperre erforderlich)</p>
+<p>Mit der Nutzung von TechCare Bot übernimmst du die volle Verantwortung.</p>
+<hr />
+<h2 id="quick-start">🚀 Quick Start</h2>
+<h3 id="installation-5-minuten">Installation (5 Minuten)</h3>
+<h4 id="1-python-311-oder-312-installieren">1. Python 3.11 oder 3.12 installieren</h4>
+<p><strong>macOS (Homebrew):</strong></p>
+<div class="codehilite"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>python@3.12
+</code></pre></div>
+
+<p><strong>Windows:</strong><br />
+Download von <a href="https://www.python.org/downloads/">python.org</a></p>
+<h4 id="2-repository-klonen">2. Repository klonen</h4>
+<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yourusername/techcare-bot.git
+<span class="nb">cd</span><span class="w"> </span>techcare-bot
+</code></pre></div>
+
+<h4 id="3-virtuelle-umgebung-erstellen">3. Virtuelle Umgebung erstellen</h4>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Venv erstellen</span>
+python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+
+<span class="c1"># Aktivieren</span>
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># macOS/Linux</span>
+venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate<span class="w">     </span><span class="c1"># Windows</span>
+</code></pre></div>
+
+<h4 id="4-techcare-installieren">4. TechCare installieren</h4>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+
+<h4 id="5-techcare-starten">5. TechCare starten</h4>
+<div class="codehilite"><pre><span></span><code>techcare
+</code></pre></div>
+
+<p>Beim ersten Start führt dich der <strong>Setup-Assistent</strong> durch:<br />
+- Name &amp; Firma<br />
+- Edition (Community / Pro / Enterprise)<br />
+- Anthropic API Key (<a href="https://console.anthropic.com">Kostenlos holen</a>)<br />
+- Sprache (English / Deutsch)<br />
+- <strong>Optional:</strong> Techniker-Passwort<br />
+- <strong>Optional:</strong> Netzwerk-Konfiguration (für Pro/Enterprise)</p>
+<hr />
+<h2 id="voraussetzungen">📋 Voraussetzungen</h2>
+<ul>
+<li><strong>Python 3.11 oder 3.12</strong> (Python 3.14 wird noch nicht unterstützt)</li>
+<li><strong>Anthropic API Key</strong> (<a href="https://console.anthropic.com">Kostenlose Stufe verfügbar</a>)</li>
+<li>Internet-Verbindung (für Claude API)</li>
+</ul>
+<hr />
+<h2 id="verwendung">🎮 Verwendung</h2>
+<h3 id="basis-befehle">Basis-Befehle</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># TechCare starten</span>
+techcare
+
+<span class="c1"># Techniker-Passwort setzen/ändern</span>
+techcare<span class="w"> </span>--set-password
+
+<span class="c1"># Version anzeigen</span>
+techcare<span class="w"> </span>--version
+
+<span class="c1"># TechCare deinstallieren</span>
+techcare<span class="w"> </span>--uninstall
+
+<span class="c1"># Hilfe</span>
+techcare<span class="w"> </span>--help
+</code></pre></div>
+
+<h3 id="beispiel-session">Beispiel-Session</h3>
+<div class="codehilite"><pre><span></span><code><span class="err">🔧</span><span class="w"> </span><span class="n">TechCare</span><span class="w"> </span><span class="n">Bot</span><span class="w"> </span><span class="n">v2</span><span class="mf">.0.0</span>
+<span class="n">Session</span><span class="w"> </span><span class="n">ID</span><span class="o">:</span><span class="w"> </span><span class="n">abc123</span><span class="p">...</span>
+<span class="err">💡</span><span class="w"> </span><span class="n">Learning</span><span class="o">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">Fälle</span><span class="w"> </span><span class="n">gespeichert</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">Wiederverwendungen</span>
+<span class="err">─────────────────────────────────────────────────</span>
+<span class="nl">Sprache</span><span class="p">:</span><span class="w"> </span><span class="n">Deutsch</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="err">&#39;</span><span class="n">exit</span><span class="err">&#39;</span><span class="w"> </span><span class="n">zum</span><span class="w"> </span><span class="n">Beenden</span>
+<span class="err">─────────────────────────────────────────────────</span>
+
+<span class="err">🔍</span><span class="w"> </span><span class="n">Erstelle</span><span class="w"> </span><span class="n">System</span><span class="o">-</span><span class="n">Statusbericht</span><span class="p">...</span>
+
+<span class="p">[</span><span class="n">System</span><span class="w"> </span><span class="n">Info</span><span class="p">]</span>
+<span class="err">🖥️</span><span class="w">  </span><span class="n">macOS</span><span class="w"> </span><span class="mf">14.2</span><span class="p">,</span><span class="w"> </span><span class="n">CPU</span><span class="o">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="n">Kerne</span><span class="w"> </span><span class="p">(</span><span class="mi">12</span><span class="o">%</span><span class="w"> </span><span class="n">Auslastung</span><span class="p">)</span>
+<span class="nl">RAM</span><span class="p">:</span><span class="w"> </span><span class="mf">16.0</span><span class="w"> </span><span class="n">GB</span><span class="w"> </span><span class="p">(</span><span class="mf">8.2</span><span class="w"> </span><span class="n">GB</span><span class="w"> </span><span class="n">frei</span><span class="p">,</span><span class="w"> </span><span class="mi">48</span><span class="o">%</span><span class="w"> </span><span class="n">genutzt</span><span class="p">)</span>
+<span class="nl">Disk</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="w"> </span><span class="n">GB</span><span class="w"> </span><span class="p">(</span><span class="mi">120</span><span class="w"> </span><span class="n">GB</span><span class="w"> </span><span class="n">frei</span><span class="p">,</span><span class="w"> </span><span class="mi">76</span><span class="o">%</span><span class="w"> </span><span class="n">genutzt</span><span class="p">)</span>
+<span class="nl">Uptime</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="n">d</span><span class="w"> </span><span class="mi">2</span><span class="n">h</span><span class="w"> </span><span class="mi">15</span><span class="n">m</span>
+
+<span class="err">✅</span><span class="w"> </span><span class="n">System</span><span class="o">-</span><span class="n">Statusbericht</span><span class="w"> </span><span class="n">abgeschlossen</span>
+<span class="err">💬</span><span class="w"> </span><span class="n">Wie</span><span class="w"> </span><span class="n">kann</span><span class="w"> </span><span class="n">ich</span><span class="w"> </span><span class="n">dir</span><span class="w"> </span><span class="n">helfen</span><span class="o">?</span>
+<span class="err">─────────────────────────────────────────────────</span>
+
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Prüfe</span><span class="w"> </span><span class="n">auf</span><span class="w"> </span><span class="n">Treiber</span><span class="o">-</span><span class="n">Updates</span>
+
+<span class="err">🔄</span><span class="w"> </span><span class="n">Prüfe</span><span class="w"> </span><span class="n">Treiber</span><span class="p">...</span>
+
+<span class="err">📊</span><span class="w"> </span><span class="n">Statistiken</span><span class="o">:</span>
+<span class="w">   </span><span class="err">•</span><span class="w"> </span><span class="n">Installierte</span><span class="w"> </span><span class="n">Treiber</span><span class="o">:</span><span class="w"> </span><span class="mi">150</span>
+<span class="w">   </span><span class="err">•</span><span class="w"> </span><span class="n">Veraltete</span><span class="w"> </span><span class="n">Treiber</span><span class="o">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">   </span><span class="err">•</span><span class="w"> </span><span class="n">Kritische</span><span class="w"> </span><span class="n">Updates</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">   </span><span class="err">•</span><span class="w"> </span><span class="n">Empfohlene</span><span class="w"> </span><span class="n">Updates</span><span class="o">:</span><span class="w"> </span><span class="mi">2</span>
+
+<span class="err">🔄</span><span class="w"> </span><span class="n">VERFÜGBARE</span><span class="w"> </span><span class="n">UPDATES</span><span class="o">:</span>
+
+<span class="err">🔴</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="n">NVIDIA</span><span class="w"> </span><span class="n">GeForce</span><span class="w"> </span><span class="n">RTX</span><span class="w"> </span><span class="mi">3080</span>
+<span class="w">   </span><span class="nl">Aktuell</span><span class="p">:</span><span class="w"> </span><span class="mf">512.95</span>
+<span class="w">   </span><span class="nl">Verfügbar</span><span class="p">:</span><span class="w"> </span><span class="mf">528.49</span>
+<span class="w">   </span><span class="nl">Wichtigkeit</span><span class="p">:</span><span class="w"> </span><span class="n">KRITISCH</span>
+<span class="w">   </span><span class="nl">Quelle</span><span class="p">:</span><span class="w"> </span><span class="n">windows_update</span>
+
+<span class="err">🟡</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Wi</span><span class="o">-</span><span class="n">Fi</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">AX200</span>
+<span class="w">   </span><span class="nl">Aktuell</span><span class="p">:</span><span class="w"> </span><span class="mf">22.80.0</span>
+<span class="w">   </span><span class="nl">Verfügbar</span><span class="p">:</span><span class="w"> </span><span class="mf">22.120.0</span>
+<span class="w">   </span><span class="nl">Wichtigkeit</span><span class="p">:</span><span class="w"> </span><span class="n">EMPFOHLEN</span>
+<span class="w">   </span><span class="nl">Quelle</span><span class="p">:</span><span class="w"> </span><span class="n">windows_update</span>
+
+<span class="err">⚠️</span><span class="w">  </span><span class="n">EMPFEHLUNG</span><span class="o">:</span>
+<span class="w">   </span><span class="n">Installiere</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">kritisches</span><span class="w"> </span><span class="n">Treiber</span><span class="o">-</span><span class="n">Update</span><span class="o">!</span>
+
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Windows</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="n">funktioniert</span><span class="w"> </span><span class="n">nicht</span>
+
+<span class="n">Lass</span><span class="w"> </span><span class="n">mich</span><span class="w"> </span><span class="n">das</span><span class="w"> </span><span class="n">analysieren</span><span class="p">...</span>
+
+<span class="err">🎯</span><span class="w"> </span><span class="n">URSACHE</span><span class="w"> </span><span class="n">GEFUNDEN</span>
+<span class="err">╔══════════════════════════════════════════════╗</span>
+<span class="err">║</span><span class="w">  </span><span class="n">Ursache</span><span class="o">:</span><span class="w"> </span><span class="n">BITS</span><span class="o">-</span><span class="n">Dienst</span><span class="w"> </span><span class="n">hängt</span><span class="w">                  </span><span class="err">║</span>
+<span class="err">║</span><span class="w">  </span><span class="n">Konfidenz</span><span class="o">:</span><span class="w"> </span><span class="mi">87</span><span class="o">%</span><span class="w">                              </span><span class="err">║</span>
+<span class="err">║</span><span class="w">                                              </span><span class="err">║</span>
+<span class="err">║</span><span class="w">  </span><span class="n">Beweis</span><span class="o">:</span><span class="w">                                     </span><span class="err">║</span>
+<span class="err">║</span><span class="w">  </span><span class="err">✓</span><span class="w"> </span><span class="n">Event</span><span class="w"> </span><span class="n">Log</span><span class="o">:</span><span class="w"> </span><span class="n">BITS</span><span class="w"> </span><span class="n">Fehler</span><span class="w"> </span><span class="mh">0x80070057</span><span class="w">        </span><span class="err">║</span>
+<span class="err">║</span><span class="w">  </span><span class="err">✓</span><span class="w"> </span><span class="n">Service</span><span class="o">-</span><span class="n">Status</span><span class="o">:</span><span class="w"> </span><span class="n">Läuft</span><span class="p">,</span><span class="w"> </span><span class="n">aber</span><span class="w"> </span><span class="n">reagiert</span><span class="w">     </span><span class="err">║</span>
+<span class="err">║</span><span class="w">     </span><span class="n">nicht</span><span class="w">                                    </span><span class="err">║</span>
+<span class="err">║</span><span class="w">  </span><span class="err">✓</span><span class="w"> </span><span class="n">Temp</span><span class="o">-</span><span class="n">Ordner</span><span class="o">:</span><span class="w"> </span><span class="mi">47</span><span class="w"> </span><span class="n">unvollständige</span><span class="w"> </span><span class="n">Downloads</span><span class="w"> </span><span class="err">║</span>
+<span class="err">║</span><span class="w">                                              </span><span class="err">║</span>
+<span class="err">║</span><span class="w">  </span><span class="n">Lösung</span><span class="o">:</span><span class="w">                                     </span><span class="err">║</span>
+<span class="err">║</span><span class="w">  </span><span class="mf">1.</span><span class="w"> </span><span class="n">BITS</span><span class="o">-</span><span class="n">Dienst</span><span class="w"> </span><span class="n">neu</span><span class="w"> </span><span class="n">starten</span><span class="w">                 </span><span class="err">║</span>
+<span class="err">║</span><span class="w">  </span><span class="mf">2.</span><span class="w"> </span><span class="n">Download</span><span class="o">-</span><span class="n">Warteschlange</span><span class="w"> </span><span class="n">leeren</span><span class="w">           </span><span class="err">║</span>
+<span class="err">╚══════════════════════════════════════════════╝</span>
+
+<span class="n">Reparatur</span><span class="o">-</span><span class="n">Plan</span><span class="o">:</span>
+<span class="mf">1.</span><span class="w"> </span><span class="n">BITS</span><span class="o">-</span><span class="n">Dienst</span><span class="w"> </span><span class="n">neu</span><span class="w"> </span><span class="n">starten</span><span class="w"> </span><span class="p">(</span><span class="n">wuauserv</span><span class="p">)</span>
+<span class="mf">2.</span><span class="w"> </span><span class="n">Windows</span><span class="w"> </span><span class="n">Update</span><span class="w"> </span><span class="n">Cache</span><span class="w"> </span><span class="n">leeren</span>
+
+<span class="n">Bitte</span><span class="w"> </span><span class="n">bestätigen</span><span class="w"> </span><span class="n">mit</span><span class="o">:</span><span class="w"> </span><span class="n">GO</span><span class="w"> </span><span class="n">REPAIR</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span>
+
+<span class="o">&gt;</span><span class="w"> </span><span class="n">GO</span><span class="w"> </span><span class="n">REPAIR</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span>
+
+<span class="err">✅</span><span class="w"> </span><span class="n">Führe</span><span class="w"> </span><span class="n">Reparaturen</span><span class="w"> </span><span class="n">aus</span><span class="p">...</span>
+<span class="p">[</span><span class="n">Schritt</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="n">Starte</span><span class="w"> </span><span class="n">BITS</span><span class="o">-</span><span class="n">Dienst</span><span class="w"> </span><span class="n">neu</span><span class="p">...</span><span class="w"> </span><span class="err">✓</span>
+<span class="p">[</span><span class="n">Schritt</span><span class="w"> </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="n">Leere</span><span class="w"> </span><span class="n">Update</span><span class="o">-</span><span class="n">Cache</span><span class="p">...</span><span class="w"> </span><span class="err">✓</span>
+
+<span class="err">🎉</span><span class="w"> </span><span class="n">Alle</span><span class="w"> </span><span class="n">Reparaturen</span><span class="w"> </span><span class="n">erfolgreich</span><span class="w"> </span><span class="n">abgeschlossen</span><span class="o">!</span>
+<span class="err">📋</span><span class="w"> </span><span class="n">Changelog</span><span class="w"> </span><span class="n">gespeichert</span><span class="w"> </span><span class="n">unter</span><span class="o">:</span><span class="w"> </span><span class="n">data</span><span class="o">/</span><span class="n">changelogs</span><span class="o">/</span><span class="n">abc123</span><span class="p">.</span><span class="n">json</span>
+</code></pre></div>
+
+<hr />
+<h2 id="verfugbare-tools-30">🛠️ Verfügbare Tools (30+)</h2>
+<h3 id="audit-tools-read-only">📊 Audit-Tools (Read-Only)</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>System Info</strong></td>
+<td>OS, CPU, RAM, Disk, Uptime</td>
+</tr>
+<tr>
+<td><strong>Process Monitor</strong></td>
+<td>Laufende Prozesse, CPU/RAM-Nutzung</td>
+</tr>
+<tr>
+<td><strong>System Logs</strong></td>
+<td>Event Log / Syslog-Analyse</td>
+</tr>
+<tr>
+<td><strong>Updates Check</strong></td>
+<td>Ausstehende Windows/macOS-Updates</td>
+</tr>
+<tr>
+<td><strong>Backup Status</strong></td>
+<td>Time Machine / Windows Backup-Status</td>
+</tr>
+<tr>
+<td><strong>Security Audit</strong></td>
+<td>Firewall, Antivirus, Gatekeeper, SIP</td>
+</tr>
+<tr>
+<td><strong>Startup Programs</strong></td>
+<td>Autostart-Apps mit Impact-Analyse</td>
+</tr>
+<tr>
+<td><strong>Malware Scanner</strong></td>
+<td>Windows Defender / ClamAV Integration</td>
+</tr>
+<tr>
+<td><strong>🆕 Driver Check</strong></td>
+<td>Treiber-Updates prüfen</td>
+</tr>
+<tr>
+<td><strong>Network Diagnostics</strong></td>
+<td>IP, DNS, Verbindungstests</td>
+</tr>
+<tr>
+<td><strong>Stress Tests</strong></td>
+<td>CPU, Speicher, Disk-Geschwindigkeitstests</td>
+</tr>
+<tr>
+<td><strong>System Report</strong></td>
+<td>Umfassender HTML-Report</td>
+</tr>
+<tr>
+<td><strong>Web Search</strong></td>
+<td>Online-Lösungssuche</td>
+</tr>
+</tbody>
+</table>
+<h3 id="reparatur-tools-freigabe-erforderlich">🔧 Reparatur-Tools (Freigabe erforderlich)</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Service Manager</strong></td>
+<td>Windows/macOS-Dienste starten/stoppen/neu starten</td>
+</tr>
+<tr>
+<td><strong>Disk Cleanup</strong></td>
+<td>Temp-Dateien, Cache, Logs löschen</td>
+</tr>
+<tr>
+<td><strong>DNS Flush</strong></td>
+<td>DNS-Cache leeren</td>
+</tr>
+<tr>
+<td><strong>Network Reset</strong></td>
+<td>TCP/IP-Stack zurücksetzen</td>
+</tr>
+<tr>
+<td><strong>SFC Scan</strong></td>
+<td>System File Checker (Windows)</td>
+</tr>
+<tr>
+<td><strong>Disk Repair</strong></td>
+<td>Disk-Berechtigungen reparieren (macOS)</td>
+</tr>
+<tr>
+<td><strong>Update Installer</strong></td>
+<td>Windows/macOS-Updates installieren</td>
+</tr>
+<tr>
+<td><strong>Backup Creator</strong></td>
+<td>Wiederherstellungspunkt / Time Machine-Backup erstellen</td>
+</tr>
+<tr>
+<td><strong>Startup Manager</strong></td>
+<td>Autostart-Programme aktivieren/deaktivieren</td>
+</tr>
+<tr>
+<td><strong>Update Scheduler</strong></td>
+<td>Automatische Updates planen</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ki-analyse-tools">🧠 KI-Analyse-Tools</h3>
+<ul>
+<li>🎯 <strong>Root Cause Analysis</strong> - KI-gestützte Problemdiagnose</li>
+<li>📊 <strong>Pattern Recognition</strong> - Wiederkehrende Probleme erkennen</li>
+</ul>
+<hr />
+<h2 id="neue-features-im-detail">🆕 Neue Features im Detail</h2>
+<h3 id="techniker-passwort-schutz">🔐 Techniker-Passwort-Schutz</h3>
+<p>Schütze TechCare vor unbefugtem Zugriff:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Passwort während Setup setzen</span>
+techcare
+<span class="c1"># &gt; Techniker-Passwort setzen? [J/n]: j</span>
+<span class="c1"># &gt; Passwort: ********</span>
+
+<span class="c1"># Oder später setzen</span>
+techcare<span class="w"> </span>--set-password
+
+<span class="c1"># Bei jedem Start</span>
+techcare
+<span class="c1"># &gt; 🔐 TechCare Zugang</span>
+<span class="c1"># &gt; Passwort: ********</span>
+<span class="c1"># &gt; ✓ Authentifiziert</span>
+</code></pre></div>
+
+<p><strong>Features:</strong><br />
+- bcrypt-gehashtes Passwort (sicher)<br />
+- 3 Versuchslimit<br />
+- Session-Timeout (konfigurierbar)<br />
+- Optional (kann übersprungen werden)</p>
+<hr />
+<h3 id="treiber-management">🔧 Treiber-Management</h3>
+<p>Automatische Treiber-Update-Erkennung:</p>
+<div class="codehilite"><pre><span></span><code>&gt;<span class="w"> </span>Prüfe<span class="w"> </span>auf<span class="w"> </span>Treiber-Updates
+
+📊<span class="w"> </span>Treiber-Statusbericht:
+<span class="w">   </span>•<span class="w"> </span>Treiber<span class="w"> </span>gesamt:<span class="w"> </span><span class="m">150</span>
+<span class="w">   </span>•<span class="w"> </span>Veraltet:<span class="w"> </span><span class="m">3</span>
+<span class="w">   </span>•<span class="w"> </span>Kritisch:<span class="w"> </span><span class="m">1</span>
+<span class="w">   </span>•<span class="w"> </span>Empfohlen:<span class="w"> </span><span class="m">2</span>
+
+🔄<span class="w"> </span>Verfügbare<span class="w"> </span>Updates:
+🔴<span class="w"> </span>NVIDIA<span class="w"> </span>Grafiktreiber<span class="w"> </span><span class="o">(</span>Kritisch<span class="o">)</span>
+🟡<span class="w"> </span>Intel<span class="w"> </span>Netzwerkadapter<span class="w"> </span><span class="o">(</span>Empfohlen<span class="o">)</span>
+</code></pre></div>
+
+<p><strong>Quellen:</strong><br />
+- Windows Update API (Windows)<br />
+- Apple Software Update (macOS)<br />
+- Eigene Treiber-Datenbank (JSON-basiert)</p>
+<p><strong>Eigene Datenbank:</strong><br />
+Füge eigene Treiber in <code>techcare/tools/drivers/driver_database.json</code> hinzu</p>
+<hr />
+<h3 id="monitoring-sensor">📡 Monitoring-Sensor</h3>
+<p>Hintergrunddienst für proaktive Überwachung:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Manueller Test</span>
+python<span class="w"> </span>-m<span class="w"> </span>techcare.monitoring.sensor
+
+<span class="c1"># Als Dienst installieren</span>
+python<span class="w"> </span>-m<span class="w"> </span>techcare.monitoring.service
+
+<span class="c1"># Windows: Windows Service</span>
+<span class="c1"># macOS: LaunchDaemon</span>
+<span class="c1"># Linux: systemd Service</span>
+</code></pre></div>
+
+<p><strong>Erfasste Metriken:</strong><br />
+- CPU / RAM / Disk-Nutzung<br />
+- Status kritischer Dienste (Firewall, Antivirus)<br />
+- Ausstehende Updates<br />
+- Aktuelle Event-Log-Fehler<br />
+- SMART Disk-Gesundheit</p>
+<p><strong>Standard-Intervall:</strong> 5 Minuten (konfigurierbar)</p>
+<hr />
+<h3 id="einfache-deinstallation">🗑️ Einfache Deinstallation</h3>
+<p>Einfache Deinstallation:</p>
+<div class="codehilite"><pre><span></span><code>techcare<span class="w"> </span>--uninstall
+
+<span class="c1"># Löscht:</span>
+<span class="c1"># ✓ .env-Datei (Konfiguration)</span>
+<span class="c1"># ✓ data/ Verzeichnis (Sessions, Changelogs, Cases)</span>
+<span class="c1"># ✓ ~/.techcare/ (Cache, User-Konfiguration)</span>
+</code></pre></div>
+
+<hr />
+<h2 id="sicherheitsfeatures">🔐 Sicherheitsfeatures</h2>
+<h3 id="1-go-repair-sperre">1. GO REPAIR-Sperre</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">Keine</span><span class="w"> </span><span class="n">Reparaturen</span><span class="w"> </span><span class="n">ohne</span><span class="w"> </span><span class="n">deine</span><span class="w"> </span><span class="n">explizite</span><span class="w"> </span><span class="nl">Freigabe</span><span class="p">:</span>
+<span class="o">-</span><span class="w"> </span><span class="n">Bot</span><span class="w"> </span><span class="n">erstellt</span><span class="w"> </span><span class="n">Reparatur</span><span class="o">-</span><span class="k">Plan</span>
+<span class="o">-</span><span class="w"> </span><span class="n">Du</span><span class="w"> </span><span class="n">prüfst</span><span class="w"> </span><span class="n">jeden</span><span class="w"> </span><span class="n">Schritt</span>
+<span class="o">-</span><span class="w"> </span><span class="n">Du</span><span class="w"> </span><span class="n">gibst</span><span class="w"> </span><span class="n">frei</span><span class="w"> </span><span class="nl">mit</span><span class="p">:</span><span class="w"> </span><span class="k">GO</span><span class="w"> </span><span class="nl">REPAIR</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span>
+<span class="o">-</span><span class="w"> </span><span class="n">Nur</span><span class="w"> </span><span class="n">freigegebene</span><span class="w"> </span><span class="n">Schritte</span><span class="w"> </span><span class="n">werden</span><span class="w"> </span><span class="n">ausgeführt</span>
+</code></pre></div>
+
+<h3 id="2-techniker-passwort-neu">2. Techniker-Passwort (NEU!)</h3>
+<div class="codehilite"><pre><span></span><code>Schütze TechCare vor unbefugtem Zugriff:
+- Passwort beim Start erforderlich
+- 3 Versuchslimit
+- bcrypt-gehashed (sicher)
+- Session-Timeout
+</code></pre></div>
+
+<h3 id="3-verschlusselte-api-key-speicherung">3. Verschlüsselte API-Key-Speicherung</h3>
+<div class="codehilite"><pre><span></span><code>API-Keys sicher im OS-Keychain gespeichert:
+- macOS: Keychain Access
+- Windows: Credential Manager
+- Linux: Secret Service (gnome-keyring)
+- Fallback: .env (mit Migrations-Hinweis)
+</code></pre></div>
+
+<h3 id="4-pii-erkennung-microsoft-presidio">4. PII-Erkennung (Microsoft Presidio)</h3>
+<div class="codehilite"><pre><span></span><code>Erkennt und anonymisiert automatisch:
+- Kreditkartennummern
+- E-Mail-Adressen
+- Telefonnummern
+- Passwörter
+- IP-Adressen
+</code></pre></div>
+
+<h3 id="5-audit-trail">5. Audit Trail</h3>
+<div class="codehilite"><pre><span></span><code>Jede Reparatur wird protokolliert:
+<span class="k">-</span> Zeitstempel
+<span class="k">-</span> Verwendetes Tool
+<span class="k">-</span> Eingabe-Parameter
+<span class="k">-</span> Ergebnis
+<span class="k">-</span> Erfolg/Fehler-Status
+
+Gespeichert unter: data/changelogs/{session_id}.json
+</code></pre></div>
+
+<hr />
+<h2 id="multi-language-support">🌍 Multi-Language-Support</h2>
+<p>TechCare Bot unterstützt:<br />
+- 🇺🇸 <strong>English</strong><br />
+- 🇩🇪 <strong>Deutsch</strong></p>
+<h3 id="sprache-andern">Sprache ändern</h3>
+<p><strong>Während Setup:</strong></p>
+<div class="codehilite"><pre><span></span><code>Choose language / Sprache wählen:
+1. English
+2. Deutsch
+</code></pre></div>
+
+<p><strong>Nach Setup:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Via Befehl</span>
+techcare<span class="w"> </span>--language<span class="w"> </span>de
+
+<span class="c1"># Interaktiv</span>
+&gt;<span class="w"> </span>language<span class="w"> </span>de
+Sprache<span class="w"> </span>geändert<span class="w"> </span>auf:<span class="w"> </span>Deutsch
+</code></pre></div>
+
+<hr />
+<h2 id="lernsystem-pro">🧠 Lernsystem (Pro+)</h2>
+<p><strong>Ab Pro Edition:</strong> TechCare lernt aus jeder Reparatur:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Ähnliches Problem erkannt</span>
+<span class="err">💡</span> <span class="n">Learning</span><span class="p">:</span> <span class="n">Ich</span> <span class="n">habe</span> <span class="n">einen</span> <span class="n">ähnlichen</span> <span class="n">Fall</span> <span class="n">von</span> <span class="n">vor</span> <span class="mi">3</span> <span class="n">Tagen</span> <span class="n">gefunden</span><span class="p">:</span>
+   <span class="n">Problem</span><span class="p">:</span> <span class="s2">&quot;Windows Update fehlgeschlagen&quot;</span>
+   <span class="n">Lösung</span><span class="p">:</span> <span class="n">BITS</span><span class="o">-</span><span class="n">Dienst</span> <span class="n">neu</span> <span class="n">gestartet</span>
+   <span class="n">Erfolg</span><span class="p">:</span> <span class="n">Ja</span>
+
+   <span class="n">Soll</span> <span class="n">ich</span> <span class="n">dieselbe</span> <span class="n">Lösung</span> <span class="n">anwenden</span><span class="err">?</span> <span class="p">(</span><span class="n">ja</span><span class="o">/</span><span class="n">nein</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Vorteile:</strong><br />
+- ⚡ Schnellere Lösung (verwendet bewährte Lösungen wieder)<br />
+- 📈 Verbessert sich mit der Zeit<br />
+- 🎯 Höhere Erfolgsrate</p>
+<p><strong>Datenschutz:</strong><br />
+- <strong>Pro/Pro Business:</strong> Lokal gespeichert in <code>data/cases.db</code><br />
+- <strong>Enterprise:</strong> Optional zentrale Team-Wissensdatenbank (PostgreSQL)<br />
+- PII automatisch anonymisiert<br />
+- Kann mit <code>techcare --clear-cases</code> gelöscht werden</p>
+<hr />
+<h2 id="pro-enterprise-features-optional">🏢 Pro &amp; Enterprise Features (Optional)</h2>
+<p>Community Edition ist <strong>100% kostenlos</strong> - perfekt zum Testen mit max 10 Reparaturen/Monat.</p>
+<p>Für professionelle und kommerzielle Nutzung bieten wir:</p>
+<h3 id="techcare-pro-49monat">TechCare Pro (49€/Monat)</h3>
+<ul>
+<li>✅ 30+ Tools (statt 15)</li>
+<li>✅ Unbegrenzte Reparaturen (statt max 10)</li>
+<li>✅ Lokales Lernsystem (SQLite)</li>
+<li>✅ Case-Wiederverwendung</li>
+<li>✅ 1 System</li>
+<li>✅ E-Mail-Support</li>
+</ul>
+<h3 id="techcare-pro-business-99monat">TechCare Pro Business (99€/Monat)</h3>
+<ul>
+<li>✅ Alle Pro-Features</li>
+<li>✅ Unbegrenzte Systeme</li>
+<li>✅ Zentrale Dashboards</li>
+<li>✅ Fleet-Management</li>
+<li>✅ Priority-Support</li>
+</ul>
+<h3 id="techcare-enterprise-ab-149monat">TechCare Enterprise (ab 149€/Monat)</h3>
+<ul>
+<li>✅ Alle Pro Business-Features</li>
+<li>✅ Gemeinsame Team-Lerndatenbank (PostgreSQL)</li>
+<li>✅ Team-Management (LDAP/SSO)</li>
+<li>✅ Zentrale Überwachung</li>
+<li>✅ Individuelle Integrationen</li>
+<li>✅ Dedizierter Support</li>
+</ul>
+<p><strong>Lizenz-System:</strong><br />
+- Optional (Community funktioniert ohne Lizenz)<br />
+- Online + Offline-Validierung<br />
+- Flexible Lizenzmodelle<br />
+- Kontakt: sales@eckhardt-marketing.de</p>
+<hr />
+<h2 id="projekt-struktur">📦 Projekt-Struktur</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">techcare</span><span class="o">-</span><span class="n">bot</span><span class="o">/</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">techcare</span><span class="o">/</span><span class="w">                          </span><span class="c1"># Hauptpaket</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">core</span><span class="o">/</span><span class="w">                         </span><span class="c1"># Kern-Funktionalität</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">bot</span><span class="o">.</span><span class="n">py</span><span class="w">                   </span><span class="c1"># Haupt-Bot-Orchestrierung</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">client</span><span class="o">.</span><span class="n">py</span><span class="w">                </span><span class="c1"># Anthropic API-Client</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">session</span><span class="o">.</span><span class="n">py</span><span class="w">               </span><span class="c1"># Session-Management</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">license</span><span class="o">.</span><span class="n">py</span><span class="w">               </span><span class="c1"># Lizenz-Validierung (optional)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">tools</span><span class="o">/</span><span class="w">                        </span><span class="c1"># Tool-System</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">audit</span><span class="o">/</span><span class="w">                   </span><span class="c1"># Read-only-Tools</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">repair</span><span class="o">/</span><span class="w">                  </span><span class="c1"># Reparatur-Tools</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">drivers</span><span class="o">/</span><span class="w">                 </span><span class="c1"># Treiber-Management (NEU!)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">analysis</span><span class="o">/</span><span class="w">                </span><span class="c1"># KI-Analyse-Tools</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">workflow</span><span class="o">/</span><span class="w">                     </span><span class="c1"># Workflow-Zustandsmaschine</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">learning</span><span class="o">/</span><span class="w">                     </span><span class="c1"># Lernsystem</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">monitoring</span><span class="o">/</span><span class="w">                   </span><span class="c1"># Monitoring-Sensor (NEU!)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">security</span><span class="o">/</span><span class="w">                     </span><span class="c1"># PII-Erkennung</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">ui</span><span class="o">/</span><span class="w">                           </span><span class="c1"># Terminal-UI (Rich)</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">data</span><span class="o">/</span><span class="w">                             </span><span class="c1"># Lokale Daten (gitignored)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">sessions</span><span class="o">/</span><span class="w">                    </span><span class="c1"># Chat-Sessions</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">changelogs</span><span class="o">/</span><span class="w">                  </span><span class="c1"># Reparatur-Logs</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">cases</span><span class="o">.</span><span class="n">db</span><span class="w">                     </span><span class="c1"># Lerndatenbank</span>
+<span class="err">├──</span><span class="w"> </span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">example</span><span class="w">                      </span><span class="c1"># Umgebungs-Template</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span><span class="w">                  </span><span class="c1"># Python-Abhängigkeiten</span>
+<span class="err">└──</span><span class="w"> </span><span class="n">README_DE</span><span class="o">.</span><span class="n">md</span><span class="w">                      </span><span class="c1"># Diese Datei</span>
+</code></pre></div>
+
+<hr />
+<h2 id="updates">🔄 Updates</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># TechCare updaten</span>
+<span class="nb">cd</span><span class="w"> </span>techcare-bot
+git<span class="w"> </span>pull
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt<span class="w"> </span>--upgrade
+
+<span class="c1"># Version prüfen</span>
+techcare<span class="w"> </span>--version
+</code></pre></div>
+
+<hr />
+<h2 id="fehlerbehebung">🐛 Fehlerbehebung</h2>
+<h3 id="import-error-no-module-named-rich">Import Error: No module named 'rich'</h3>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre></div>
+
+<h3 id="python-314-kompatibilitat">Python 3.14 Kompatibilität</h3>
+<p>Python 3.14 wird noch nicht unterstützt. Verwende Python 3.11 oder 3.12:</p>
+<div class="codehilite"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>python@3.12
+python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+
+<h3 id="treiber-check-funktioniert-nicht">Treiber-Check funktioniert nicht</h3>
+<ul>
+<li><strong>Windows:</strong> Benötigt Admin-Rechte (PowerShell)</li>
+<li><strong>macOS:</strong> Terminal-Berechtigungen prüfen</li>
+<li><strong>Linux:</strong> <code>smartctl</code> installieren</li>
+</ul>
+<h3 id="techcare-command-not-found">"techcare: command not found"</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Python direkt verwenden</span>
+python<span class="w"> </span>-m<span class="w"> </span>techcare
+
+<span class="c1"># Oder PATH prüfen</span>
+which<span class="w"> </span>techcare
+</code></pre></div>
+
+<hr />
+<h2 id="mitwirken">🤝 Mitwirken</h2>
+<p>Beiträge sind willkommen! Bitte:</p>
+<ol>
+<li>Repository forken</li>
+<li>Feature-Branch erstellen (<code>git checkout -b feature/NeuesFeature</code>)</li>
+<li>Änderungen committen (<code>git commit -m 'Füge NeuesFeature hinzu'</code>)</li>
+<li>Zum Branch pushen (<code>git push origin feature/NeuesFeature</code>)</li>
+<li>Pull Request öffnen</li>
+</ol>
+<p><strong>Entwicklungs-Setup:</strong></p>
+<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yourusername/techcare-bot.git
+<span class="nb">cd</span><span class="w"> </span>techcare-bot
+python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements-dev.txt<span class="w">  </span><span class="c1"># Dev-Abhängigkeiten</span>
+</code></pre></div>
+
+<hr />
+<h2 id="lizenz">📄 Lizenz</h2>
+<p><strong>MIT License</strong></p>
+<p>Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing</p>
+<p>Es wird hiermit kostenlos jeder Person, die eine Kopie der Software und der<br />
+zugehörigen Dokumentationsdateien (die "Software") erhält, die Erlaubnis erteilt,<br />
+sie uneingeschränkt zu nutzen, einschließlich und ohne Beschränkung der Rechte zur<br />
+Verwendung, zum Kopieren, Ändern, Zusammenführen, Veröffentlichen, Verteilen,<br />
+Unterlizenzieren und/oder Verkaufen von Kopien der Software, und Personen, denen<br />
+die Software bereitgestellt wird, dies unter den folgenden Bedingungen zu gestatten:</p>
+<p>[Vollständiger MIT-Lizenztext...]</p>
+<p><strong>Hinweis:</strong> Kommerzielle Support- und Lizenzierungsoptionen für Unternehmen verfügbar.</p>
+<hr />
+<h2 id="bug-reports-sicherheit">🐛 Bug-Reports &amp; Sicherheit</h2>
+<p><strong>Bug-Reports:</strong><br />
+- GitHub Issues: https://github.com/yourusername/techcare-bot/issues</p>
+<p><strong>Sicherheitslücken:</strong><br />
+- <strong>KEINE</strong> öffentlichen Issues erstellen<br />
+- E-Mail: security@eckhardt-marketing.de<br />
+- Betreff: [SECURITY] TechCare Bot - [Kurze Beschreibung]</p>
+<p>Siehe <a href="SECURITY.md">SECURITY.md</a> für Responsible Disclosure Policy.</p>
+<hr />
+<h2 id="support">💬 Support</h2>
+<ul>
+<li>📖 Dokumentation: <a href="https://github.com/yourusername/techcare-bot/wiki">Wiki</a></li>
+<li>💬 Diskussionen: <a href="https://github.com/yourusername/techcare-bot/discussions">GitHub Discussions</a></li>
+<li>🐛 Bug-Reports: <a href="https://github.com/yourusername/techcare-bot/issues">GitHub Issues</a></li>
+</ul>
+<p><strong>Kommerzieller Support:</strong><br />
+- E-Mail: support@eckhardt-marketing.de<br />
+- Website: https://techcare.eckhardt-marketing.de</p>
+<hr />
+<h2 id="danksagungen">🙏 Danksagungen</h2>
+<ul>
+<li><strong>Anthropic Claude</strong> - KI-Engine</li>
+<li><strong>Microsoft Presidio</strong> - PII-Erkennung</li>
+<li><strong>Rich</strong> - Schöne Terminal-Ausgabe</li>
+<li><strong>psutil</strong> - System-Monitoring</li>
+<li><strong>spaCy</strong> - NLP-Verarbeitung</li>
+</ul>
+<hr />
+<h2 id="statistiken">📊 Statistiken</h2>
+<ul>
+<li><strong>30+ Tools</strong> - Umfassendes IT-Toolset</li>
+<li><strong>52 Error-Codes</strong> - Integrierte Wissensdatenbank</li>
+<li><strong>2 Sprachen</strong> - Deutsch + Englisch</li>
+<li><strong>3 Plattformen</strong> - Windows, macOS, Linux (exp)</li>
+<li><strong>100% Kostenlos</strong> - Community Edition (MIT License)</li>
+</ul>
+<hr />
+<h2 id="roadmap">🗺️ Roadmap</h2>
+<h3 id="v21-q2-2026">v2.1 (Q2 2026)</h3>
+<ul>
+<li>[ ] Web-Dashboard (optional)</li>
+<li>[ ] Plugin-System</li>
+<li>[ ] Mehr Sprachen (Französisch, Spanisch)</li>
+</ul>
+<h3 id="v22-q3-2026">v2.2 (Q3 2026)</h3>
+<ul>
+<li>[ ] Predictive Maintenance</li>
+<li>[ ] Cloud-Backup-Integration</li>
+<li>[ ] Mobile Companion App</li>
+</ul>
+<h3 id="v30-q4-2026">v3.0 (Q4 2026)</h3>
+<ul>
+<li>[ ] Multi-System-Management</li>
+<li>[ ] Geplante Wartung</li>
+<li>[ ] Custom Tool Builder</li>
+</ul>
+<hr />
+<p>Made with ❤️ by Eckhardt-Marketing</p>
+<p><strong>TechCare Bot</strong> - Weil IT-Wartung einfach sein sollte.</p>
+<p><strong>Community Edition v2.0.0</strong> - Für immer kostenlos 🎉</p>
+
+    <div class="footer">
+        <strong>TechCare Bot</strong> - AI-powered IT Maintenance Assistant<br>
+        Copyright © 2026 Carsten Eckhardt / Eckhardt-Marketing<br>
+        <a href="https://techcare.eckhardt-marketing.de">techcare.eckhardt-marketing.de</a>
+    </div>
+</body>
+</html>

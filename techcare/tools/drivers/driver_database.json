@@ -1,0 +1,32 @@
+[
+  {
+    "hardware_id": "PCI\\VEN_10DE&DEV_2206",
+    "name": "NVIDIA GeForce RTX 3080",
+    "vendor": "NVIDIA",
+    "category": "Graphics",
+    "latest_version": "528.49",
+    "release_date": "2023-02-14",
+    "download_url": "https://www.nvidia.com/Download/index.aspx",
+    "notes": "Game Ready Driver"
+  },
+  {
+    "hardware_id": "PCI\\VEN_1002&DEV_73BF",
+    "name": "AMD Radeon RX 6800 XT",
+    "vendor": "AMD",
+    "category": "Graphics",
+    "latest_version": "23.2.1",
+    "release_date": "2023-02-09",
+    "download_url": "https://www.amd.com/en/support",
+    "notes": "Adrenalin Edition"
+  },
+  {
+    "hardware_id": "USB\\VID_046D&PID_C52B",
+    "name": "Logitech Unifying Receiver",
+    "vendor": "Logitech",
+    "category": "Input Device",
+    "latest_version": "8.10.142",
+    "release_date": "2023-01-15",
+    "download_url": "https://support.logi.com/",
+    "notes": "Wireless Mouse/Keyboard Receiver"
+  }
+]

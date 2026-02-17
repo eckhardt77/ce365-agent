@@ -3,8 +3,17 @@ from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.prompt import Prompt
+from rich.spinner import Spinner
+from rich.live import Live
 from rich import box
 import json
+from contextlib import contextmanager
+
+try:
+    from techcare.__version__ import __version__, __edition__
+except ImportError:
+    __version__ = "1.0.0"
+    __edition__ = "Community"
 
 
 class RichConsole:
@@ -14,20 +23,47 @@ class RichConsole:
         self.console = Console()
 
     def display_logo(self):
-        """ASCII Art Logo anzeigen"""
-        logo = """
-╔════════════════════════════════════════╗
-║                                        ║
-║       🔧 TechCare Bot v0.1.0 🔧       ║
-║                                        ║
-║   IT-Wartungs-Assistent für            ║
-║   Windows & macOS Systeme              ║
-║                                        ║
-╚════════════════════════════════════════╝
-"""
-        self.console.print(logo, style="bold cyan")
+        """Modernes Logo anzeigen"""
+        from rich.text import Text
+        from rich.align import Align
+
+        # Haupttitel
+        title = Text()
+        title.append("Tech", style="bold cyan")
+        title.append("Care", style="bold blue")
+        title.append(" ", style="")
+        title.append("🔧", style="")
+
+        # Version und Edition Info
+        info = Text()
+        info.append(f"v{__version__}", style="dim cyan")
+        info.append(" • ", style="dim")
+        info.append(f"{__edition__} Edition", style="dim yellow")
+        info.append(" • ", style="dim")
+        info.append("Windows & macOS", style="dim green")
+
+        # Tagline
+        tagline = Text("AI-powered IT-Wartungsassistent", style="italic dim")
+
+        # Panel mit Content
+        content = Text()
+        content.append(title)
+        content.append("\n")
+        content.append(info)
+        content.append("\n\n")
+        content.append(tagline)
+
+        panel = Panel(
+            Align.center(content),
+            border_style="cyan",
+            box=box.DOUBLE,
+            padding=(1, 2)
+        )
+
+        self.console.print()
+        self.console.print(panel)
         self.console.print(
-            "Workflow: [yellow]Audit → Analyse → Plan → GO REPAIR → Ausführung[/yellow]"
+            Align.center("[dim]Natürlich kommunizieren · Sicher reparieren · Aus Fällen lernen[/dim]")
         )
         self.console.print()
 
@@ -58,10 +94,9 @@ class RichConsole:
         status = "✓" if success else "✗"
         color = "green" if success else "red"
 
-        self.console.print(
-            f"[bold {color}]{status} Result:[/bold {color}]",
-        )
-        self.console.print(Panel(result, border_style=color, box=box.ROUNDED))
+        # Nur kompakte Anzeige ohne Box
+        self.console.print(f"[bold {color}]{status} {tool_name}:[/bold {color}]")
+        self.console.print(result)
         self.console.print()
 
     def display_error(self, error: str):
@@ -87,10 +122,20 @@ class RichConsole:
         """Erfolgs-Nachricht anzeigen"""
         self.console.print(f"[green]✓ {message}[/green]")
 
-    def get_input(self) -> str:
+    def get_input(self, prompt: str = None) -> str:
         """User Input holen"""
         self.console.print()
-        return Prompt.ask("[bold green]You[/bold green]").strip()
+        self.console.rule(style="dim")  # Trennlinie
+        self.console.print()
+        if prompt:
+            return Prompt.ask(f"[bold green]>[/bold green] {prompt}").strip()
+        return Prompt.ask("[bold green]>[/bold green]", default="").strip()
+
+    @contextmanager
+    def show_spinner(self, message: str):
+        """Zeigt Spinner während Operation läuft"""
+        with self.console.status(f"[bold cyan]{message}...[/bold cyan]", spinner="dots"):
+            yield
 
     def display_separator(self):
         """Separator-Linie anzeigen"""

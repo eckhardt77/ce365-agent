@@ -1,0 +1,71 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║                    🔧 TechCare Bot - HAFTUNGSAUSSCHLUSS                    ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+WICHTIG: BITTE AUFMERKSAM LESEN!
+
+1. KEINE GARANTIE
+   TechCare Bot wird "AS IS" bereitgestellt, OHNE JEGLICHE GARANTIE.
+   Es gibt keine Garantie für Funktionstüchtigkeit, Korrektheit oder
+   Fehlerfreiheit.
+
+2. KEINE HAFTUNG
+   Die Entwickler haften NICHT für:
+   - Datenverlust
+   - System-Schäden
+   - Ausfallzeiten
+   - Folgeschäden jeglicher Art
+   - Fehlgeschlagene Reparaturen
+   - Verschlimmerung von Problemen
+
+3. NUTZUNG AUF EIGENE VERANTWORTUNG
+   - Sie nutzen TechCare Bot AUF EIGENES RISIKO
+   - Sie tragen die VOLLE VERANTWORTUNG für alle Aktionen
+   - Sie sind verantwortlich für Backups Ihrer Daten
+   - TechCare Bot ist KEIN Ersatz für professionelle IT-Dienstleistung
+
+4. BACKUP-PFLICHT
+   - Erstellen Sie IMMER ein Backup vor Reparaturen
+   - TechCare Bot fragt nach Backup-Status, ERSTELLT ABER KEINE BACKUPS
+   - Bei Datenverlust: Keine Haftung der Entwickler
+
+5. TECHNISCHES VERSTÄNDNIS ERFORDERLICH
+   - TechCare Bot richtet sich an Nutzer mit IT-Kenntnissen
+   - Verstehen Sie die vorgeschlagenen Kommandos bevor Sie zustimmen
+   - Bei Unsicherheit: Konsultieren Sie einen Fachmann
+
+6. GO REPAIR FREIGABE
+   - Sie geben Reparaturen EXPLIZIT frei mit "GO REPAIR: X,Y,Z"
+   - Diese Freigabe bedeutet: Sie verstehen das Risiko
+   - Keine nachträglichen Beschwerden möglich
+
+7. KEINE PROFESSIONELLE DIENSTLEISTUNG
+   - TechCare Bot ist ein Hilfstool, kein professioneller IT-Service
+   - Für geschäftskritische Systeme: Professionelle IT-Beratung empfohlen
+   - Bei Produktiv-Systemen: Auf eigene Gefahr
+
+8. RECHTLICHE GRUNDLAGE
+   - Verwendung unterliegt der MIT License (siehe LICENSE Datei)
+   - Community Edition: Nur nicht-kommerzielle Nutzung
+   - Kommerzielle Nutzung erfordert Pro Lizenz
+
+9. DRITTANBIETER-DIENSTE
+   - TechCare nutzt Anthropic Claude API
+   - Anthropic hat eigene Nutzungsbedingungen
+   - Keine Haftung für API-Ausfälle oder -Fehler
+
+10. ÄNDERUNGSVORBEHALT
+    - Dieser Haftungsausschluss kann jederzeit geändert werden
+    - Nutzung der aktuellen Version = Akzeptanz der aktuellen Bedingungen
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║  Durch Nutzung von TechCare Bot akzeptieren Sie diese Bedingungen.        ║
+║                                                                            ║
+║  Bei Nicht-Akzeptanz: Bitte TechCare Bot NICHT verwenden.                 ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing

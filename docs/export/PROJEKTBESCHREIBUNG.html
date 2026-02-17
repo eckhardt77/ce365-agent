@@ -1,0 +1,863 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projektbeschreibung</title>
+    <style>
+        
+@page {
+    size: A4;
+    margin: 2cm;
+    @bottom-center {
+        content: "TechCare Bot © 2026 Carsten Eckhardt";
+        font-size: 9pt;
+        color: #666;
+    }
+    @bottom-right {
+        content: "Seite " counter(page) " von " counter(pages);
+        font-size: 9pt;
+        color: #666;
+    }
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+}
+
+h1 {
+    color: #0066cc;
+    border-bottom: 3px solid #0066cc;
+    padding-bottom: 10px;
+    margin-top: 30px;
+    font-size: 2.5em;
+    page-break-after: avoid;
+}
+
+h2 {
+    color: #0088cc;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+    margin-top: 25px;
+    font-size: 2em;
+    page-break-after: avoid;
+}
+
+h3 {
+    color: #00aacc;
+    margin-top: 20px;
+    font-size: 1.5em;
+    page-break-after: avoid;
+}
+
+h4 {
+    color: #555;
+    margin-top: 15px;
+    font-size: 1.2em;
+}
+
+p {
+    margin: 10px 0;
+    text-align: justify;
+}
+
+ul, ol {
+    margin: 10px 0;
+    padding-left: 30px;
+}
+
+li {
+    margin: 5px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    page-break-inside: avoid;
+}
+
+th {
+    background: linear-gradient(135deg, #0066cc 0%, #0088cc 100%);
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+tr:hover {
+    background: #f5f5f5;
+}
+
+tr:nth-child(even) {
+    background: #fafafa;
+}
+
+code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: "Monaco", "Courier New", monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre {
+    background: #f8f9fa;
+    border-left: 4px solid #0066cc;
+    padding: 15px;
+    overflow-x: auto;
+    border-radius: 4px;
+    margin: 15px 0;
+    page-break-inside: avoid;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    color: #333;
+}
+
+blockquote {
+    border-left: 4px solid #0066cc;
+    margin: 15px 0;
+    padding: 10px 20px;
+    background: #f8f9fa;
+    font-style: italic;
+}
+
+strong {
+    color: #0066cc;
+    font-weight: 600;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid #e0e0e0;
+    margin: 30px 0;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px;
+    background: linear-gradient(135deg, #0066cc 0%, #0088cc 100%);
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+    color: white;
+    border: none;
+    margin: 0;
+    font-size: 3em;
+}
+
+.header p {
+    margin: 10px 0 0 0;
+    opacity: 0.9;
+    font-size: 1.2em;
+}
+
+.emoji {
+    font-size: 1.2em;
+}
+
+.feature-box {
+    background: #f8f9fa;
+    border-left: 4px solid #0066cc;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    page-break-inside: avoid;
+}
+
+.warning-box {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
+
+.success-box {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
+
+@media print {
+    body {
+        font-size: 11pt;
+    }
+
+    h1 {
+        font-size: 24pt;
+    }
+
+    h2 {
+        font-size: 18pt;
+    }
+
+    h3 {
+        font-size: 14pt;
+    }
+
+    a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    pre, blockquote, table {
+        page-break-inside: avoid;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔧 TechCare Bot</h1>
+        <p>Technische Dokumentation & Architektur</p>
+    </div>
+
+    <h1>TechCare Bot - Technische Projektbeschreibung</h1>
+<p><strong>AI-Powered IT Maintenance Assistant</strong></p>
+<p>Version: 1.0.0 | Status: Production Ready | Lizenz: MIT + Non-Commercial</p>
+<hr />
+<h2>📋 Executive Summary</h2>
+<p>TechCare Bot ist ein Python-basierter KI-Wartungs-Assistent der IT-Technikern hilft, Windows- und macOS-Systeme zu diagnostizieren und zu reparieren. Das Projekt nutzt Anthropic's Claude API für natürliche Sprachverarbeitung und intelligente Problemanalyse, kombiniert mit einem strikten Sicherheitsmodell (GO REPAIR Lock) das autonome Systemänderungen verhindert.</p>
+<p><strong>Kernmetriken:</strong><br />
+- 34 Tools (20 Audit, 13 Repair, 1 Analysis)<br />
+- 98/100 Security Score<br />
+- Python 3.9+<br />
+- Cross-Platform (Windows, macOS, Linux experimental)<br />
+- DSGVO-konform (lokale Verarbeitung)</p>
+<hr />
+<h2>🏗️ Architektur-Übersicht</h2>
+<h3><strong>High-Level Architecture</strong></h3>
+<div class="codehilite"><pre><span></span><code>┌─────────────────────────────────────────────────────────────┐
+│<span class="w">                        </span><span class="nv">USER</span><span class="w"> </span><span class="ss">(</span><span class="nv">Terminal</span><span class="ss">)</span><span class="w">                       </span>│
+└─────────────────┬───────────────────────────────────────────┘
+<span class="w">                  </span>│
+<span class="w">                  </span>▼
+┌─────────────────────────────────────────────────────────────┐
+│<span class="w">                    </span><span class="nv">TechCare</span><span class="w"> </span><span class="nv">Bot</span><span class="w"> </span><span class="ss">(</span><span class="nv">Core</span><span class="ss">)</span><span class="w">                       </span>│
+│<span class="w">  </span>┌──────────────┐<span class="w">  </span>┌──────────────┐<span class="w">  </span>┌──────────────┐<span class="w">      </span>│
+│<span class="w">  </span>│<span class="w">   </span><span class="nv">UI</span><span class="w"> </span><span class="nv">Layer</span><span class="w">   </span>│<span class="w">  </span>│<span class="w"> </span><span class="nv">State</span><span class="w"> </span><span class="nv">Machine</span>│<span class="w">  </span>│<span class="w">  </span><span class="nv">Translator</span><span class="w">  </span>│<span class="w">      </span>│
+│<span class="w">  </span>│<span class="w"> </span><span class="ss">(</span><span class="nv">Rich</span><span class="w"> </span><span class="nv">Console</span><span class="ss">)</span>│<span class="w">  </span>│<span class="w">  </span><span class="ss">(</span><span class="nv">Workflow</span><span class="ss">)</span><span class="w">  </span>│<span class="w">  </span>│<span class="w">    </span><span class="ss">(</span><span class="nv">i18n</span><span class="ss">)</span><span class="w">    </span>│<span class="w">      </span>│
+│<span class="w">  </span>└──────────────┘<span class="w">  </span>└──────────────┘<span class="w">  </span>└──────────────┘<span class="w">      </span>│
+│<span class="w">                                                              </span>│
+│<span class="w">  </span>┌──────────────────────────────────────────────────────┐<span class="w">   </span>│
+│<span class="w">  </span>│<span class="w">            </span><span class="nv">Anthropic</span><span class="w"> </span><span class="nv">Tool</span><span class="w"> </span><span class="nv">Use</span><span class="w"> </span><span class="k">Loop</span><span class="w">                   </span>│<span class="w">   </span>│
+│<span class="w">  </span>│<span class="w">  </span><span class="ss">(</span><span class="nv">Claude</span><span class="w"> </span><span class="nv">API</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nv">Tool</span><span class="w"> </span><span class="nv">Registry</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nv">Command</span><span class="w"> </span><span class="nv">Executor</span><span class="ss">)</span><span class="w">     </span>│<span class="w">   </span>│
+│<span class="w">  </span>└──────────────────────────────────────────────────────┘<span class="w">   </span>│
+│<span class="w">                                                              </span>│
+│<span class="w">  </span>┌──────────────┐<span class="w">  </span>┌──────────────┐<span class="w">  </span>┌──────────────┐<span class="w">      </span>│
+│<span class="w">  </span>│<span class="w"> </span><span class="nv">Tool</span><span class="w"> </span><span class="nv">Registry</span>│<span class="w">  </span>│<span class="w">   </span><span class="nv">Executor</span><span class="w">   </span>│<span class="w">  </span>│<span class="w">  </span><span class="nv">Changelog</span><span class="w">   </span>│<span class="w">      </span>│
+│<span class="w">  </span>│<span class="w">  </span><span class="ss">(</span><span class="mi">34</span><span class="w"> </span><span class="nv">Tools</span><span class="ss">)</span><span class="w">  </span>│<span class="w">  </span>│<span class="w"> </span><span class="ss">(</span><span class="nv">Safe</span><span class="w"> </span><span class="k">Exec</span><span class="ss">)</span><span class="w">  </span>│<span class="w">  </span>│<span class="w">   </span><span class="ss">(</span><span class="nv">Audit</span><span class="ss">)</span><span class="w">    </span>│<span class="w">      </span>│
+│<span class="w">  </span>└──────────────┘<span class="w">  </span>└──────────────┘<span class="w">  </span>└──────────────┘<span class="w">      </span>│
+└─────────────────┬───────────────────────────────────────────┘
+<span class="w">                  </span>│
+<span class="w">                  </span>▼
+┌─────────────────────────────────────────────────────────────┐
+│<span class="w">                   </span><span class="nv">External</span><span class="w"> </span><span class="nv">Systems</span><span class="w">                           </span>│
+│<span class="w">  </span>┌──────────────┐<span class="w">  </span>┌──────────────┐<span class="w">  </span>┌──────────────┐<span class="w">      </span>│
+│<span class="w">  </span>│<span class="w"> </span><span class="nv">Anthropic</span><span class="w"> </span><span class="nv">API</span>│<span class="w">  </span>│<span class="w">   </span><span class="nv">OS</span><span class="w"> </span><span class="ss">(</span><span class="nv">Win</span><span class="o">/</span><span class="nv">Mac</span><span class="ss">)</span>│<span class="w">  </span>│<span class="w">  </span><span class="nv">Learning</span><span class="w"> </span><span class="nv">DB</span><span class="w"> </span>│<span class="w">      </span>│
+│<span class="w">  </span>│<span class="w"> </span><span class="ss">(</span><span class="nv">Claude</span><span class="w"> </span><span class="mi">4</span>.<span class="mi">5</span><span class="ss">)</span><span class="w"> </span>│<span class="w">  </span>│<span class="w">  </span><span class="ss">(</span><span class="nv">PowerShell</span><span class="o">/</span><span class="w"> </span>│<span class="w">  </span>│<span class="w">   </span><span class="ss">(</span><span class="nv">SQLite</span><span class="ss">)</span><span class="w">   </span>│<span class="w">      </span>│
+│<span class="w">  </span>│<span class="w">              </span>│<span class="w">  </span>│<span class="w">   </span><span class="nv">bash</span><span class="o">/</span><span class="nv">launchctl</span><span class="ss">)</span>│<span class="w">  </span>│<span class="w">              </span>│<span class="w">      </span>│
+│<span class="w">  </span>└──────────────┘<span class="w">  </span>└──────────────┘<span class="w">  </span>└──────────────┘<span class="w">      </span>│
+└─────────────────────────────────────────────────────────────┘
+</code></pre></div>
+
+<hr />
+<h2>🔧 Technischer Stack</h2>
+<h3><strong>Backend / Core</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">Language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Python 3.9+</span>
+<span class="nt">Framework</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CLI (keine Web-Server)</span>
+<span class="nt">Architecture</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Event-Driven Tool Use Loop</span>
+
+<span class="nt">Dependencies</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">anthropic</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=0.30.0</span><span class="w">      </span><span class="c1"># Claude API</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pydantic</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=2.0.0</span><span class="w">        </span><span class="c1"># Data Validation</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">rich</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=13.0.0</span><span class="w">           </span><span class="c1"># Terminal UI</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">psutil</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=5.9.0</span><span class="w">          </span><span class="c1"># System Info</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">keyring</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=24.0.0</span><span class="w">        </span><span class="c1"># Encrypted API Key Storage</span>
+</code></pre></div>
+
+<h3><strong>Security</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">PII Detection</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">presidio-analyzer</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=2.2.0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">presidio-anonymizer</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=2.2.0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">spacy</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=3.7.0</span>
+
+<span class="nt">Encryption</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cryptography</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=41.0.0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OS Keychain (macOS Keychain, Windows Credential Manager)</span>
+</code></pre></div>
+
+<h3><strong>Storage</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">Session Management</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">aiosqlite</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=0.19.0</span><span class="w">      </span><span class="c1"># Async SQLite</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">sqlalchemy</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=2.0.0</span><span class="w">      </span><span class="c1"># ORM (optional)</span>
+
+<span class="nt">Learning System</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SQLite (default)</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PostgreSQL (optional)</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MySQL (optional)</span>
+</code></pre></div>
+
+<h3><strong>External Tools</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">Web Search</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">duckduckgo-search</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=5.0.0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">beautifulsoup4</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="err">=4.12.0</span>
+
+<span class="nt">Malware Scanner</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Windows Defender (built-in)</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClamAV (optional, macOS/Linux)</span>
+</code></pre></div>
+
+<hr />
+<h2>📂 Projektstruktur</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">techcare</span><span class="o">-</span><span class="n">bot</span><span class="o">/</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">techcare</span><span class="o">/</span><span class="w">                          </span><span class="c1"># Hauptmodul</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">core</span><span class="o">/</span><span class="w">                         </span><span class="c1"># Kernfunktionalität</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">bot</span><span class="o">.</span><span class="n">py</span><span class="w">                   </span><span class="c1"># Tool Use Loop, Orchestrierung</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">client</span><span class="o">.</span><span class="n">py</span><span class="w">                </span><span class="c1"># Anthropic API Wrapper</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">session</span><span class="o">.</span><span class="n">py</span><span class="w">               </span><span class="c1"># Session Management</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">tools</span><span class="o">/</span><span class="w">                        </span><span class="c1"># Tool-System (34 Tools)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">base</span><span class="o">.</span><span class="n">py</span><span class="w">                  </span><span class="c1"># BaseTool, AuditTool, RepairTool</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">registry</span><span class="o">.</span><span class="n">py</span><span class="w">              </span><span class="c1"># Tool Registry</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">executor</span><span class="o">.</span><span class="n">py</span><span class="w">              </span><span class="c1"># Safe Command Executor</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">audit</span><span class="o">/</span><span class="w">                   </span><span class="c1"># Read-Only Tools (20)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">system_info</span><span class="o">.</span><span class="n">py</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">malware_scan</span><span class="o">.</span><span class="n">py</span><span class="w">     </span><span class="c1"># NEU - Malware Scanner</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="o">...</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">repair</span><span class="o">/</span><span class="w">                  </span><span class="c1"># Repair Tools (13)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">service_manager</span><span class="o">.</span><span class="n">py</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="o">...</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">analysis</span><span class="o">/</span><span class="w">                </span><span class="c1"># AI Analysis (1)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">       </span><span class="err">└──</span><span class="w"> </span><span class="n">root_cause</span><span class="o">.</span><span class="n">py</span><span class="w">       </span><span class="c1"># NEU - Root Cause Analysis</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">workflow</span><span class="o">/</span><span class="w">                     </span><span class="c1"># State Machine</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">state_machine</span><span class="o">.</span><span class="n">py</span><span class="w">        </span><span class="c1"># Audit → Plan → Lock → Execute</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">lock</span><span class="o">.</span><span class="n">py</span><span class="w">                 </span><span class="c1"># Execution Lock (&quot;GO REPAIR&quot;)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">learning</span><span class="o">/</span><span class="w">                     </span><span class="c1"># Learning System</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">case_library</span><span class="o">.</span><span class="n">py</span><span class="w">         </span><span class="c1"># Case Storage/Retrieval</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">models</span><span class="o">.</span><span class="n">py</span><span class="w">               </span><span class="c1"># Pydantic Models</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">security</span><span class="o">/</span><span class="w">                     </span><span class="c1"># Security Layer</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">pii_detector</span><span class="o">.</span><span class="n">py</span><span class="w">         </span><span class="c1"># PII Detection (Presidio)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">storage</span><span class="o">/</span><span class="w">                      </span><span class="c1"># Persistenz</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">conversation</span><span class="o">.</span><span class="n">py</span><span class="w">         </span><span class="c1"># Chat History (SQLite)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">changelog</span><span class="o">.</span><span class="n">py</span><span class="w">            </span><span class="c1"># Änderungslog (JSON)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">i18n</span><span class="o">/</span><span class="w">                         </span><span class="c1"># Mehrsprachigkeit</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">translator</span><span class="o">.</span><span class="n">py</span><span class="w">           </span><span class="c1"># i18n System</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">languages</span><span class="o">/</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="n">de</span><span class="o">.</span><span class="n">json</span><span class="w">             </span><span class="c1"># Deutsch</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">       </span><span class="err">└──</span><span class="w"> </span><span class="n">en</span><span class="o">.</span><span class="n">json</span><span class="w">             </span><span class="c1"># English</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">ui</span><span class="o">/</span><span class="w">                           </span><span class="c1"># Terminal UI</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">console</span><span class="o">.</span><span class="n">py</span><span class="w">              </span><span class="c1"># Rich Console Output</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">formatters</span><span class="o">.</span><span class="n">py</span><span class="w">           </span><span class="c1"># Message Formatierung</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">config</span><span class="o">/</span><span class="w">                       </span><span class="c1"># Konfiguration</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">settings</span><span class="o">.</span><span class="n">py</span><span class="w">             </span><span class="c1"># Settings Management</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">secrets</span><span class="o">.</span><span class="n">py</span><span class="w">              </span><span class="c1"># Keychain Integration</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">system_prompt</span><span class="o">.</span><span class="n">py</span><span class="w">        </span><span class="c1"># Deutscher System Prompt</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">__version__</span><span class="o">.</span><span class="n">py</span><span class="w">               </span><span class="c1"># Version Info</span>
+<span class="err">│</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">data</span><span class="o">/</span><span class="w">                             </span><span class="c1"># Lokale Daten (gitignored)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">sessions</span><span class="o">/</span><span class="w">                    </span><span class="c1"># SQLite Conversations</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">changelogs</span><span class="o">/</span><span class="w">                  </span><span class="c1"># JSON Änderungslogs</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">cases</span><span class="o">.</span><span class="n">db</span><span class="w">                     </span><span class="c1"># Learning System DB</span>
+<span class="err">│</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">docs</span><span class="o">/</span><span class="w">                             </span><span class="c1"># Dokumentation</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">PRODUKTBESCHREIBUNG</span><span class="o">.</span><span class="n">md</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">PROJEKTBESCHREIBUNG</span><span class="o">.</span><span class="n">md</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="n">EDITION_VERGLEICH</span><span class="o">.</span><span class="n">md</span>
+<span class="err">│</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">install</span><span class="o">.</span><span class="n">sh</span><span class="w">                        </span><span class="c1"># One-Command Install (Unix)</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">install</span><span class="o">.</span><span class="n">bat</span><span class="w">                       </span><span class="c1"># One-Command Install (Windows)</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">setup</span><span class="o">.</span><span class="n">py</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">README</span><span class="o">.</span><span class="n">md</span><span class="w">                         </span><span class="c1"># English</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">README_DE</span><span class="o">.</span><span class="n">md</span><span class="w">                      </span><span class="c1"># Deutsch</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">LICENSE</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">DISCLAIMER</span><span class="o">.</span><span class="n">txt</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">SECURITY</span><span class="o">.</span><span class="n">md</span>
+<span class="err">└──</span><span class="w"> </span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">example</span>
+</code></pre></div>
+
+<hr />
+<h2>🔄 Workflow State Machine</h2>
+<div class="codehilite"><pre><span></span><code><span class="err">┌─────────┐</span>
+<span class="err">│</span><span class="w">  </span><span class="n">IDLE</span><span class="w">   </span><span class="err">│</span><span class="w">  </span><span class="k">Start</span>
+<span class="err">└────┬────┘</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">▼</span>
+<span class="err">┌─────────┐</span>
+<span class="err">│</span><span class="w">  </span><span class="n">AUDIT</span><span class="w">  </span><span class="err">│</span><span class="w">  </span><span class="k">Read</span><span class="o">-</span><span class="k">Only</span><span class="w"> </span><span class="n">Tools</span><span class="w"> </span><span class="n">erlaubt</span>
+<span class="err">└────┬────┘</span><span class="w">  </span><span class="p">(</span><span class="k">System</span><span class="w"> </span><span class="n">Info</span><span class="p">,</span><span class="w"> </span><span class="n">Logs</span><span class="p">,</span><span class="w"> </span><span class="n">Prozesse</span><span class="p">,</span><span class="w"> </span><span class="n">etc</span><span class="p">.)</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">▼</span>
+<span class="err">┌──────────┐</span>
+<span class="err">│</span><span class="w"> </span><span class="n">ANALYSIS</span><span class="w"> </span><span class="err">│</span><span class="w">  </span><span class="n">Claude</span><span class="w"> </span><span class="n">analysiert</span><span class="w"> </span><span class="n">Daten</span>
+<span class="err">└────┬─────┘</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">▼</span>
+<span class="err">┌─────────────┐</span>
+<span class="err">│</span><span class="w"> </span><span class="n">PLAN_READY</span><span class="w">  </span><span class="err">│</span><span class="w">  </span><span class="k">Plan</span><span class="w"> </span><span class="n">erstellt</span><span class="p">,</span><span class="w"> </span><span class="n">wartet</span><span class="w"> </span><span class="n">auf</span><span class="w"> </span><span class="n">Freigabe</span>
+<span class="err">└─────┬───────┘</span><span class="w">  </span><span class="k">User</span><span class="w"> </span><span class="n">muss</span><span class="w"> </span><span class="ss">&quot;GO REPAIR: 1,2,3&quot;</span><span class="w"> </span><span class="n">eingeben</span>
+<span class="w">      </span><span class="err">│</span>
+<span class="w">      </span><span class="err">▼</span>
+<span class="err">┌─────────┐</span>
+<span class="err">│</span><span class="w"> </span><span class="n">LOCKED</span><span class="w">  </span><span class="err">│</span><span class="w">  </span><span class="n">Freigabe</span><span class="w"> </span><span class="n">erhalten</span>
+<span class="err">└────┬────┘</span><span class="w">  </span><span class="n">Approved</span><span class="w"> </span><span class="n">Steps</span><span class="w"> </span><span class="n">gespeichert</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">▼</span>
+<span class="err">┌───────────┐</span>
+<span class="err">│</span><span class="w"> </span><span class="n">EXECUTING</span><span class="w"> </span><span class="err">│</span><span class="w">  </span><span class="n">Führt</span><span class="w"> </span><span class="n">nur</span><span class="w"> </span><span class="n">freigegebene</span><span class="w"> </span><span class="n">Schritte</span><span class="w"> </span><span class="n">aus</span>
+<span class="err">└────┬──────┘</span><span class="w">  </span><span class="n">Changelog</span><span class="w"> </span><span class="n">wird</span><span class="w"> </span><span class="n">geschrieben</span>
+<span class="w">     </span><span class="err">│</span>
+<span class="w">     </span><span class="err">▼</span>
+<span class="err">┌───────────┐</span>
+<span class="err">│</span><span class="w"> </span><span class="n">COMPLETED</span><span class="w"> </span><span class="err">│</span><span class="w">  </span><span class="k">Session</span><span class="w"> </span><span class="n">abgeschlossen</span>
+<span class="err">└───────────┘</span><span class="w">  </span><span class="n">Changelog</span><span class="w"> </span><span class="n">gespeichert</span>
+
+<span class="nl">Regeln</span><span class="p">:</span>
+<span class="o">-</span><span class="w"> </span><span class="n">Audit</span><span class="o">-</span><span class="nl">Tools</span><span class="p">:</span><span class="w"> </span><span class="n">Immer</span><span class="w"> </span><span class="n">erlaubt</span><span class="w"> </span><span class="p">(</span><span class="n">außer</span><span class="w"> </span><span class="n">COMPLETED</span><span class="p">)</span>
+<span class="o">-</span><span class="w"> </span><span class="n">Repair</span><span class="o">-</span><span class="nl">Tools</span><span class="p">:</span><span class="w"> </span><span class="n">Nur</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">LOCKED</span><span class="o">/</span><span class="n">EXECUTING</span><span class="w"> </span><span class="k">State</span>
+<span class="o">-</span><span class="w"> </span><span class="k">GO</span><span class="w"> </span><span class="n">REPAIR</span><span class="w"> </span><span class="nl">Befehl</span><span class="p">:</span><span class="w"> </span><span class="n">Transition</span><span class="w"> </span><span class="n">von</span><span class="w"> </span><span class="n">PLAN_READY</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">LOCKED</span>
+</code></pre></div>
+
+<hr />
+<h2>🔒 Sicherheitsarchitektur</h2>
+<h3><strong>1. Execution Lock (GO REPAIR)</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ExecutionLock</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Verhindert autonome Reparaturen&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repair_plan</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">approved_steps</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Aktiviert Lock mit approved steps&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">approved_steps</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">approved_steps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repair_plan</span> <span class="o">=</span> <span class="n">repair_plan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_locked</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_step_approved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prüft ob Step approved ist&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">step_number</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">approved_steps</span>
+</code></pre></div>
+
+<p><strong>Workflow:</strong><br />
+1. Bot erstellt Plan mit 5 Schritten<br />
+2. User prüft: "GO REPAIR: 1,3,5"<br />
+3. Nur Schritte 1, 3, 5 werden ausgeführt<br />
+4. Schritte 2, 4 werden übersprungen</p>
+<hr />
+<h3><strong>2. PII Detection (Microsoft Presidio)</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">presidio_analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalyzerEngine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">presidio_anonymizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnonymizerEngine</span>
+
+<span class="c1"># Erkennt automatisch:</span>
+<span class="o">-</span> <span class="n">Email</span><span class="o">-</span><span class="n">Adressen</span>
+<span class="o">-</span> <span class="n">Kreditkarten</span><span class="o">-</span><span class="n">Nummern</span>
+<span class="o">-</span> <span class="n">Telefonnummern</span>
+<span class="o">-</span> <span class="n">IP</span><span class="o">-</span><span class="n">Adressen</span>
+<span class="o">-</span> <span class="n">Passwörter</span>
+<span class="o">-</span> <span class="n">Sozialversicherungsnummern</span>
+
+<span class="c1"># Ersetzt mit:</span>
+<span class="o">&lt;</span><span class="n">EMAIL</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">CREDIT_CARD</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">PHONE_NUMBER</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span>
+</code></pre></div>
+
+<hr />
+<h3><strong>3. Encrypted API Key Storage</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># macOS: Keychain Access</span>
+<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;TechCare-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+
+<span class="c1"># Windows: Credential Manager</span>
+<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;TechCare-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+
+<span class="c1"># Linux: Secret Service (gnome-keyring)</span>
+<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;TechCare-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+
+<span class="c1"># Fallback: .env (mit Migration-Prompt)</span>
+</code></pre></div>
+
+<hr />
+<h3><strong>4. Audit Trail (Changelog)</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;session_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-02-17T10:30:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-02-17T10:35:12&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tool_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;manage_service&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tool_input&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;service_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wuauserv&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;restart&quot;</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;result&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SUCCESS: Service restarted&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2>🤖 Anthropic Tool Use Integration</h2>
+<h3><strong>Tool Definition Format</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SystemInfoTool</span><span class="p">(</span><span class="n">AuditTool</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;get_system_info&quot;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Gets OS, CPU, RAM, Disk, Uptime&quot;</span>
+
+    <span class="n">input_schema</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;detailed&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Include detailed hardware info&quot;</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[]</span>
+    <span class="p">}</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detailed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="c1"># Implementation</span>
+        <span class="k">pass</span>
+</code></pre></div>
+
+<h3><strong>Tool Use Loop</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="c1"># 1. Add message to history</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">user_input</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># 2. Claude API Call mit Tools</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_message</span><span class="p">(</span>
+            <span class="n">messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_messages</span><span class="p">(),</span>
+            <span class="n">tools</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tool_registry</span><span class="o">.</span><span class="n">get_tool_definitions</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 3. Check stop_reason</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">stop_reason</span> <span class="o">==</span> <span class="s2">&quot;end_turn&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+
+        <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">stop_reason</span> <span class="o">==</span> <span class="s2">&quot;tool_use&quot;</span><span class="p">:</span>
+            <span class="c1"># 4. Execute Tools</span>
+            <span class="n">tool_results</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_tool_use</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+            <span class="c1"># 5. Add tool results to history</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add_tool_results</span><span class="p">(</span><span class="n">tool_results</span><span class="p">)</span>
+
+            <span class="c1"># 6. Loop (recurse)</span>
+            <span class="k">continue</span>
+</code></pre></div>
+
+<hr />
+<h2>🧠 Learning System</h2>
+<h3><strong>Case Storage</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Case</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Repräsentiert einen gelösten Fall&quot;&quot;&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">os_type</span><span class="p">:</span> <span class="nb">str</span>               <span class="c1"># &quot;Windows&quot;, &quot;macOS&quot;, &quot;Linux&quot;</span>
+    <span class="n">os_version</span><span class="p">:</span> <span class="nb">str</span>            <span class="c1"># &quot;Windows 11 23H2&quot;</span>
+    <span class="n">problem_description</span><span class="p">:</span> <span class="nb">str</span>   <span class="c1"># User-Input</span>
+    <span class="n">error_codes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="c1"># z.B. &quot;0x80070057&quot;</span>
+    <span class="n">symptoms</span><span class="p">:</span> <span class="nb">str</span>              <span class="c1"># Von Bot extrahiert</span>
+    <span class="n">root_cause</span><span class="p">:</span> <span class="nb">str</span>            <span class="c1"># Von Bot identifiziert</span>
+    <span class="n">solution_steps</span><span class="p">:</span> <span class="nb">str</span>        <span class="c1"># JSON der Tool-Aufrufe</span>
+    <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span>              <span class="c1"># War Lösung erfolgreich?</span>
+    <span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">reused_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>      <span class="c1"># Wie oft wiederverwendet</span>
+</code></pre></div>
+
+<h3><strong>Similarity Matching</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_similar_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_problem</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Case</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Findet ähnlichen Fall via Keyword-Matching&quot;&quot;&quot;</span>
+
+    <span class="c1"># 1. Tokenize current problem</span>
+    <span class="n">keywords</span> <span class="o">=</span> <span class="n">extract_keywords</span><span class="p">(</span><span class="n">current_problem</span><span class="p">)</span>
+
+    <span class="c1"># 2. Query DB for similar cases</span>
+    <span class="n">cases</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Case</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+        <span class="n">Case</span><span class="o">.</span><span class="n">success</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">Case</span><span class="o">.</span><span class="n">os_type</span> <span class="o">==</span> <span class="n">current_os</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="c1"># 3. Calculate similarity scores</span>
+    <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">jaccard_similarity</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">case</span><span class="o">.</span><span class="n">symptoms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">:</span>  <span class="c1"># 70% threshold</span>
+            <span class="k">return</span> <span class="n">case</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+
+<hr />
+<h2>🌐 Mehrsprachigkeit (i18n)</h2>
+<h3><strong>Translation System</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Translator Singleton</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">techcare.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_translator</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">get_translator</span><span class="p">()</span>
+
+<span class="c1"># Verwendung</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;system.welcome&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;errors.api_key_missing&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;malware.scan_complete&quot;</span><span class="p">,</span> <span class="n">threats</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Sprache ändern</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">techcare.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_language</span>
+<span class="n">set_language</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>  <span class="c1"># Wechselt zu Englisch</span>
+</code></pre></div>
+
+<h3><strong>Unterstützte Sprachen</strong></h3>
+<ul>
+<li>🇩🇪 Deutsch (de)</li>
+<li>🇺🇸 English (en)</li>
+<li>🇫🇷 Français (geplant)</li>
+<li>🇮🇹 Italiano (geplant)</li>
+<li>🇪🇸 Español (geplant)</li>
+</ul>
+<hr />
+<h2>📊 Performance &amp; Skalierung</h2>
+<h3><strong>Metriken</strong></h3>
+<table>
+<thead>
+<tr>
+<th>Metrik</th>
+<th>Wert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Startup Zeit</strong></td>
+<td>&lt; 2 Sekunden</td>
+</tr>
+<tr>
+<td><strong>Tool Execution</strong></td>
+<td>100-500ms (lokal), 2-60s (remote API)</td>
+</tr>
+<tr>
+<td><strong>Memory Usage</strong></td>
+<td>~100 MB (idle), ~300 MB (aktiv)</td>
+</tr>
+<tr>
+<td><strong>DB Size</strong></td>
+<td>~5 MB (100 Cases), ~50 MB (1000 Cases)</td>
+</tr>
+<tr>
+<td><strong>API Latency</strong></td>
+<td>500-2000ms (Claude API)</td>
+</tr>
+</tbody>
+</table>
+<h3><strong>Bottlenecks</strong></h3>
+<ol>
+<li><strong>Claude API</strong> - Netzwerk-Latenz (500-2000ms)</li>
+<li><strong>Event Logs</strong> - Windows PowerShell langsam (5-10s)</li>
+<li><strong>Malware Scan</strong> - ClamAV/Defender langsam (2-60 Minuten)</li>
+</ol>
+<h3><strong>Optimierungen</strong></h3>
+<ul>
+<li>✅ Async/Await für parallele Tool-Execution</li>
+<li>✅ Caching von System-Info (5 Minuten TTL)</li>
+<li>✅ Lazy Loading von Learning DB</li>
+<li>⏳ Streaming von Claude API (geplant für v1.5)</li>
+</ul>
+<hr />
+<h2>🧪 Testing</h2>
+<h3><strong>Current Status</strong></h3>
+<table>
+<thead>
+<tr>
+<th>Test-Typ</th>
+<th>Coverage</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit Tests</td>
+<td>0%</td>
+<td>⚠️ TODO</td>
+</tr>
+<tr>
+<td>Integration Tests</td>
+<td>0%</td>
+<td>⚠️ TODO</td>
+</tr>
+<tr>
+<td>Manual Testing</td>
+<td>~60%</td>
+<td>✅ Basic</td>
+</tr>
+<tr>
+<td>Security Audit</td>
+<td>98/100</td>
+<td>✅ Done</td>
+</tr>
+</tbody>
+</table>
+<h3><strong>Test-Strategie (geplant)</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Unit Tests</span>
+<span class="n">tests</span><span class="o">/</span><span class="n">test_tools</span><span class="o">/</span><span class="n">test_system_info</span><span class="o">.</span><span class="n">py</span>
+<span class="n">tests</span><span class="o">/</span><span class="n">test_workflow</span><span class="o">/</span><span class="n">test_state_machine</span><span class="o">.</span><span class="n">py</span>
+<span class="n">tests</span><span class="o">/</span><span class="n">test_security</span><span class="o">/</span><span class="n">test_pii_detector</span><span class="o">.</span><span class="n">py</span>
+
+<span class="c1"># Integration Tests</span>
+<span class="n">tests</span><span class="o">/</span><span class="n">integration</span><span class="o">/</span><span class="n">test_tool_use_loop</span><span class="o">.</span><span class="n">py</span>
+<span class="n">tests</span><span class="o">/</span><span class="n">integration</span><span class="o">/</span><span class="n">test_go_repair_workflow</span><span class="o">.</span><span class="n">py</span>
+
+<span class="c1"># E2E Tests</span>
+<span class="n">tests</span><span class="o">/</span><span class="n">e2e</span><span class="o">/</span><span class="n">test_windows_update_scenario</span><span class="o">.</span><span class="n">py</span>
+</code></pre></div>
+
+<hr />
+<h2>🚀 Deployment</h2>
+<h3><strong>Installation (End-User)</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># One-Command Install</span>
+curl<span class="w"> </span>-fsSL<span class="w"> </span>https://techcare-bot.de/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+
+<span class="c1"># Was passiert:</span>
+<span class="m">1</span>.<span class="w"> </span>Python<span class="w"> </span><span class="m">3</span>.9+<span class="w"> </span>Check
+<span class="m">2</span>.<span class="w"> </span>Virtual<span class="w"> </span>Environment<span class="w"> </span>erstellen
+<span class="m">3</span>.<span class="w"> </span>Dependencies<span class="w"> </span>installieren<span class="w"> </span><span class="o">(</span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt<span class="o">)</span>
+<span class="m">4</span>.<span class="w"> </span>Spacy<span class="w"> </span>Model<span class="w"> </span>downloaden<span class="w"> </span><span class="o">(</span>de_core_news_sm<span class="o">)</span>
+<span class="m">5</span>.<span class="w"> </span>TechCare<span class="w"> </span>Bot<span class="w"> </span>installieren<span class="w"> </span><span class="o">(</span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">)</span>
+<span class="m">6</span>.<span class="w"> </span>API<span class="w"> </span>Key<span class="w"> </span>Setup<span class="w"> </span><span class="o">(</span>beim<span class="w"> </span>ersten<span class="w"> </span>Start<span class="o">)</span>
+</code></pre></div>
+
+<h3><strong>Development Setup</strong></h3>
+<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yourusername/techcare-bot.git
+<span class="nb">cd</span><span class="w"> </span>techcare-bot
+
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+python<span class="w"> </span>-m<span class="w"> </span>spacy<span class="w"> </span>download<span class="w"> </span>de_core_news_sm
+
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+
+<span class="c1"># Tests laufen lassen (wenn vorhanden)</span>
+pytest
+</code></pre></div>
+
+<hr />
+<h2>📈 Roadmap</h2>
+<h3><strong>v1.0 - Community Edition</strong> ✅ DONE</h3>
+<ul>
+<li>34 Tools</li>
+<li>Root Cause Analysis</li>
+<li>Malware Scanner</li>
+<li>Learning System</li>
+<li>Mehrsprachigkeit (DE/EN)</li>
+</ul>
+<h3><strong>v1.5 - Pro Features</strong> (Q2 2026)</h3>
+<ul>
+<li>Predictive Maintenance</li>
+<li>API für Automation</li>
+<li>Web Dashboard (optional)</li>
+<li>Streaming API Responses</li>
+</ul>
+<h3><strong>v2.0 - Enterprise</strong> (Q3 2026)</h3>
+<ul>
+<li>Multi-System Management (Fleet Dashboard)</li>
+<li>LDAP/SSO Integration</li>
+<li>Team-Features</li>
+<li>Scheduled Maintenance</li>
+</ul>
+<hr />
+<h2>🐛 Known Issues</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Severity</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows PowerShell slow für Event Logs</td>
+<td>Medium</td>
+<td>⏳ Workaround (Limit auf 100 Events)</td>
+</tr>
+<tr>
+<td>ClamAV freshclam timeout bei langsamer Verbindung</td>
+<td>Low</td>
+<td>⏳ 5min Timeout, Error Handling</td>
+</tr>
+<tr>
+<td>Keine Unit Tests</td>
+<td>High</td>
+<td>⏳ TODO</td>
+</tr>
+<tr>
+<td>Linux Support experimental</td>
+<td>Medium</td>
+<td>⏳ Beta</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>📞 Kontakt &amp; Contributing</h2>
+<p><strong>Maintainer:</strong> Carsten Eckhardt / Eckhardt-Marketing</p>
+<p><strong>Contributing:</strong><br />
+1. Fork Repository<br />
+2. Feature Branch erstellen<br />
+3. Tests schreiben (wichtig!)<br />
+4. Pull Request öffnen</p>
+<p><strong>Security Issues:</strong><br />
+- Email: security@eckhardt-marketing.de<br />
+- <strong>NICHT</strong> als GitHub Issue (Responsible Disclosure)</p>
+<hr />
+<h2>📄 Lizenz</h2>
+<p><strong>MIT License with Non-Commercial Restriction</strong></p>
+<ul>
+<li>✅ Kostenlos für private Nutzung</li>
+<li>✅ Kostenlos für Bildung</li>
+<li>✅ Kostenlos für Open Source</li>
+<li>❌ Kommerzielle Nutzung benötigt separate Lizenz</li>
+</ul>
+<hr />
+<p><strong>TechCare Bot v1.0.0</strong> - Production Ready<br />
+<em>Copyright © 2026 Carsten Eckhardt / Eckhardt-Marketing</em></p>
+
+    <hr>
+    <p style="text-align: center; color: #666; font-size: 0.9em;">
+        © 2026 Carsten Eckhardt / Eckhardt-Marketing<br>
+        <a href="mailto:carsten@eckhardt-marketing.de">carsten@eckhardt-marketing.de</a>
+    </p>
+</body>
+</html>

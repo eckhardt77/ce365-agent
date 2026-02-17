@@ -1,16 +1,25 @@
-MIT License
+MIT License with Non-Commercial Restriction
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+in the Software for NON-COMMERCIAL purposes only, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
+NON-COMMERCIAL USE ONLY: This license permits use of the Software for personal,
+educational, academic, research, and other non-commercial purposes. Commercial use,
+including but not limited to:
+  - Providing IT services for compensation
+  - Using the Software in a commercial IT support business
+  - Managed Service Provider (MSP) operations
+  - Enterprise IT department operations where the company generates revenue
+
+requires a separate Commercial License. For commercial licensing options, please contact:
+  Email: licensing@eckhardt-marketing.de
+  Web: https://techcare.dev/pro
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
