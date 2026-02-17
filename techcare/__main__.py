@@ -16,6 +16,7 @@ from passlib.context import CryptContext
 from techcare.core.bot import TechCareBot
 from techcare.setup.wizard import run_setup_if_needed
 from techcare.config.settings import get_settings
+from techcare.core.health import run_health_check
 
 
 console = Console()
@@ -176,6 +177,21 @@ def main():
         action="store_true",
         help="Zeigt Version an"
     )
+    parser.add_argument(
+        "--health",
+        action="store_true",
+        help="Führt Health-Check durch (Python, Dependencies, API, Config)"
+    )
+    parser.add_argument(
+        "--update",
+        action="store_true",
+        help="Aktualisiert TechCare auf die neueste Version"
+    )
+    parser.add_argument(
+        "--rollback",
+        action="store_true",
+        help="Rollback zur letzten Backup-Version"
+    )
 
     args = parser.parse_args()
 
@@ -191,6 +207,20 @@ def main():
     if args.version:
         from techcare.__version__ import __version__
         print(f"TechCare Bot v{__version__}")
+        return
+
+    if args.health:
+        exit_code = run_health_check()
+        sys.exit(exit_code)
+
+    if args.update:
+        from techcare.core.updater import run_update
+        run_update()
+        return
+
+    if args.rollback:
+        from techcare.core.updater import run_rollback
+        run_rollback()
         return
 
     # Normaler Start
