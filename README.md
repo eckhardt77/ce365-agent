@@ -1,10 +1,10 @@
-# 🔧 TechCare Bot - Community Edition v2.0.0
+# 🔧 CE365 Agent - Community Edition v2.0.0
 
 **AI-powered IT maintenance assistant for Windows and macOS**
 
 [🇩🇪 Deutsche Version](README_DE.md) | 🇺🇸 English Version
 
-TechCare Bot is an AI-powered IT maintenance assistant that helps you diagnose and repair Windows and macOS systems. With natural language interaction and **30+ integrated tools**, IT maintenance becomes easy!
+CE365 Agent is an AI-powered IT maintenance assistant that helps you diagnose and repair Windows and macOS systems. With natural language interaction and **30+ integrated tools**, IT maintenance becomes easy!
 
 [![License: Source Available](https://img.shields.io/badge/License-Source%20Available-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -16,10 +16,10 @@ TechCare Bot is an AI-powered IT maintenance assistant that helps you diagnose a
 
 ### ✨ New Features
 
-- 🔐 **Technician Password Protection** - Protect TechCare from unauthorized access
+- 🔐 **Technician Password Protection** - Protect CE365 from unauthorized access
 - 🔧 **Driver Management** - Check for driver updates (Windows Update + Custom DB)
 - 📡 **Monitoring Sensor** - Background service for proactive system monitoring
-- 🗑️ **Easy Uninstall** - Simple uninstallation with `techcare --uninstall`
+- 🗑️ **Easy Uninstall** - Simple uninstallation with `ce365 --uninstall`
 - 🔑 **License System** - Optional licensing for Pro/Enterprise (Community is free!)
 - 🌐 **Network Options** - Remote services via VPN/Cloudflare/Tailscale (optional)
 
@@ -29,7 +29,7 @@ TechCare Bot is an AI-powered IT maintenance assistant that helps you diagnose a
 ✅ **AI-Powered Analysis** - Root cause detection
 ✅ **Driver Check** - Automatic driver update detection
 ✅ **Monitoring** - Background system monitoring
-✅ **Password Protection** - Secure TechCare access
+✅ **Password Protection** - Secure CE365 access
 ✅ **Max 10 Repairs/Month** - Perfect for testing
 ✅ **Multi-Language** - English + German
 ✅ **Cross-Platform** - Windows, macOS, Linux (exp)
@@ -40,7 +40,7 @@ TechCare Bot is an AI-powered IT maintenance assistant that helps you diagnose a
 
 **IMPORTANT: Use at your own risk!**
 
-TechCare Bot is provided "AS IS", WITHOUT ANY WARRANTY.
+CE365 Agent is provided "AS IS", WITHOUT ANY WARRANTY.
 
 **No liability for:**
 - ❌ Data loss
@@ -55,7 +55,7 @@ TechCare Bot is provided "AS IS", WITHOUT ANY WARRANTY.
 - ✅ **Review all commands before approval**
 - ✅ **No autonomous repairs** (GO REPAIR lock required)
 
-By using TechCare Bot, you accept full responsibility.
+By using CE365 Agent, you accept full responsibility.
 
 ---
 
@@ -76,8 +76,8 @@ Download from [python.org](https://www.python.org/downloads/)
 #### 2. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/techcare-bot.git
-cd techcare-bot
+git clone https://github.com/yourusername/ce365-agent.git
+cd ce365-agent
 ```
 
 #### 3. Create Virtual Environment
@@ -91,16 +91,16 @@ source venv/bin/activate  # macOS/Linux
 venv\Scripts\activate     # Windows
 ```
 
-#### 4. Install TechCare
+#### 4. Install CE365
 
 ```bash
 pip install -e .
 ```
 
-#### 5. Start TechCare
+#### 5. Start CE365
 
 ```bash
-techcare
+ce365
 ```
 
 On first start, the **Setup Wizard** will guide you through:
@@ -126,26 +126,26 @@ On first start, the **Setup Wizard** will guide you through:
 ### Basic Commands
 
 ```bash
-# Start TechCare
-techcare
+# Start CE365
+ce365
 
 # Set/change technician password
-techcare --set-password
+ce365 --set-password
 
 # Show version
-techcare --version
+ce365 --version
 
-# Uninstall TechCare
-techcare --uninstall
+# Uninstall CE365
+ce365 --uninstall
 
 # Help
-techcare --help
+ce365 --help
 ```
 
 ### Example Session
 
 ```
-🔧 TechCare Bot v2.0.0
+🔧 CE365 Agent v2.0.0
 Session ID: abc123...
 💡 Learning: 5 cases saved, 2 reuses
 ─────────────────────────────────────────────────
@@ -274,20 +274,20 @@ Please confirm with: GO REPAIR: 1,2
 
 ### 🔐 Technician Password Protection
 
-Protect TechCare from unauthorized access:
+Protect CE365 from unauthorized access:
 
 ```bash
 # Set password during setup
-techcare
+ce365
 # > Set technician password? [Y/n]: y
 # > Password: ********
 
 # Or set later
-techcare --set-password
+ce365 --set-password
 
 # On every start
-techcare
-# > 🔐 TechCare Access
+ce365
+# > 🔐 CE365 Access
 # > Password: ********
 # > ✓ Authenticated
 ```
@@ -324,7 +324,7 @@ Automatic driver update detection:
 - Custom Driver Database (JSON-based)
 
 **Custom Database:**
-Add your own drivers in `techcare/tools/drivers/driver_database.json`
+Add your own drivers in `ce365/tools/drivers/driver_database.json`
 
 ---
 
@@ -334,10 +334,10 @@ Background service for proactive monitoring:
 
 ```bash
 # Manual test
-python -m techcare.monitoring.sensor
+python -m ce365.monitoring.sensor
 
 # Install as service
-python -m techcare.monitoring.service
+python -m ce365.monitoring.service
 
 # Windows: Windows Service
 # macOS: LaunchDaemon
@@ -360,12 +360,12 @@ python -m techcare.monitoring.service
 Simple uninstallation:
 
 ```bash
-techcare --uninstall
+ce365 --uninstall
 
 # Deletes:
 # ✓ .env file (config)
 # ✓ data/ directory (sessions, changelogs, cases)
-# ✓ ~/.techcare/ (cache, user config)
+# ✓ ~/.ce365/ (cache, user config)
 ```
 
 ---
@@ -385,7 +385,7 @@ No repairs without your explicit approval:
 ### 2. Technician Password (NEW!)
 
 ```
-Protect TechCare from unauthorized access:
+Protect CE365 from unauthorized access:
 - Password required on startup
 - 3 attempts limit
 - bcrypt-hashed (secure)
@@ -430,7 +430,7 @@ Saved to: data/changelogs/{session_id}.json
 
 ## 🌍 Multi-Language Support
 
-TechCare Bot supports:
+CE365 Agent supports:
 - 🇺🇸 **English**
 - 🇩🇪 **Deutsch**
 
@@ -446,7 +446,7 @@ Choose language / Sprache wählen:
 **After setup:**
 ```bash
 # Via command
-techcare --language en
+ce365 --language en
 
 # Interactive
 > language de
@@ -457,7 +457,7 @@ Language changed to: Deutsch
 
 ## 🧠 Learning System (Pro+)
 
-**Starting from Pro Edition:** TechCare learns from every repair:
+**Starting from Pro Edition:** CE365 learns from every repair:
 
 ```python
 # Similar problem detected
@@ -478,7 +478,7 @@ Language changed to: Deutsch
 - **Pro/Pro Business:** Stored locally in `data/cases.db`
 - **Enterprise:** Optional central team knowledge database (PostgreSQL)
 - PII automatically anonymized
-- Can be cleared with `techcare --clear-cases`
+- Can be cleared with `ce365 --clear-cases`
 
 ---
 
@@ -488,7 +488,7 @@ Community Edition is **100% free** - perfect for testing with max 10 repairs/mon
 
 For professional and commercial use, we offer:
 
-### TechCare Pro (€49/month)
+### CE365 Pro (€49/month)
 - ✅ 30+ Tools (instead of 15)
 - ✅ Unlimited repairs (instead of max 10)
 - ✅ Local learning system (SQLite)
@@ -496,14 +496,14 @@ For professional and commercial use, we offer:
 - ✅ 1 system
 - ✅ Email support
 
-### TechCare Pro Business (€99/month)
+### CE365 Pro Business (€99/month)
 - ✅ All Pro features
 - ✅ Unlimited systems
 - ✅ Central dashboards
 - ✅ Fleet management
 - ✅ Priority support
 
-### TechCare Enterprise (from €149/month)
+### CE365 Enterprise (from €149/month)
 - ✅ All Pro Business features
 - ✅ Shared team learning database (PostgreSQL)
 - ✅ Team management (LDAP/SSO)
@@ -522,8 +522,8 @@ For professional and commercial use, we offer:
 ## 📦 Project Structure
 
 ```
-techcare-bot/
-├── techcare/                          # Main package
+ce365-agent/
+├── ce365/                          # Main package
 │   ├── core/                         # Core functionality
 │   │   ├── bot.py                   # Main bot orchestration
 │   │   ├── client.py                # Anthropic API client
@@ -553,13 +553,13 @@ techcare-bot/
 ## 🔄 Updates
 
 ```bash
-# Update TechCare
-cd techcare-bot
+# Update CE365
+cd ce365-agent
 git pull
 pip install -r requirements.txt --upgrade
 
 # Check version
-techcare --version
+ce365 --version
 ```
 
 ---
@@ -589,14 +589,14 @@ pip install -e .
 - **macOS:** Check Terminal permissions
 - **Linux:** Install `smartctl`
 
-### "techcare: command not found"
+### "ce365: command not found"
 
 ```bash
 # Use Python directly
-python -m techcare
+python -m ce365
 
 # Or check PATH
-which techcare
+which ce365
 ```
 
 ---
@@ -613,8 +613,8 @@ Contributions welcome! Please:
 
 **Development Setup:**
 ```bash
-git clone https://github.com/yourusername/techcare-bot.git
-cd techcare-bot
+git clone https://github.com/yourusername/ce365-agent.git
+cd ce365-agent
 python3.12 -m venv venv
 source venv/bin/activate
 pip install -e .
@@ -631,7 +631,7 @@ Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 
 Community Edition is free for personal, educational, and non-commercial use.
 Commercial use (IT service providers, MSPs, enterprise IT) requires a
-[Commercial License](https://techcare.eckhardt-marketing.de).
+[Commercial License](https://ce365.eckhardt-marketing.de).
 
 See [LICENSE](LICENSE) for full details.
 
@@ -640,12 +640,12 @@ See [LICENSE](LICENSE) for full details.
 ## 🐛 Bug Reports & Security
 
 **Bug Reports:**
-- GitHub Issues: https://github.com/yourusername/techcare-bot/issues
+- GitHub Issues: https://github.com/yourusername/ce365-agent/issues
 
 **Security Vulnerabilities:**
 - **DO NOT** create public issues
 - Email: security@eckhardt-marketing.de
-- Subject: [SECURITY] TechCare Bot - [Brief Description]
+- Subject: [SECURITY] CE365 Agent - [Brief Description]
 
 See [SECURITY.md](SECURITY.md) for responsible disclosure policy.
 
@@ -653,13 +653,13 @@ See [SECURITY.md](SECURITY.md) for responsible disclosure policy.
 
 ## 💬 Support
 
-- 📖 Documentation: [Wiki](https://github.com/yourusername/techcare-bot/wiki)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/techcare-bot/discussions)
-- 🐛 Bug Reports: [GitHub Issues](https://github.com/yourusername/techcare-bot/issues)
+- 📖 Documentation: [Wiki](https://github.com/yourusername/ce365-agent/wiki)
+- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/ce365-agent/discussions)
+- 🐛 Bug Reports: [GitHub Issues](https://github.com/yourusername/ce365-agent/issues)
 
 **Commercial Support:**
 - Email: support@eckhardt-marketing.de
-- Website: https://techcare.eckhardt-marketing.de
+- Website: https://ce365.eckhardt-marketing.de
 
 ---
 
@@ -704,6 +704,6 @@ See [SECURITY.md](SECURITY.md) for responsible disclosure policy.
 
 Made with ❤️ by Eckhardt-Marketing
 
-**TechCare Bot** - Because IT maintenance should be easy.
+**CE365 Agent** - Because IT maintenance should be easy.
 
 **Community Edition v2.0.0** - Free Forever 🎉

@@ -1,5 +1,5 @@
 """
-TechCare Bot - Chat Service
+CE365 Agent - Chat Service
 Chat Logic mit Anthropic Tool Use API
 """
 
@@ -15,10 +15,10 @@ from api.models.message import MessageRole
 from api.models.conversation import ConversationState
 from api.config import settings
 
-# Import TechCare Core Tools
-from techcare.tools.registry import ToolRegistry
-from techcare.tools.executor import CommandExecutor
-from techcare.config.system_prompt import get_system_prompt
+# Import CE365 Core Tools
+from ce365.tools.registry import ToolRegistry
+from ce365.tools.executor import CommandExecutor
+from ce365.config.system_prompt import get_system_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -32,13 +32,13 @@ class ChatService:
         self.tool_registry = ToolRegistry()
         self.executor = CommandExecutor(self.tool_registry)
 
-        # Register tools (aus bestehender TechCare Logic)
+        # Register tools (aus bestehender CE365 Logic)
         self._register_tools()
 
     def _register_tools(self):
-        """Register alle TechCare Tools"""
+        """Register alle CE365 Tools"""
         # TODO: Import und registriere Tools
-        # from techcare.tools.audit import SystemInfoTool, ProcessMonitorTool
+        # from ce365.tools.audit import SystemInfoTool, ProcessMonitorTool
         # self.tool_registry.register(SystemInfoTool())
         # self.tool_registry.register(ProcessMonitorTool())
         # ...

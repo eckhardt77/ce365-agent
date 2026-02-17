@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# TechCare Bot - Docker Update mit Rollback
+# CE365 Agent - Docker Update mit Rollback
 #
 # Kontrolliertes Update der Docker-Container:
 # 1. Aktuelle Image-Tags speichern
@@ -18,7 +18,7 @@ COMPOSE_FILE="${1:-docker-compose.yml}"
 HEALTH_TIMEOUT=60
 HEALTH_INTERVAL=5
 HEALTH_ENDPOINT="http://localhost:80/health"
-BACKUP_FILE="/tmp/techcare-update-backup.env"
+BACKUP_FILE="/tmp/ce365-update-backup.env"
 
 # Farben
 RED='\033[0;31m'
@@ -53,7 +53,7 @@ if ! $COMPOSE_CMD version &>/dev/null 2>&1; then
 fi
 
 echo ""
-echo -e "${CYAN}🔄 TechCare Docker Update${NC}"
+echo -e "${CYAN}🔄 CE365 Docker Update${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -66,11 +66,11 @@ fi
 # ─── Phase 1: Aktuelle Images sichern ───
 log_info "Speichere aktuelle Image-Tags..."
 
-API_IMAGE=$($DOCKER_CMD inspect techcare-api --format '{{.Config.Image}}' 2>/dev/null || echo "")
-WEB_IMAGE=$($DOCKER_CMD inspect techcare-web --format '{{.Config.Image}}' 2>/dev/null || echo "")
+API_IMAGE=$($DOCKER_CMD inspect ce365-api --format '{{.Config.Image}}' 2>/dev/null || echo "")
+WEB_IMAGE=$($DOCKER_CMD inspect ce365-web --format '{{.Config.Image}}' 2>/dev/null || echo "")
 
 if [ -z "$API_IMAGE" ] && [ -z "$WEB_IMAGE" ]; then
-    log_warn "Keine laufenden TechCare-Container gefunden (Erst-Installation?)"
+    log_warn "Keine laufenden CE365-Container gefunden (Erst-Installation?)"
 fi
 
 # Backup speichern

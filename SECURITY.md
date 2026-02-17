@@ -18,7 +18,7 @@ We release security updates for the following versions:
 
 Instead, please email:
 - **Email:** security@eckhardt-marketing.de
-- **Subject:** [SECURITY] TechCare Bot - [Brief Description]
+- **Subject:** [SECURITY] CE365 Agent - [Brief Description]
 
 ### What to Include
 
@@ -78,7 +78,7 @@ Please include:
 
 ### Security Features
 
-TechCare Bot includes:
+CE365 Agent includes:
 - ✅ PII Detection & Anonymization (Microsoft Presidio)
 - ✅ GO REPAIR execution lock (no autonomous repairs)
 - ✅ Input validation (Pydantic schemas)
@@ -101,7 +101,7 @@ We recognize security researchers who help us:
 
 - *No reports yet*
 
-Thank you for helping keep TechCare Bot secure! 🔒
+Thank you for helping keep CE365 Agent secure! 🔒
 
 ---
 

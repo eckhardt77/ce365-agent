@@ -11,7 +11,7 @@
     size: A4;
     margin: 2cm;
     @bottom-center {
-        content: "TechCare Bot © 2026 Carsten Eckhardt";
+        content: "CE365 Agent © 2026 Carsten Eckhardt";
         font-size: 9pt;
         color: #666;
     }
@@ -242,16 +242,16 @@ hr {
 </head>
 <body>
     <div class="header">
-        <h1>🔧 TechCare Bot</h1>
+        <h1>🔧 CE365 Agent</h1>
         <p>Technische Dokumentation & Architektur</p>
     </div>
 
-    <h1>TechCare Bot - Technische Projektbeschreibung</h1>
+    <h1>CE365 Agent - Technische Projektbeschreibung</h1>
 <p><strong>AI-Powered IT Maintenance Assistant</strong></p>
 <p>Version: 1.0.0 | Status: Production Ready | Lizenz: MIT + Non-Commercial</p>
 <hr />
 <h2>📋 Executive Summary</h2>
-<p>TechCare Bot ist ein Python-basierter KI-Wartungs-Assistent der IT-Technikern hilft, Windows- und macOS-Systeme zu diagnostizieren und zu reparieren. Das Projekt nutzt Anthropic's Claude API für natürliche Sprachverarbeitung und intelligente Problemanalyse, kombiniert mit einem strikten Sicherheitsmodell (GO REPAIR Lock) das autonome Systemänderungen verhindert.</p>
+<p>CE365 Agent ist ein Python-basierter KI-Wartungs-Assistent der IT-Technikern hilft, Windows- und macOS-Systeme zu diagnostizieren und zu reparieren. Das Projekt nutzt Anthropic's Claude API für natürliche Sprachverarbeitung und intelligente Problemanalyse, kombiniert mit einem strikten Sicherheitsmodell (GO REPAIR Lock) das autonome Systemänderungen verhindert.</p>
 <p><strong>Kernmetriken:</strong><br />
 - 34 Tools (20 Audit, 13 Repair, 1 Analysis)<br />
 - 98/100 Security Score<br />
@@ -267,7 +267,7 @@ hr {
 <span class="w">                  </span>│
 <span class="w">                  </span>▼
 ┌─────────────────────────────────────────────────────────────┐
-│<span class="w">                    </span><span class="nv">TechCare</span><span class="w"> </span><span class="nv">Bot</span><span class="w"> </span><span class="ss">(</span><span class="nv">Core</span><span class="ss">)</span><span class="w">                       </span>│
+│<span class="w">                    </span><span class="nv">CE365</span><span class="w"> </span><span class="nv">Bot</span><span class="w"> </span><span class="ss">(</span><span class="nv">Core</span><span class="ss">)</span><span class="w">                       </span>│
 │<span class="w">  </span>┌──────────────┐<span class="w">  </span>┌──────────────┐<span class="w">  </span>┌──────────────┐<span class="w">      </span>│
 │<span class="w">  </span>│<span class="w">   </span><span class="nv">UI</span><span class="w"> </span><span class="nv">Layer</span><span class="w">   </span>│<span class="w">  </span>│<span class="w"> </span><span class="nv">State</span><span class="w"> </span><span class="nv">Machine</span>│<span class="w">  </span>│<span class="w">  </span><span class="nv">Translator</span><span class="w">  </span>│<span class="w">      </span>│
 │<span class="w">  </span>│<span class="w"> </span><span class="ss">(</span><span class="nv">Rich</span><span class="w"> </span><span class="nv">Console</span><span class="ss">)</span>│<span class="w">  </span>│<span class="w">  </span><span class="ss">(</span><span class="nv">Workflow</span><span class="ss">)</span><span class="w">  </span>│<span class="w">  </span>│<span class="w">    </span><span class="ss">(</span><span class="nv">i18n</span><span class="ss">)</span><span class="w">    </span>│<span class="w">      </span>│
@@ -344,8 +344,8 @@ hr {
 
 <hr />
 <h2>📂 Projektstruktur</h2>
-<div class="codehilite"><pre><span></span><code><span class="n">techcare</span><span class="o">-</span><span class="n">bot</span><span class="o">/</span>
-<span class="err">├──</span><span class="w"> </span><span class="n">techcare</span><span class="o">/</span><span class="w">                          </span><span class="c1"># Hauptmodul</span>
+<div class="codehilite"><pre><span></span><code><span class="n">ce365</span><span class="o">-</span><span class="n">bot</span><span class="o">/</span>
+<span class="err">├──</span><span class="w"> </span><span class="n">ce365</span><span class="o">/</span><span class="w">                          </span><span class="c1"># Hauptmodul</span>
 <span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">core</span><span class="o">/</span><span class="w">                         </span><span class="c1"># Kernfunktionalität</span>
 <span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">bot</span><span class="o">.</span><span class="n">py</span><span class="w">                   </span><span class="c1"># Tool Use Loop, Orchestrierung</span>
 <span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="n">client</span><span class="o">.</span><span class="n">py</span><span class="w">                </span><span class="c1"># Anthropic API Wrapper</span>
@@ -503,13 +503,13 @@ hr {
 <hr />
 <h3><strong>3. Encrypted API Key Storage</strong></h3>
 <div class="codehilite"><pre><span></span><code><span class="c1"># macOS: Keychain Access</span>
-<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;TechCare-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;CE365-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
 
 <span class="c1"># Windows: Credential Manager</span>
-<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;TechCare-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;CE365-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
 
 <span class="c1"># Linux: Secret Service (gnome-keyring)</span>
-<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;TechCare-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+<span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;CE365-Bot&quot;</span><span class="p">,</span> <span class="s2">&quot;anthropic_api_key&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
 
 <span class="c1"># Fallback: .env (mit Migration-Prompt)</span>
 </code></pre></div>
@@ -626,7 +626,7 @@ hr {
 <h2>🌐 Mehrsprachigkeit (i18n)</h2>
 <h3><strong>Translation System</strong></h3>
 <div class="codehilite"><pre><span></span><code><span class="c1"># Translator Singleton</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">techcare.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_translator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ce365.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_translator</span>
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">get_translator</span><span class="p">()</span>
 
@@ -636,7 +636,7 @@ hr {
 <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s2">&quot;malware.scan_complete&quot;</span><span class="p">,</span> <span class="n">threats</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
 
 <span class="c1"># Sprache ändern</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">techcare.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_language</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ce365.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_language</span>
 <span class="n">set_language</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>  <span class="c1"># Wechselt zu Englisch</span>
 </code></pre></div>
 
@@ -746,20 +746,20 @@ hr {
 <h2>🚀 Deployment</h2>
 <h3><strong>Installation (End-User)</strong></h3>
 <div class="codehilite"><pre><span></span><code><span class="c1"># One-Command Install</span>
-curl<span class="w"> </span>-fsSL<span class="w"> </span>https://techcare-bot.de/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+curl<span class="w"> </span>-fsSL<span class="w"> </span>https://ce365-agent.de/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
 
 <span class="c1"># Was passiert:</span>
 <span class="m">1</span>.<span class="w"> </span>Python<span class="w"> </span><span class="m">3</span>.9+<span class="w"> </span>Check
 <span class="m">2</span>.<span class="w"> </span>Virtual<span class="w"> </span>Environment<span class="w"> </span>erstellen
 <span class="m">3</span>.<span class="w"> </span>Dependencies<span class="w"> </span>installieren<span class="w"> </span><span class="o">(</span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt<span class="o">)</span>
 <span class="m">4</span>.<span class="w"> </span>Spacy<span class="w"> </span>Model<span class="w"> </span>downloaden<span class="w"> </span><span class="o">(</span>de_core_news_sm<span class="o">)</span>
-<span class="m">5</span>.<span class="w"> </span>TechCare<span class="w"> </span>Bot<span class="w"> </span>installieren<span class="w"> </span><span class="o">(</span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">)</span>
+<span class="m">5</span>.<span class="w"> </span>CE365<span class="w"> </span>Bot<span class="w"> </span>installieren<span class="w"> </span><span class="o">(</span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">)</span>
 <span class="m">6</span>.<span class="w"> </span>API<span class="w"> </span>Key<span class="w"> </span>Setup<span class="w"> </span><span class="o">(</span>beim<span class="w"> </span>ersten<span class="w"> </span>Start<span class="o">)</span>
 </code></pre></div>
 
 <h3><strong>Development Setup</strong></h3>
-<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yourusername/techcare-bot.git
-<span class="nb">cd</span><span class="w"> </span>techcare-bot
+<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yourusername/ce365-agent.git
+<span class="nb">cd</span><span class="w"> </span>ce365-agent
 
 python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
 <span class="nb">source</span><span class="w"> </span>venv/bin/activate
@@ -851,7 +851,7 @@ pytest
 <li>❌ Kommerzielle Nutzung benötigt separate Lizenz</li>
 </ul>
 <hr />
-<p><strong>TechCare Bot v1.0.0</strong> - Production Ready<br />
+<p><strong>CE365 Agent v1.0.0</strong> - Production Ready<br />
 <em>Copyright © 2026 Carsten Eckhardt / Eckhardt-Marketing</em></p>
 
     <hr>

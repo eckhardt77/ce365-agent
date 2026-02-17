@@ -1,4 +1,4 @@
-# 🚀 TechCare Bot - Quick Start
+# 🚀 CE365 Agent - Quick Start
 
 ## 5-Minuten Start-Anleitung
 
@@ -6,32 +6,32 @@
 
 ```powershell
 # 1. In Projektverzeichnis wechseln
-cd C:\Users\<DeinName>\Documents\TechCare-Bot
+cd C:\Users\<DeinName>\Documents\CE365-Bot
 
 # 2. Virtual Environment aktivieren
 .\venv\Scripts\activate
 
 # 3. Bot starten
-techcare
+ce365
 
 # Bei Problemen:
-python -m techcare
+python -m ce365
 ```
 
 ### macOS (Terminal)
 
 ```bash
 # 1. In Projektverzeichnis wechseln
-cd ~/Documents/TechCare-Bot
+cd ~/Documents/CE365-Bot
 
 # 2. Virtual Environment aktivieren
 source venv/bin/activate
 
 # 3. Bot starten
-techcare
+ce365
 
 # Bei Problemen:
-python -m techcare
+python -m ce365
 ```
 
 ---
@@ -43,24 +43,24 @@ python -m techcare
 
 2. Du schreibst: Neuer Fall
 
-3. TechCare fragt:
+3. CE365 fragt:
    - Backup vorhanden? → Antworte: Ja
    - Betriebssystem? → Antworte: Windows 11 (oder dein OS)
    - Problem? → Antworte: Windows Update Fehler
    - Bereits versucht? → Antworte: Neustart
 
-4. TechCare startet Audit:
+4. CE365 startet Audit:
    Kommando 1: systeminfo | findstr /C:"OS Name"
 
 5. Du führst Kommando aus und kopierst Output zurück
 
-6. TechCare analysiert und gibt weitere Kommandos
+6. CE365 analysiert und gibt weitere Kommandos
 
-7. Nach Audit: TechCare erstellt Reparatur-Plan
+7. Nach Audit: CE365 erstellt Reparatur-Plan
 
 8. Du gibst Freigabe: GO REPAIR: 1
 
-9. TechCare führt Schritt 1 aus (nur dieser!)
+9. CE365 führt Schritt 1 aus (nur dieser!)
 
 10. Fertig! ✓
 ```
@@ -152,9 +152,9 @@ Falls noch nicht gemacht:
 ```bash
 # Windows
 .\venv\Scripts\activate
-techcare
+ce365
 
 # macOS
 source venv/bin/activate
-techcare
+ce365
 ```

@@ -1,8 +1,8 @@
-# TechCare Bot - Deployment Übersicht
+# CE365 Agent - Deployment Übersicht
 
 ## Einleitung
 
-TechCare Bot ist eine Docker-basierte Web-Applikation für IT-Wartungsteams. Diese Anleitung hilft Ihnen, die richtige Deployment-Methode für Ihre Firma zu wählen.
+CE365 Agent ist eine Docker-basierte Web-Applikation für IT-Wartungsteams. Diese Anleitung hilft Ihnen, die richtige Deployment-Methode für Ihre Firma zu wählen.
 
 ## Deployment-Optionen im Vergleich
 
@@ -100,11 +100,11 @@ curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER
 ```
 
-### 2. TechCare herunterladen
+### 2. CE365 herunterladen
 
 ```bash
-git clone https://github.com/your-repo/techcare-bot.git
-cd techcare-bot
+git clone https://github.com/your-repo/ce365-agent.git
+cd ce365-agent
 ```
 
 ### 3. Installer ausführen
@@ -122,9 +122,9 @@ Der Installer fragt nach:
 
 ### 4. Fertig! 🎉
 
-Nach Installation läuft TechCare und ist erreichbar über:
-- **Cloudflare**: `https://techcare.ihrefirma.de`
-- **Tailscale**: `http://techcare` (MagicDNS)
+Nach Installation läuft CE365 und ist erreichbar über:
+- **Cloudflare**: `https://ce365.ihrefirma.de`
+- **Tailscale**: `http://ce365` (MagicDNS)
 - **VPN**: `http://192.168.1.100`
 - **Lokal**: `http://localhost`
 
@@ -132,11 +132,11 @@ Nach Installation läuft TechCare und ist erreichbar über:
 
 ### Docker Services
 
-TechCare besteht aus mehreren Docker Containern:
+CE365 besteht aus mehreren Docker Containern:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                   TechCare Stack                    │
+│                   CE365 Stack                    │
 ├─────────────────────────────────────────────────────┤
 │                                                     │
 │  ┌──────────┐  ┌──────────┐  ┌──────────────────┐ │
@@ -175,9 +175,9 @@ TechCare besteht aus mehreren Docker Containern:
 | Volume | Beschreibung | Backup wichtig? |
 |--------|-------------|-----------------|
 | `postgres_data` | Datenbank (Fälle, Learning) | ✅ **JA** |
-| `techcare_data` | Uploads, Logs | ✅ Ja |
+| `ce365_data` | Uploads, Logs | ✅ Ja |
 | `redis_data` | Cache, Sessions | ❌ Nein |
-| `techcare_logs` | Application Logs | ⚠️ Optional |
+| `ce365_logs` | Application Logs | ⚠️ Optional |
 
 ## Security Best Practices
 
@@ -224,7 +224,7 @@ docker-compose up -d
 crontab -e
 
 # Eintrag hinzufügen:
-0 2 * * * cd /pfad/zu/techcare-bot && docker-compose exec -T postgres pg_dump -U techcare techcare | gzip > backup_$(date +\%Y\%m\%d).sql.gz
+0 2 * * * cd /pfad/zu/ce365-agent && docker-compose exec -T postgres pg_dump -U ce365 ce365 | gzip > backup_$(date +\%Y\%m\%d).sql.gz
 ```
 
 ### 6. Monitoring
@@ -306,14 +306,14 @@ docker image prune -a
 
 ```bash
 # Datenbank Backup
-docker-compose exec postgres pg_dump -U techcare techcare > backup.sql
+docker-compose exec postgres pg_dump -U ce365 ce365 > backup.sql
 
 # Datenbank Restore
-cat backup.sql | docker-compose exec -T postgres psql -U techcare techcare
+cat backup.sql | docker-compose exec -T postgres psql -U ce365 ce365
 
 # Volumes Backup (komplett)
 docker run --rm \
-  -v techcare-bot_postgres_data:/data \
+  -v ce365-agent_postgres_data:/data \
   -v $(pwd):/backup \
   alpine tar czf /backup/backup_$(date +%Y%m%d).tar.gz /data
 ```
@@ -334,7 +334,7 @@ docker-compose exec api bash
 docker stats
 
 # Network prüfen
-docker network inspect techcare-bot_techcare-internal
+docker network inspect ce365-agent_ce365-internal
 ```
 
 ## Migration von CLI zu Docker
@@ -345,14 +345,14 @@ Falls du bereits die CLI-Version nutzt, hier ist der Migrationspfad:
 
 ```bash
 # Aus CLI-Version
-cd ~/.techcare/data/
+cd ~/.ce365/data/
 cp -r cases.db ~/backup/
 ```
 
 ### 2. Docker installieren
 
 ```bash
-cd ~/techcare-bot
+cd ~/ce365-agent
 bash install.sh
 ```
 
@@ -413,10 +413,10 @@ python3 tools/migrate_cli_to_docker.py ~/backup/cases.db
 
 ### Community & Support
 
-- 💬 GitHub Issues: https://github.com/your-repo/techcare-bot/issues
-- 📧 Email Support: support@techcare.local
-- 📚 Knowledge Base: https://docs.techcare.local
-- 💡 Feature Requests: https://feedback.techcare.local
+- 💬 GitHub Issues: https://github.com/your-repo/ce365-agent/issues
+- 📧 Email Support: support@ce365.local
+- 📚 Knowledge Base: https://docs.ce365.local
+- 💡 Feature Requests: https://feedback.ce365.local
 
 ### Enterprise Support
 
@@ -445,7 +445,7 @@ docker-compose restart
 - **Pro Business**: Unbegrenzt (aber eigene Datenbanken)
 - **Enterprise**: Unbegrenzt (shared Database)
 
-### Funktioniert TechCare offline?
+### Funktioniert CE365 offline?
 
 ⚠️ **Teilweise**: Diagnose-Tools funktionieren offline, aber Claude AI braucht Internet. Für vollständig offline Szenarien kontaktiere Enterprise Sales.
 
@@ -470,7 +470,7 @@ docker-compose restart
 - Disk: 50 GB SSD
 - OS: Ubuntu 22.04 LTS
 
-### Kann ich TechCare auf Synology/QNAP NAS laufen lassen?
+### Kann ich CE365 auf Synology/QNAP NAS laufen lassen?
 
 ✅ **Ja!** Solange Docker unterstützt wird. Die meisten modernen NAS-Systeme (x86) funktionieren perfekt.
 
@@ -502,12 +502,12 @@ docker-compose restart
 
 ## Feedback willkommen!
 
-Wir verbessern TechCare ständig. Dein Feedback ist wertvoll:
+Wir verbessern CE365 ständig. Dein Feedback ist wertvoll:
 
 - 🌟 GitHub Stars helfen uns!
-- 💡 Feature Requests: https://feedback.techcare.local
-- 🐛 Bug Reports: https://github.com/your-repo/techcare-bot/issues
+- 💡 Feature Requests: https://feedback.ce365.local
+- 🐛 Bug Reports: https://github.com/your-repo/ce365-agent/issues
 
 ---
 
-**Viel Erfolg mit TechCare Bot! 🔧**
+**Viel Erfolg mit CE365 Agent! 🔧**

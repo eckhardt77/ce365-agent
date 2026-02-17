@@ -4,12 +4,12 @@ services:
   # PostgreSQL Datenbank für Learning System
   learning-db:
     image: postgres:16-alpine
-    container_name: techcare-learning-db
+    container_name: ce365-learning-db
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: techcare_learning
-      POSTGRES_USER: techcare
+      POSTGRES_DB: ce365_learning
+      POSTGRES_USER: ce365
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_this_password}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
 
@@ -21,22 +21,22 @@ services:
       - ./backups:/backups  # Für DB-Backups
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U techcare"]
+      test: ["CMD-SHELL", "pg_isready -U ce365"]
       interval: 10s
       timeout: 5s
       retries: 5
 
     networks:
-      - techcare_network
+      - ce365_network
 
   # pgAdmin (optionales Web-Interface für DB-Verwaltung)
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: techcare-pgadmin
+    container_name: ce365-pgadmin
     restart: unless-stopped
 
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@techcare.local
+      PGADMIN_DEFAULT_EMAIL: admin@ce365.local
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
@@ -48,7 +48,7 @@ services:
       - pgadmin_data:/var/lib/pgadmin
 
     networks:
-      - techcare_network
+      - ce365_network
 
     depends_on:
       - learning-db
@@ -60,5 +60,5 @@ volumes:
     driver: local
 
 networks:
-  techcare_network:
+  ce365_network:
     driver: bridge

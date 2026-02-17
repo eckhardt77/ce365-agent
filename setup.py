@@ -4,18 +4,18 @@ with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="techcare-bot",
+    name="ce365-agent",
     version="0.2.0",
     description="AI-powered IT-Wartungs-Assistent für Windows/macOS Systeme",
     author="Carsten Eckhardt / Eckhardt-Marketing",
     author_email="info@eckhardt-marketing.de",
-    url="https://github.com/carsten-eckhardt/techcare-bot",
+    url="https://github.com/carsten-eckhardt/ce365-agent",
     license="MIT",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "techcare=techcare.__main__:main",
+            "ce365=ce365.__main__:main",
         ],
     },
     python_requires=">=3.9",

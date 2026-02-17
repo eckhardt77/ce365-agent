@@ -1,4 +1,4 @@
-# TechCare Bot - Changelog (Hybrid Architecture Update)
+# CE365 Agent - Changelog (Hybrid Architecture Update)
 
 ## Version 2.0.0 - Hybrid Architecture (2026-02-17)
 
@@ -15,31 +15,31 @@
 
 #### 1. **Techniker-Passwort-Schutz** 🔐
 
-**Zweck:** Schützt TechCare vor unbefugtem Zugriff durch Kunden
+**Zweck:** Schützt CE365 vor unbefugtem Zugriff durch Kunden
 
 **Features:**
 - Passwort-Eingabe beim Start (3 Versuche)
 - bcrypt-Hash-Speicherung (nicht Klartext)
 - Session-Timeout konfigurierbar
-- Passwort-Änderung via `techcare --set-password`
+- Passwort-Änderung via `ce365 --set-password`
 
 **Dateien:**
-- `techcare/__main__.py`: `verify_technician_password()`, `set_password()`
-- `techcare/setup/wizard.py`: `_ask_technician_password()`
-- `techcare/config/settings.py`: `technician_password_hash`, `session_timeout`
+- `ce365/__main__.py`: `verify_technician_password()`, `set_password()`
+- `ce365/setup/wizard.py`: `_ask_technician_password()`
+- `ce365/config/settings.py`: `technician_password_hash`, `session_timeout`
 - `.env.example`: Neue Variablen
 
 **Verwendung:**
 ```bash
 # Setup (beim ersten Start)
-techcare
+ce365
 # > Passwort jetzt setzen? [Y/n]
 
 # Passwort ändern
-techcare --set-password
+ce365 --set-password
 
 # Bei jedem Start
-techcare
+ce365
 # > Passwort: ********
 ```
 
@@ -62,18 +62,18 @@ techcare
 - Offline-Fallback für Lizenz-Cache
 
 **Dateien:**
-- `techcare/setup/wizard.py`: `_ask_network_connection()`
-- `techcare/config/settings.py`: `backend_url`, `network_method`
+- `ce365/setup/wizard.py`: `_ask_network_connection()`
+- `ce365/config/settings.py`: `backend_url`, `network_method`
 - `.env.example`: `BACKEND_URL`, `NETWORK_METHOD`
 
 **Konfiguration:**
 ```bash
 # Cloudflare
-BACKEND_URL=https://techcare.deinefirma.de
+BACKEND_URL=https://ce365.deinefirma.de
 NETWORK_METHOD=cloudflare
 
 # Tailscale
-BACKEND_URL=http://techcare
+BACKEND_URL=http://ce365
 NETWORK_METHOD=tailscale
 
 # VPN
@@ -94,17 +94,17 @@ NETWORK_METHOD=vpn
 - Lizenz-Ablaufdatum-Prüfung
 
 **Dateien:**
-- `techcare/core/license.py`: **NEU** - `LicenseValidator`, `validate_license()`
-- `techcare/core/bot.py`: `_check_license()` Methode
-- `techcare/setup/wizard.py`: `_ask_license_key()`
-- `techcare/config/settings.py`: `license_key`, `edition`
+- `ce365/core/license.py`: **NEU** - `LicenseValidator`, `validate_license()`
+- `ce365/core/bot.py`: `_check_license()` Methode
+- `ce365/setup/wizard.py`: `_ask_license_key()`
+- `ce365/config/settings.py`: `license_key`, `edition`
 - `.env.example`: `LICENSE_KEY`, `EDITION`
 
 **API-Endpoint (Backend):**
 ```
 POST /api/license/validate
 {
-  "license_key": "TECHCARE-PRO-BUSINESS-ABC123"
+  "license_key": "CE365-PRO-BUSINESS-ABC123"
 }
 
 Response:
@@ -120,11 +120,11 @@ Response:
 **Verwendung:**
 ```bash
 # Setup
-LICENSE_KEY=TECHCARE-PRO-BUSINESS-ABC123
+LICENSE_KEY=CE365-PRO-BUSINESS-ABC123
 EDITION=pro_business
 
 # Bei Start
-techcare
+ce365
 # > 🔑 Validiere Lizenz...
 # > ✓ Lizenz gültig: Pro Business
 ```
@@ -142,8 +142,8 @@ techcare
 - Metriken: CPU, RAM, Disk, Services, Updates, Errors, SMART
 
 **Dateien:**
-- `techcare/monitoring/sensor.py`: **NEU** - `SystemSensor` Klasse
-- `techcare/monitoring/service.py`: **NEU** - Service-Installation
+- `ce365/monitoring/sensor.py`: **NEU** - `SystemSensor` Klasse
+- `ce365/monitoring/service.py`: **NEU** - Service-Installation
 - `.env.example`: `SENSOR_INTERVAL`
 
 **Gesammelte Metriken:**
@@ -156,22 +156,22 @@ techcare
 **Installation als Service:**
 ```bash
 # Windows
-python -m techcare.monitoring.service
+python -m ce365.monitoring.service
 # > Windows Service installiert!
 
 # macOS
-python -m techcare.monitoring.service
+python -m ce365.monitoring.service
 # > LaunchDaemon installiert!
 
 # Linux
-python -m techcare.monitoring.service
+python -m ce365.monitoring.service
 # > systemd Service installiert!
 ```
 
 **Manuelle Ausführung:**
 ```bash
-python -m techcare.monitoring.sensor
-# > 🔍 TechCare Sensor gestartet (Interval: 300s)
+python -m ce365.monitoring.sensor
+# > 🔍 CE365 Sensor gestartet (Interval: 300s)
 # > [10:30:00] Sammle Metriken...
 # > [10:30:05] ✓ Metriken gesendet
 ```
@@ -190,9 +190,9 @@ python -m techcare.monitoring.sensor
 - Kritische vs. empfohlene Updates
 
 **Dateien:**
-- `techcare/tools/drivers/driver_manager.py`: **NEU** - `DriverManager` Klasse
-- `techcare/tools/drivers/driver_database.json`: **NEU** - Custom Driver DB
-- `techcare/tools/audit/drivers.py`: **NEU** - Audit Tool
+- `ce365/tools/drivers/driver_manager.py`: **NEU** - `DriverManager` Klasse
+- `ce365/tools/drivers/driver_database.json`: **NEU** - Custom Driver DB
+- `ce365/tools/audit/drivers.py`: **NEU** - Audit Tool
 
 **Verwendung im Bot:**
 ```
@@ -217,7 +217,7 @@ Bot führt check_drivers aus:
 
 **Custom Database erweitern:**
 
-Bearbeite `techcare/tools/drivers/driver_database.json`:
+Bearbeite `ce365/tools/drivers/driver_database.json`:
 ```json
 {
   "hardware_id": "PCI\\VEN_10DE&DEV_2206",
@@ -235,40 +235,40 @@ Bearbeite `techcare/tools/drivers/driver_database.json`:
 
 #### 6. **Deinstallation** 🗑️
 
-**Zweck:** Einfache Deinstallation von TechCare
+**Zweck:** Einfache Deinstallation von CE365
 
 **Features:**
-- Löscht .env, data/, ~/.techcare/
+- Löscht .env, data/, ~/.ce365/
 - User-Bestätigung erforderlich
 - Python-Package bleibt installiert (manuell deinstallieren)
 
 **Dateien:**
-- `techcare/__main__.py`: `uninstall()` Funktion
+- `ce365/__main__.py`: `uninstall()` Funktion
 
 **Verwendung:**
 ```bash
-techcare --uninstall
+ce365 --uninstall
 
-# > 🗑️  TechCare Deinstallation
+# > 🗑️  CE365 Deinstallation
 # > Folgende Daten werden gelöscht:
 # >   • .env Datei (API-Key, Konfiguration)
 # >   • data/ Verzeichnis (Sessions, Changelogs, Cases)
-# >   • ~/.techcare/ (User-Config, Cache)
+# >   • ~/.ce365/ (User-Config, Cache)
 # >
 # > Wirklich deinstallieren? [y/N]: y
 # >
 # > ✓ .env gelöscht
 # > ✓ data/ gelöscht
-# > ✓ ~/.techcare/ gelöscht
+# > ✓ ~/.ce365/ gelöscht
 # >
-# > ✅ TechCare erfolgreich deinstalliert!
+# > ✅ CE365 erfolgreich deinstalliert!
 ```
 
 ---
 
 ### 🔧 Änderungen an bestehenden Komponenten
 
-#### Setup-Wizard (`techcare/setup/wizard.py`)
+#### Setup-Wizard (`ce365/setup/wizard.py`)
 
 **Neue Fragen:**
 - Lizenzschlüssel (für Pro+)
@@ -281,7 +281,7 @@ techcare --uninstall
 - `_ask_network_connection()`
 - `_ask_technician_password()`
 
-#### Settings (`techcare/config/settings.py`)
+#### Settings (`ce365/config/settings.py`)
 
 **Neue Felder:**
 - `backend_url: str` - URL zum Backend
@@ -291,15 +291,15 @@ techcare --uninstall
 - `technician_password_hash: str` - bcrypt-Hash
 - `session_timeout: int` - Session-Timeout
 
-#### Bot (`techcare/core/bot.py`)
+#### Bot (`ce365/core/bot.py`)
 
 **Neue Methode:**
 - `async def _check_license()` - Prüft Lizenz beim Start
 
 **Neue Imports:**
-- `from techcare.core.license import validate_license, check_edition_features`
+- `from ce365.core.license import validate_license, check_edition_features`
 
-#### Main Entry (`techcare/__main__.py`)
+#### Main Entry (`ce365/__main__.py`)
 
 **Neue Funktionen:**
 - `verify_technician_password()` - Passwort-Check
@@ -307,7 +307,7 @@ techcare --uninstall
 - `set_password()` - Passwort setzen/ändern
 
 **Neue CLI-Argumente:**
-- `--uninstall` - Deinstalliert TechCare
+- `--uninstall` - Deinstalliert CE365
 - `--set-password` - Setzt/ändert Passwort
 - `--version` - Zeigt Version
 
@@ -350,7 +350,7 @@ pip install pywin32  # Windows Service Support
 ### 📁 Neue Dateien/Verzeichnisse
 
 ```
-techcare/
+ce365/
 ├── core/
 │   └── license.py                  # NEU - Lizenzvalidierung
 ├── monitoring/                      # NEU
@@ -382,8 +382,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=techcare_learning
-      - POSTGRES_USER=techcare
+      - POSTGRES_DB=ce365_learning
+      - POSTGRES_USER=ce365
       - POSTGRES_PASSWORD=secure_password
 
   redis:
@@ -392,7 +392,7 @@ services:
       - redis_data:/data
 
   license-server:
-    image: techcare/license-server:latest
+    image: ce365/license-server:latest
     environment:
       - DATABASE_URL=postgresql://...
 ```
@@ -419,27 +419,27 @@ services:
 ```bash
 # 1. Klone Repo
 git clone <repo>
-cd TechCare-Bot
+cd CE365-Bot
 
 # 2. Dependencies installieren
 pip install -e .
 
 # 3. Setup ausführen
-techcare
+ce365
 # Setup-Wizard startet automatisch
 
 # 4. Passwort setzen (optional)
-techcare --set-password
+ce365 --set-password
 
 # 5. Sensor-Service installieren (optional)
-python -m techcare.monitoring.service
+python -m ce365.monitoring.service
 ```
 
 #### Nutzung
 
 ```bash
 # Starten
-techcare
+ce365
 
 # Passwort eingeben (wenn gesetzt)
 # Bot startet
@@ -501,4 +501,4 @@ Siehe **HYBRID_ARCHITECTURE.md** für Details zur neuen Architektur.
 
 ---
 
-**Viel Erfolg mit TechCare Bot 2.0!** 🚀
+**Viel Erfolg mit CE365 Agent 2.0!** 🚀

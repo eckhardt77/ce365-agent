@@ -5,7 +5,7 @@ Testet Tool Registration, Lookup und Definition Export.
 """
 
 import pytest
-from techcare.tools.registry import ToolRegistry
+from ce365.tools.registry import ToolRegistry
 
 
 class TestToolRegistration:

@@ -1,4 +1,4 @@
-# TechCare Bot - Nutzungsanleitung
+# CE365 Agent - Nutzungsanleitung
 
 ## 🚀 Quick Start
 
@@ -6,23 +6,23 @@
 
 **Windows:**
 ```powershell
-cd C:\Users\<DeinName>\Documents\TechCare-Bot
+cd C:\Users\<DeinName>\Documents\CE365-Bot
 .\venv\Scripts\activate
-techcare
+ce365
 ```
 
 **macOS:**
 ```bash
-cd ~/Documents/TechCare-Bot
+cd ~/Documents/CE365-Bot
 source venv/bin/activate
-techcare
+ce365
 ```
 
 Du siehst dann:
 ```
 ╔════════════════════════════════════════╗
 ║                                        ║
-║       🔧 TechCare Bot v0.2.0 🔧       ║
+║       🔧 CE365 Agent v0.2.0 🔧       ║
 ║                                        ║
 ║   IT-Wartungs-Assistent für            ║
 ║   Windows & macOS Systeme              ║
@@ -36,7 +36,7 @@ Workflow: Audit → Analyse → Plan → GO REPAIR → Ausführung
 
 ## 📖 Workflow-Übersicht
 
-TechCare folgt einem **strengen 5-Phasen Workflow**:
+CE365 folgt einem **strengen 5-Phasen Workflow**:
 
 ```
 1. STARTFRAGEN        → Backup? Betriebssystem? Problem?
@@ -46,7 +46,7 @@ TechCare folgt einem **strengen 5-Phasen Workflow**:
 5. AUSFÜHRUNG         → Nach "GO REPAIR" Freigabe
 ```
 
-**WICHTIG**: TechCare ändert **NIE autonom** etwas an deinem System!
+**WICHTIG**: CE365 ändert **NIE autonom** etwas an deinem System!
 
 ---
 
@@ -57,8 +57,8 @@ TechCare folgt einem **strengen 5-Phasen Workflow**:
 ```
 You: Neuer Fall
 
-TechCare:
-🔧 TechCare - Neue Diagnose-Session
+CE365:
+🔧 CE365 - Neue Diagnose-Session
 ──────────────────────────────────────
 
 1. Existiert ein aktuelles Backup? (Ja/Nein/Unbekannt)
@@ -76,7 +76,7 @@ Windows 11.
 Windows Update Fehler 0x80070002.
 Neustart versucht, hat nicht geholfen.
 
-TechCare:
+CE365:
 ✓ Backup vorhanden - gut!
 ✓ Windows 11 erkannt
 
@@ -110,7 +110,7 @@ You:
 OS Name:                   Microsoft Windows 11 Pro
 OS Version:                10.0.22621 N/A Build 22621
 
-TechCare:
+CE365:
 [analysiert Output]
 
 Kommando 2:
@@ -124,7 +124,7 @@ sc query wuauserv
 Nach allen Audit-Kommandos:
 
 ```
-TechCare:
+CE365:
 🔍 DIAGNOSE
 ───────────
 Problem: Windows Update Service (wuauserv) läuft nicht
@@ -154,7 +154,7 @@ Bitte bestätige mit: GO REPAIR: 1,2
 ```
 You: GO REPAIR: 1
 
-TechCare:
+CE365:
 ✓ Freigabe erhalten für Schritt 1
 
 🔧 AUSFÜHRUNG - Schritt 1
@@ -188,7 +188,7 @@ SERVICE_NAME: wuauserv
 You:
 [Output kopiert]
 
-TechCare:
+CE365:
 ✓ Schritt 1 erfolgreich!
 
 📝 ÄNDERUNGSLOG - Schritt 1
@@ -214,7 +214,7 @@ Soll ich mit Schritt 2 fortfahren? (benötigt GO REPAIR: 2)
 ```
 You: Neuer Fall
 
-TechCare:
+CE365:
 [Startfragen...]
 
 You:
@@ -223,7 +223,7 @@ macOS Sequoia 15.
 WLAN verbunden, aber Websites laden nicht.
 Neustart versucht.
 
-TechCare:
+CE365:
 ✓ Backup vorhanden
 ✓ macOS Sequoia 15 erkannt
 
@@ -235,19 +235,19 @@ Kommando 1: sw_vers
 You:
 [führt aus und kopiert Output]
 
-TechCare:
+CE365:
 Kommando 2: networksetup -listallnetworkservices
 
 You:
 [führt aus und kopiert Output]
 
-TechCare:
+CE365:
 Kommando 3: scutil --dns
 
 You:
 [führt aus und kopiert Output]
 
-TechCare:
+CE365:
 🔍 DIAGNOSE
 ───────────
 Problem: DNS-Auflösung schlägt fehl
@@ -265,7 +265,7 @@ Bitte bestätige mit: GO REPAIR: 1
 
 You: GO REPAIR: 1
 
-TechCare:
+CE365:
 🔧 AUSFÜHRUNG - Schritt 1
 Kommando: sudo dscacheutil -flushcache
 
@@ -274,7 +274,7 @@ Kommando: sudo dscacheutil -flushcache
 You:
 [kein Output = erfolgreich]
 
-TechCare:
+CE365:
 ✓ Schritt 1 erfolgreich!
 DNS-Cache wurde geleert. Teste jetzt, ob Websites laden.
 ```
@@ -286,7 +286,7 @@ DNS-Cache wurde geleert. Teste jetzt, ob Websites laden.
 ```
 You: Neuer Fall
 
-TechCare: [Startfragen...]
+CE365: [Startfragen...]
 
 You:
 Ja Backup.
@@ -294,18 +294,18 @@ Windows 11.
 Druckaufträge hängen, nichts druckt.
 Drucker neu gestartet.
 
-TechCare:
+CE365:
 📋 AUDIT-PHASE
 Kommando 1: sc query Spooler
 
 You: [Output]
 
-TechCare:
+CE365:
 Kommando 2: Get-PrintJob -PrinterName * | Format-Table
 
 You: [Output]
 
-TechCare:
+CE365:
 🔍 DIAGNOSE
 Problem: Spooler Service läuft, aber Warteschlange blockiert
 Root Cause: Hängender Druckauftrag
@@ -328,7 +328,7 @@ Bitte bestätige mit: GO REPAIR: 1,2,3
 
 You: GO REPAIR: 1-3
 
-TechCare:
+CE365:
 [Führt Schritt 1 aus, wartet auf Output]
 [Führt Schritt 2 aus, wartet auf Output]
 [Führt Schritt 3 aus, wartet auf Output]
@@ -350,9 +350,9 @@ GO REPAIR: 1,3-5,7    # Gemischt: 1, 3, 4, 5, 7
 ```
 
 **WICHTIG**:
-- TechCare führt **nur freigegebene Schritte** aus
-- TechCare führt **nur EINEN Schritt auf einmal** aus
-- Nach jedem Schritt wartet TechCare auf deinen Output
+- CE365 führt **nur freigegebene Schritte** aus
+- CE365 führt **nur EINEN Schritt auf einmal** aus
+- Nach jedem Schritt wartet CE365 auf deinen Output
 
 ### Session-Befehle
 
@@ -368,20 +368,20 @@ q         # Session beenden
 
 ### Für jeden Fall:
 
-- [ ] **Backup-Check**: Hat TechCare nach Backup gefragt?
-- [ ] **Betriebssystem**: Hat TechCare OS erkannt?
-- [ ] **Audit-Phase**: Hat TechCare Kommandos einzeln gegeben?
-- [ ] **Nach Output gefragt**: Hat TechCare auf Output gewartet?
-- [ ] **Diagnose**: Hat TechCare Root Cause erklärt?
-- [ ] **Plan mit Risiko**: Hat TechCare Risiko angegeben?
-- [ ] **Rollback-Option**: Hat TechCare Rollback erklärt?
-- [ ] **GO REPAIR gefordert**: Hat TechCare explizit gefragt?
-- [ ] **Einzelschritt**: Hat TechCare nur 1 Schritt ausgeführt?
-- [ ] **Changelog**: Hat TechCare Änderungslog geschrieben?
+- [ ] **Backup-Check**: Hat CE365 nach Backup gefragt?
+- [ ] **Betriebssystem**: Hat CE365 OS erkannt?
+- [ ] **Audit-Phase**: Hat CE365 Kommandos einzeln gegeben?
+- [ ] **Nach Output gefragt**: Hat CE365 auf Output gewartet?
+- [ ] **Diagnose**: Hat CE365 Root Cause erklärt?
+- [ ] **Plan mit Risiko**: Hat CE365 Risiko angegeben?
+- [ ] **Rollback-Option**: Hat CE365 Rollback erklärt?
+- [ ] **GO REPAIR gefordert**: Hat CE365 explizit gefragt?
+- [ ] **Einzelschritt**: Hat CE365 nur 1 Schritt ausgeführt?
+- [ ] **Changelog**: Hat CE365 Änderungslog geschrieben?
 
 ---
 
-## 🚨 Was TechCare NIEMALS tut
+## 🚨 Was CE365 NIEMALS tut
 
 ❌ **Autonome Änderungen** - Keine Reparaturen ohne GO REPAIR
 ❌ **Mehrere Schritte parallel** - Immer nur 1 Schritt
@@ -392,7 +392,7 @@ q         # Session beenden
 ❌ **Firewall deaktivieren**
 ❌ **Backup erstellen** (nur informativ fragen)
 
-✅ **Was TechCare macht:**
+✅ **Was CE365 macht:**
 - Startfragen stellen (inkl. Backup-Check)
 - System analysieren (Read-Only)
 - Diagnose erstellen
@@ -444,17 +444,17 @@ cat output.txt
 
 Falls Output zu lang:
 ```
-TechCare fragt: "Bitte kopiere Output"
+CE365 fragt: "Bitte kopiere Output"
 
 Du kannst sagen:
 "Output ist sehr lang, soll ich nur relevante Zeilen kopieren?"
 
-TechCare wird dir sagen, welche Zeilen wichtig sind.
+CE365 wird dir sagen, welche Zeilen wichtig sind.
 ```
 
 ### 4. Session unterbrochen?
 
-Falls TechCare-Session abbricht:
+Falls CE365-Session abbricht:
 ```bash
 # Changelog anschauen
 cat data/changelogs/<session-id>.json
@@ -467,7 +467,7 @@ cat data/changelogs/<session-id>.json
 ```
 You: Ist Schritt X sicher?
 
-TechCare wird erklären:
+CE365 wird erklären:
 - Was genau passiert
 - Welches Risiko besteht
 - Wie man es rückgängig macht
@@ -510,20 +510,20 @@ Format:
 
 ## 🆘 Häufige Fragen
 
-### Q: TechCare macht nichts ohne meine Freigabe?
-**A**: Korrekt! TechCare führt **NIE** autonome Änderungen durch. Immer erst "GO REPAIR" abwarten.
+### Q: CE365 macht nichts ohne meine Freigabe?
+**A**: Korrekt! CE365 führt **NIE** autonome Änderungen durch. Immer erst "GO REPAIR" abwarten.
 
 ### Q: Kann ich einzelne Schritte überspringen?
 **A**: Ja! `GO REPAIR: 1,3` führt nur Schritt 1 und 3 aus, überspringt Schritt 2.
 
 ### Q: Was passiert bei Fehlern?
-**A**: TechCare stoppt sofort, analysiert Fehler, schlägt neuen Plan vor.
+**A**: CE365 stoppt sofort, analysiert Fehler, schlägt neuen Plan vor.
 
 ### Q: Werden meine Daten gelöscht?
 **A**: Nur nach expliziter GO REPAIR Freigabe für Temp/Cache. Niemals User-Daten.
 
 ### Q: Brauche ich Administrator-Rechte?
-**A**: Für manche Reparaturen (Services, System-Befehle) ja. TechCare warnt vorher.
+**A**: Für manche Reparaturen (Services, System-Befehle) ja. CE365 warnt vorher.
 
 ### Q: Kann ich mehrere Sessions parallel?
 **A**: Nein, immer nur eine Session gleichzeitig. Jede Session bekommt eigenes Changelog.
@@ -563,4 +563,4 @@ Bei Problemen:
 
 ---
 
-**Viel Erfolg mit TechCare Bot!** 🚀
+**Viel Erfolg mit CE365 Agent!** 🚀

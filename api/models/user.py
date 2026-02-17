@@ -1,5 +1,5 @@
 """
-TechCare Bot - User Model
+CE365 Agent - User Model
 """
 
 from sqlalchemy import Column, String, Boolean, DateTime, Integer

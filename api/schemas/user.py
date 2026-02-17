@@ -1,5 +1,5 @@
 """
-TechCare Bot - User Schemas
+CE365 Agent - User Schemas
 """
 
 from pydantic import BaseModel, EmailStr, Field, validator

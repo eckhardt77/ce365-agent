@@ -1,5 +1,5 @@
 """
-TechCare Bot - Logging Middleware
+CE365 Agent - Logging Middleware
 Request/Response Logging
 """
 

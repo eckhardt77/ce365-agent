@@ -1,4 +1,4 @@
-# TechCare Bot - Tailscale Deployment
+# CE365 Agent - Tailscale Deployment
 
 ## Überblick
 
@@ -14,7 +14,7 @@ Tailscale bietet ein Mesh VPN für sichere Peer-to-Peer Verbindungen:
 
 1. **Tailscale Account** (kostenlos)
 2. **Docker & Docker Compose** auf Server
-3. **TechCare Lizenz** (Pro Business oder Enterprise empfohlen)
+3. **CE365 Lizenz** (Pro Business oder Enterprise empfohlen)
 4. **Tailscale auf allen Techniker-Geräten** installiert
 
 ## Schritt 1: Tailscale Auth Key erstellen
@@ -27,7 +27,7 @@ Gehe zu: **https://login.tailscale.com/admin/settings/keys**
 
 1. Klicke auf **"Generate auth key"**
 2. Konfiguration:
-   - **Description**: `TechCare Bot Server`
+   - **Description**: `CE365 Agent Server`
    - **Reusable**: ❌ Nein (One-time use)
    - **Ephemeral**: ❌ Nein (bleibt dauerhaft)
    - **Pre-authenticated**: ✅ Ja (kein Browser Login nötig)
@@ -38,7 +38,7 @@ Gehe zu: **https://login.tailscale.com/admin/settings/keys**
 
 ⚠️ **WICHTIG**: Key wird nur EINMAL angezeigt - speichere ihn sicher!
 
-## Schritt 2: TechCare Installation
+## Schritt 2: CE365 Installation
 
 ### 2.1 Installer ausführen
 
@@ -66,7 +66,7 @@ Tailscale Auth Key: tskey-auth-...
 
 **4. Hostname:**
 ```
-Hostname für Tailscale: techcare
+Hostname für Tailscale: ce365
 ```
 
 **5. Anthropic API Key:**
@@ -118,12 +118,12 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 ### 3.3 Server im Tailscale Admin Panel
 
-Nach Installation erscheint der TechCare Server hier:
+Nach Installation erscheint der CE365 Server hier:
 
 **https://login.tailscale.com/admin/machines**
 
 Du solltest sehen:
-- **Name**: `techcare` (oder dein gewählter Hostname)
+- **Name**: `ce365` (oder dein gewählter Hostname)
 - **Status**: 🟢 Online
 - **IP**: `100.x.x.x` (Tailscale IP)
 
@@ -132,7 +132,7 @@ Du solltest sehen:
 ### 4.1 Tailscale IP ermitteln
 
 Im Tailscale Admin Panel:
-- Klicke auf den `techcare` Server
+- Klicke auf den `ce365` Server
 - Notiere die **Tailscale IP** (z.B. `100.64.1.5`)
 
 Oder auf dem Server:
@@ -140,12 +140,12 @@ Oder auf dem Server:
 docker-compose exec tailscale tailscale ip
 ```
 
-### 4.2 TechCare öffnen
+### 4.2 CE365 öffnen
 
 Auf jedem Techniker-Gerät (das mit Tailscale verbunden ist):
 
 ```
-http://techcare
+http://ce365
 ```
 
 oder mit IP:
@@ -156,7 +156,7 @@ http://100.64.1.5
 
 ### 4.3 Erfolg! 🎉
 
-Du solltest jetzt die TechCare Login-Seite sehen.
+Du solltest jetzt die CE365 Login-Seite sehen.
 
 ## Optional: MagicDNS aktivieren
 
@@ -165,7 +165,7 @@ Du solltest jetzt die TechCare Login-Seite sehen.
 MagicDNS ermöglicht es, Geräte per Name statt IP zu erreichen:
 
 - **Ohne MagicDNS**: `http://100.64.1.5`
-- **Mit MagicDNS**: `http://techcare`
+- **Mit MagicDNS**: `http://ce365`
 
 ### Aktivierung
 
@@ -173,7 +173,7 @@ MagicDNS ermöglicht es, Geräte per Name statt IP zu erreichen:
 2. Scrolle zu **"MagicDNS"**
 3. Klicke **"Enable MagicDNS"**
 
-Jetzt können alle Techniker `http://techcare` nutzen! ✨
+Jetzt können alle Techniker `http://ce365` nutzen! ✨
 
 ## Optional: Access Control Lists (ACLs)
 
@@ -182,24 +182,24 @@ Jetzt können alle Techniker `http://techcare` nutzen! ✨
 Tailscale ACLs erlauben granulare Kontrolle, wer auf was zugreifen darf.
 
 1. Gehe zu: **https://login.tailscale.com/admin/acls**
-2. Beispiel ACL für TechCare:
+2. Beispiel ACL für CE365:
 
 ```json
 {
   "groups": {
-    "group:techcare-team": ["user1@example.com", "user2@example.com"]
+    "group:ce365-team": ["user1@example.com", "user2@example.com"]
   },
   "acls": [
     {
       "action": "accept",
-      "src": ["group:techcare-team"],
-      "dst": ["techcare:80"]
+      "src": ["group:ce365-team"],
+      "dst": ["ce365:80"]
     }
   ]
 }
 ```
 
-Nur Mitglieder von `techcare-team` können auf TechCare zugreifen.
+Nur Mitglieder von `ce365-team` können auf CE365 zugreifen.
 
 ## Wartung & Management
 
@@ -211,12 +211,12 @@ docker-compose ps
 
 Alle Services sollten `Up` Status haben:
 ```
-techcare-api         Up
-techcare-web         Up
-techcare-postgres    Up
-techcare-redis       Up
-techcare-tailscale   Up
-techcare-nginx       Up
+ce365-api         Up
+ce365-web         Up
+ce365-postgres    Up
+ce365-redis       Up
+ce365-tailscale   Up
+ce365-nginx       Up
 ```
 
 ### Logs anzeigen
@@ -238,7 +238,7 @@ docker-compose exec tailscale tailscale status
 
 Output:
 ```
-100.64.1.5    techcare              user@   linux   -
+100.64.1.5    ce365              user@   linux   -
 100.64.2.10   laptop-tech1          user@   windows online
 100.64.3.15   laptop-tech2          user@   macOS   online
 ```
@@ -343,7 +343,7 @@ docker-compose restart tailscale
 │                  (100.64.0.0/10)                         │
 │                                                          │
 │  ┌────────────┐      ┌────────────┐     ┌────────────┐ │
-│  │ TechCare   │      │ Laptop     │     │ Laptop     │ │
+│  │ CE365   │      │ Laptop     │     │ Laptop     │ │
 │  │ Server     │◄────►│ Techniker 1│     │ Techniker 2│ │
 │  │ 100.64.1.5 │      │ 100.64.2.10│     │ 100.64.3.15│ │
 │  └────────────┘      └────────────┘     └────────────┘ │
@@ -390,5 +390,5 @@ Für die meisten Firmen ist der offizielle Tailscale Service besser!
 
 Bei Problemen:
 - 📖 Tailscale Docs: https://tailscale.com/kb/
-- 💬 TechCare Support: https://github.com/your-repo/techcare-bot/issues
-- 📧 Email: support@techcare.local
+- 💬 CE365 Support: https://github.com/your-repo/ce365-agent/issues
+- 📧 Email: support@ce365.local

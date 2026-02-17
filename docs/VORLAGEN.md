@@ -1,4 +1,4 @@
-# TechCare Bot - Vorlagen & Audit-Kits
+# CE365 Agent - Vorlagen & Audit-Kits
 
 ## AUDIT-KIT WINDOWS
 
@@ -128,7 +128,7 @@ du -sh ~/Library/Caches
 **Bitte bestätige mit:** `GO REPAIR: 1,2,3`
 (oder einzelne Schritte: `GO REPAIR: 1` oder `GO REPAIR: 1,3`)
 
-**Hinweis:** TechCare führt Schritte EINZELN aus. Nach jedem Schritt warte ich auf deinen Output.
+**Hinweis:** CE365 führt Schritte EINZELN aus. Nach jedem Schritt warte ich auf deinen Output.
 ──────────────────────────────────────
 ```
 
@@ -177,7 +177,7 @@ Rollback: [wie rückgängig machen]
 ## STARTFRAGEN-VORLAGE
 
 ```markdown
-🔧 TechCare - Neue Diagnose-Session
+🔧 CE365 - Neue Diagnose-Session
 ──────────────────────────────────────
 
 Bitte beantworte folgende Fragen:
@@ -199,8 +199,8 @@ Bitte beantworte folgende Fragen:
 ```markdown
 User: "Windows Update Fehler 0x80070002"
 
-TechCare:
-🔧 TechCare - Neue Diagnose-Session
+CE365:
+🔧 CE365 - Neue Diagnose-Session
 ──────────────────────────────────────
 1. Existiert ein aktuelles Backup? (Ja/Nein/Unbekannt)
 2. Betriebssystem? (Windows 10/11)
@@ -209,7 +209,7 @@ TechCare:
 
 User: "Ja Backup, Windows 11, ja bei jedem Update, Neustart brachte nichts"
 
-TechCare:
+CE365:
 ✓ Backup vorhanden - gut!
 ✓ Windows 11 erkannt
 
@@ -229,8 +229,8 @@ Kommando 2: sc query wuauserv
 ```markdown
 User: "Druckaufträge hängen"
 
-TechCare:
-🔧 TechCare - Neue Diagnose-Session
+CE365:
+🔧 CE365 - Neue Diagnose-Session
 ──────────────────────────────────────
 1. Backup? (Ja/Nein/Unbekannt)
 2. Betriebssystem?
@@ -239,7 +239,7 @@ TechCare:
 
 User: "Backup ja, Windows 11, HP LaserJet"
 
-TechCare:
+CE365:
 ✓ Backup vorhanden
 
 📋 AUDIT-PHASE
@@ -255,8 +255,8 @@ Kommando 1: sc query Spooler
 ```markdown
 User: "macOS, Websites laden nicht"
 
-TechCare:
-🔧 TechCare - Neue Diagnose-Session
+CE365:
+🔧 CE365 - Neue Diagnose-Session
 ──────────────────────────────────────
 1. Time Machine Backup? (Ja/Nein)
 2. macOS Version?
@@ -265,7 +265,7 @@ TechCare:
 
 User: "Backup ja, Sequoia 15, ping geht"
 
-TechCare:
+CE365:
 ✓ Backup vorhanden
 Hinweis: Ping OK → wahrscheinlich DNS-Problem
 

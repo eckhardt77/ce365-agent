@@ -1,5 +1,5 @@
 """
-TechCare Bot - Users Router
+CE365 Agent - Users Router
 User Management (Admin only)
 """
 

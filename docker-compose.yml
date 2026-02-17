@@ -4,18 +4,18 @@ services:
   # PostgreSQL Database (Shared Team Learning)
   postgres:
     image: postgres:15-alpine
-    container_name: techcare-postgres
+    container_name: ce365-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-techcare}
-      POSTGRES_USER: ${POSTGRES_USER:-techcare}
+      POSTGRES_DB: ${POSTGRES_DB:-ce365}
+      POSTGRES_USER: ${POSTGRES_USER:-ce365}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - techcare-internal
+      - ce365-internal
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-techcare}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ce365}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,23 +23,23 @@ services:
   # Redis (Session Storage & Caching)
   redis:
     image: redis:7-alpine
-    container_name: techcare-redis
+    container_name: ce365-redis
     restart: unless-stopped
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     networks:
-      - techcare-internal
+      - ce365-internal
     healthcheck:
       test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # TechCare API (FastAPI Backend)
+  # CE365 API (FastAPI Backend)
   api:
-    image: ${DOCKER_REGISTRY:-registry.techcare.local}/techcare-api:${VERSION:-latest}
-    container_name: techcare-api
+    image: ${DOCKER_REGISTRY:-registry.ce365.local}/ce365-api:${VERSION:-latest}
+    container_name: ce365-api
     restart: unless-stopped
     depends_on:
       postgres:
@@ -48,7 +48,7 @@ services:
         condition: service_healthy
     environment:
       # Database
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-techcare}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-techcare}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-ce365}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-ce365}
 
       # Redis
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
@@ -58,7 +58,7 @@ services:
       CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}
 
       # Edition & License
-      EDITION: ${EDITION:-community}
+      EDITION: ${EDITION:-free}
       LICENSE_KEY: ${LICENSE_KEY:-}
       LICENSE_SERVER_URL: ${LICENSE_SERVER_URL:-}
 
@@ -73,31 +73,31 @@ services:
       # Logging
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
-      - techcare_data:/app/data
-      - techcare_logs:/app/logs
+      - ce365_data:/app/data
+      - ce365_logs:/app/logs
     networks:
-      - techcare-internal
-      - techcare-external
+      - ce365-internal
+      - ce365-external
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # TechCare Web UI (React/Next.js Frontend)
+  # CE365 Web UI (React/Next.js Frontend)
   web:
-    image: ${DOCKER_REGISTRY:-registry.techcare.local}/techcare-web:${VERSION:-latest}
-    container_name: techcare-web
+    image: ${DOCKER_REGISTRY:-registry.ce365.local}/ce365-web:${VERSION:-latest}
+    container_name: ce365-web
     restart: unless-stopped
     depends_on:
       - api
     environment:
       NEXT_PUBLIC_API_URL: ${API_URL:-http://api:8000}
-      NEXT_PUBLIC_APP_NAME: TechCare Bot
-      NEXT_PUBLIC_EDITION: ${EDITION:-community}
+      NEXT_PUBLIC_APP_NAME: CE365 Agent
+      NEXT_PUBLIC_EDITION: ${EDITION:-free}
     networks:
-      - techcare-internal
-      - techcare-external
+      - ce365-internal
+      - ce365-external
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
@@ -107,7 +107,7 @@ services:
   # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
-    container_name: techcare-nginx
+    container_name: ce365-nginx
     restart: unless-stopped
     depends_on:
       - web
@@ -120,7 +120,7 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - nginx_cache:/var/cache/nginx
     networks:
-      - techcare-external
+      - ce365-external
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
@@ -130,38 +130,38 @@ services:
   # Cloudflare Tunnel (Optional - Profile: cloudflare)
   cloudflared:
     image: cloudflare/cloudflared:latest
-    container_name: techcare-cloudflared
+    container_name: ce365-cloudflared
     restart: unless-stopped
     command: tunnel --no-autoupdate run
     environment:
       TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
     networks:
-      - techcare-external
+      - ce365-external
     profiles:
       - cloudflare
 
   # Tailscale (Optional - Profile: tailscale)
   tailscale:
     image: tailscale/tailscale:latest
-    container_name: techcare-tailscale
+    container_name: ce365-tailscale
     restart: unless-stopped
     privileged: true
     environment:
       TS_AUTHKEY: ${TAILSCALE_AUTH_KEY}
-      TS_HOSTNAME: ${TAILSCALE_HOSTNAME:-techcare}
+      TS_HOSTNAME: ${TAILSCALE_HOSTNAME:-ce365}
       TS_STATE_DIR: /var/lib/tailscale
     volumes:
       - tailscale_data:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
     networks:
-      - techcare-external
+      - ce365-external
     profiles:
       - tailscale
 
   # Watchtower (Auto-Update)
   watchtower:
     image: containrrr/watchtower:latest
-    container_name: techcare-watchtower
+    container_name: ce365-watchtower
     restart: unless-stopped
     environment:
       WATCHTOWER_CLEANUP: "true"
@@ -173,15 +173,15 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - techcare-internal
+      - ce365-internal
     profiles:
       - autoupdate
 
 networks:
-  techcare-internal:
+  ce365-internal:
     driver: bridge
     internal: true
-  techcare-external:
+  ce365-external:
     driver: bridge
 
 volumes:
@@ -189,9 +189,9 @@ volumes:
     driver: local
   redis_data:
     driver: local
-  techcare_data:
+  ce365_data:
     driver: local
-  techcare_logs:
+  ce365_logs:
     driver: local
   tailscale_data:
     driver: local

@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-TechCare Bot - Live API Test
+CE365 Agent - Live API Test
 
 Testet den Bot mit echtem Anthropic API Key
 """
 
 import asyncio
-from techcare.core.bot import TechCareBot
-from techcare.config.system_prompt import get_system_prompt
+from ce365.core.bot import CE365Bot
+from ce365.config.system_prompt import get_system_prompt
 
 async def live_test():
     """Live-Test mit echtem API Key"""
 
     print("\n" + "="*80)
-    print("  LIVE API TEST - TechCare Bot")
+    print("  LIVE API TEST - CE365 Agent")
     print("="*80 + "\n")
 
     try:
         # Bot initialisieren
-        print("Initialisiere TechCare Bot...")
-        bot = TechCareBot()
+        print("Initialisiere CE365 Agent...")
+        bot = CE365Bot()
         print(f"✓ Bot initialisiert (Session: {bot.session.session_id})")
         print(f"✓ Model: {bot.client.model}")
         print(f"✓ Tools: {len(bot.tool_registry)}")
@@ -78,7 +78,7 @@ async def live_test():
         print("="*80)
         print()
         print("ERWARTETES VERHALTEN:")
-        print("  ✓ TechCare sollte STARTFRAGEN stellen")
+        print("  ✓ CE365 sollte STARTFRAGEN stellen")
         print("  ✓ Erste Frage sollte BACKUP-CHECK sein")
         print("  ✓ Alle Antworten sollten auf DEUTSCH sein")
         print()

@@ -1,5 +1,5 @@
 """
-TechCare Bot - License Service
+CE365 Agent - License Service
 License Validation (RSA Signature)
 """
 
@@ -32,7 +32,7 @@ async def validate_license(license_key: Optional[str]) -> bool:
     logger.warning("License validation not implemented - accepting all keys")
 
     # Pseudo validation
-    if license_key.startswith("TECHCARE-"):
+    if license_key.startswith("CE365-"):
         return True
 
     return False

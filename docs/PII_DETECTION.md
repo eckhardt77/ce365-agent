@@ -8,7 +8,7 @@
 
 **PII = Personally Identifiable Information** (Personenbezogene Daten)
 
-TechCare Bot nutzt **Microsoft Presidio**, um automatisch sensible Informationen zu erkennen und zu anonymisieren:
+CE365 Agent nutzt **Microsoft Presidio**, um automatisch sensible Informationen zu erkennen und zu anonymisieren:
 
 - 📧 **Email-Adressen**
 - 📱 **Telefonnummern**
@@ -340,7 +340,7 @@ PII_DETECTION_LEVEL=high
 
 ## 🎁 **Enterprise Features (Pro Version)**
 
-In TechCare Pro geplant:
+In CE365 Pro geplant:
 
 - 🔄 **De-Anonymization** - Original-Daten für Techniker abrufbar (mit Berechtigung)
 - 📊 **PII Dashboard** - Statistiken über erkannte PII

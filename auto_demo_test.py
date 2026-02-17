@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""TechCare Bot - Automatischer Demo Test"""
+"""CE365 Agent - Automatischer Demo Test"""
 
 import asyncio
-from techcare.tools.audit.system_info import SystemInfoTool
-from techcare.tools.repair.service_manager import ServiceManagerTool
-from techcare.tools.registry import ToolRegistry
-from techcare.workflow.state_machine import WorkflowStateMachine, WorkflowState
-from techcare.workflow.lock import ExecutionLock
-from techcare.storage.changelog import ChangelogWriter
-from techcare.ui.console import RichConsole
-from techcare.config.system_prompt import get_system_prompt
+from ce365.tools.audit.system_info import SystemInfoTool
+from ce365.tools.repair.service_manager import ServiceManagerTool
+from ce365.tools.registry import ToolRegistry
+from ce365.workflow.state_machine import WorkflowStateMachine, WorkflowState
+from ce365.workflow.lock import ExecutionLock
+from ce365.storage.changelog import ChangelogWriter
+from ce365.ui.console import RichConsole
+from ce365.config.system_prompt import get_system_prompt
 
 console = RichConsole()
 
@@ -22,7 +22,7 @@ def print_section(title: str):
 
 async def auto_demo_test():
     console.display_logo()
-    console.display_info("AUTO-DEMO: TechCare Bot Komponenten-Test")
+    console.display_info("AUTO-DEMO: CE365 Agent Komponenten-Test")
     console.display_separator()
 
     # 1. SYSTEM PROMPT

@@ -4,8 +4,8 @@ Test-Skript für Learning System
 """
 
 import asyncio
-from techcare.learning.case_library import CaseLibrary, Case
-from techcare.ui.console import RichConsole
+from ce365.learning.case_library import CaseLibrary, Case
+from ce365.ui.console import RichConsole
 
 console = RichConsole()
 

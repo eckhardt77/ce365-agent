@@ -19,9 +19,9 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from techcare.learning.case_library import CaseLibrary, Case
-from techcare.learning.database import get_db_manager, CaseModel, KeywordModel
-from techcare.config.settings import get_settings
+from ce365.learning.case_library import CaseLibrary, Case
+from ce365.learning.database import get_db_manager, CaseModel, KeywordModel
+from ce365.config.settings import get_settings
 
 
 def migrate_sqlite_to_remote(source_db: str):
@@ -201,7 +201,7 @@ def export_cases_to_json(source_db: str, output_file: str = "cases_export.json")
 
 def main():
     parser = argparse.ArgumentParser(
-        description="TechCare Case Migration Tool",
+        description="CE365 Case Migration Tool",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:

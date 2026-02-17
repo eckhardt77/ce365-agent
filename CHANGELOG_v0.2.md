@@ -1,4 +1,4 @@
-# TechCare Bot - Changelog v0.2.0
+# CE365 Agent - Changelog v0.2.0
 
 ## 🎉 Wichtige Updates (2026-02-17)
 
@@ -17,7 +17,7 @@
 - ✅ **Backup-Check** bei jedem neuen Fall (PFLICHT)
   - "Existiert ein aktuelles Backup?"
   - Bei "Nein": Warnung ausgeben
-  - NUR informativ, KEINE Backup-Aktionen durch TechCare
+  - NUR informativ, KEINE Backup-Aktionen durch CE365
 - ✅ Betriebssystem-Abfrage
 - ✅ Problem-Beschreibung
 - ✅ Bereits durchgeführte Schritte
@@ -170,7 +170,7 @@ Teste folgende Szenarien:
 2. **Bot starten** und testen:
    ```bash
    source venv/bin/activate
-   techcare
+   ce365
    ```
 
 3. **Test-Szenario** (z.B. Windows Update Problem):
@@ -183,8 +183,8 @@ Teste folgende Szenarien:
 
 ## 🔗 Referenzen
 
-- `techcare/config/system_prompt.py` - Überarbeiteter System Prompt
-- `techcare/storage/changelog.py` - Neues Changelog-Format
+- `ce365/config/system_prompt.py` - Überarbeiteter System Prompt
+- `ce365/storage/changelog.py` - Neues Changelog-Format
 - `docs/VORLAGEN.md` - Alle Templates und Audit-Kits
 - `README.md` - Aktualisierte Dokumentation
 

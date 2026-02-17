@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-TechCare Bot - Live API Test Phase 2
+CE365 Agent - Live API Test Phase 2
 Testet Audit-Phase mit Tool Use
 """
 
 import asyncio
-from techcare.core.bot import TechCareBot
+from ce365.core.bot import CE365Bot
 
 async def live_test_phase2():
     """Test Phase 2: Audit mit Tool Use"""
@@ -15,7 +15,7 @@ async def live_test_phase2():
     print("="*80 + "\n")
 
     try:
-        bot = TechCareBot()
+        bot = CE365Bot()
         print(f"✓ Bot initialisiert (Session: {bot.session.session_id})\n")
 
         # Phase 1: Startfragen
@@ -56,11 +56,11 @@ Bereits versucht: Neustart, aber Problem besteht."""
         print("="*80)
         print()
         print("ERWARTETES VERHALTEN:")
-        print("  ✓ TechCare sollte Backup bestätigen")
-        print("  ✓ TechCare sollte macOS erkennen")
-        print("  ✓ TechCare sollte AUDIT-KIT macOS verwenden")
-        print("  ✓ TechCare sollte get_system_info Tool aufrufen")
-        print("  ✓ TechCare sollte nach Output fragen")
+        print("  ✓ CE365 sollte Backup bestätigen")
+        print("  ✓ CE365 sollte macOS erkennen")
+        print("  ✓ CE365 sollte AUDIT-KIT macOS verwenden")
+        print("  ✓ CE365 sollte get_system_info Tool aufrufen")
+        print("  ✓ CE365 sollte nach Output fragen")
         print()
 
     except Exception as e:

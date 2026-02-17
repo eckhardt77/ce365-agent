@@ -1,4 +1,4 @@
-# TechCare Bot - Technische Projektbeschreibung
+# CE365 Agent - Technische Projektbeschreibung
 
 **AI-Powered IT Maintenance Assistant**
 
@@ -8,7 +8,7 @@ Version: 1.0.0 | Status: Production Ready | Lizenz: MIT + Non-Commercial
 
 ## 📋 Executive Summary
 
-TechCare Bot ist ein Python-basierter KI-Wartungs-Assistent der IT-Technikern hilft, Windows- und macOS-Systeme zu diagnostizieren und zu reparieren. Das Projekt nutzt Anthropic's Claude API für natürliche Sprachverarbeitung und intelligente Problemanalyse, kombiniert mit einem strikten Sicherheitsmodell (GO REPAIR Lock) das autonome Systemänderungen verhindert.
+CE365 Agent ist ein Python-basierter KI-Wartungs-Assistent der IT-Technikern hilft, Windows- und macOS-Systeme zu diagnostizieren und zu reparieren. Das Projekt nutzt Anthropic's Claude API für natürliche Sprachverarbeitung und intelligente Problemanalyse, kombiniert mit einem strikten Sicherheitsmodell (GO REPAIR Lock) das autonome Systemänderungen verhindert.
 
 **Kernmetriken:**
 - 34 Tools (20 Audit, 13 Repair, 1 Analysis)
@@ -30,7 +30,7 @@ TechCare Bot ist ein Python-basierter KI-Wartungs-Assistent der IT-Technikern hi
                   │
                   ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    TechCare Bot (Core)                       │
+│                    CE365 Agent (Core)                       │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
 │  │   UI Layer   │  │ State Machine│  │  Translator  │      │
 │  │ (Rich Console)│  │  (Workflow)  │  │    (i18n)    │      │
@@ -116,8 +116,8 @@ Malware Scanner:
 ## 📂 Projektstruktur
 
 ```
-techcare-bot/
-├── techcare/                          # Hauptmodul
+ce365-agent/
+├── ce365/                          # Hauptmodul
 │   ├── core/                         # Kernfunktionalität
 │   │   ├── bot.py                   # Tool Use Loop, Orchestrierung
 │   │   ├── client.py                # Anthropic API Wrapper
@@ -289,13 +289,13 @@ from presidio_anonymizer import AnonymizerEngine
 
 ```python
 # macOS: Keychain Access
-keyring.set_password("TechCare-Bot", "anthropic_api_key", api_key)
+keyring.set_password("CE365-Bot", "anthropic_api_key", api_key)
 
 # Windows: Credential Manager
-keyring.set_password("TechCare-Bot", "anthropic_api_key", api_key)
+keyring.set_password("CE365-Bot", "anthropic_api_key", api_key)
 
 # Linux: Secret Service (gnome-keyring)
-keyring.set_password("TechCare-Bot", "anthropic_api_key", api_key)
+keyring.set_password("CE365-Bot", "anthropic_api_key", api_key)
 
 # Fallback: .env (mit Migration-Prompt)
 ```
@@ -431,7 +431,7 @@ def find_similar_case(self, current_problem: str) -> Optional[Case]:
 
 ```python
 # Translator Singleton
-from techcare.i18n import get_translator
+from ce365.i18n import get_translator
 
 t = get_translator()
 
@@ -441,7 +441,7 @@ print(t.t("errors.api_key_missing"))
 print(t.t("malware.scan_complete", threats=5))
 
 # Sprache ändern
-from techcare.i18n import set_language
+from ce365.i18n import set_language
 set_language("en")  # Wechselt zu Englisch
 ```
 
@@ -517,22 +517,22 @@ tests/e2e/test_windows_update_scenario.py
 
 ```bash
 # One-Command Install
-curl -fsSL https://techcare-bot.de/install.sh | bash
+curl -fsSL https://ce365-agent.de/install.sh | bash
 
 # Was passiert:
 1. Python 3.9+ Check
 2. Virtual Environment erstellen
 3. Dependencies installieren (pip install -r requirements.txt)
 4. Spacy Model downloaden (de_core_news_sm)
-5. TechCare Bot installieren (pip install -e .)
+5. CE365 Agent installieren (pip install -e .)
 6. API Key Setup (beim ersten Start)
 ```
 
 ### **Development Setup**
 
 ```bash
-git clone https://github.com/yourusername/techcare-bot.git
-cd techcare-bot
+git clone https://github.com/yourusername/ce365-agent.git
+cd ce365-agent
 
 python3 -m venv venv
 source venv/bin/activate
@@ -609,5 +609,5 @@ pytest
 
 ---
 
-**TechCare Bot v1.0.0** - Production Ready
+**CE365 Agent v1.0.0** - Production Ready
 *Copyright © 2026 Carsten Eckhardt / Eckhardt-Marketing*

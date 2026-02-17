@@ -1,5 +1,5 @@
 """
-TechCare Bot - Conversation Schemas
+CE365 Agent - Conversation Schemas
 """
 
 from pydantic import BaseModel, Field

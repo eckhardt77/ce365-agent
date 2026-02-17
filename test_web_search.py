@@ -10,7 +10,7 @@ Testet:
 """
 
 import asyncio
-from techcare.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
+from ce365.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 
 
 async def test_web_search():

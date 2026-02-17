@@ -1,5 +1,5 @@
 """
-TechCare Bot - FastAPI Backend
+CE365 Agent - FastAPI Backend
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 """
 
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Lifecycle: Startup & Shutdown"""
     # Startup
-    logger.info("🚀 TechCare Bot API starting...")
+    logger.info("🚀 CE365 Agent API starting...")
     logger.info(f"Edition: {settings.edition.upper()}")
     logger.info(f"Environment: {settings.environment}")
 
@@ -49,14 +49,14 @@ async def lifespan(app: FastAPI):
     yield
 
     # Shutdown
-    logger.info("🛑 TechCare Bot API shutting down...")
+    logger.info("🛑 CE365 Agent API shutting down...")
     await close_db()
     logger.info("✓ Database connections closed")
 
 
 # FastAPI App
 app = FastAPI(
-    title="TechCare Bot API",
+    title="CE365 Agent API",
     version="1.0.0",
     description="AI-powered IT-Wartungsassistent",
     lifespan=lifespan,
@@ -110,7 +110,7 @@ app.include_router(learning.router, prefix="/api/learning", tags=["Learning"])
 async def root():
     """Root endpoint"""
     return {
-        "name": "TechCare Bot API",
+        "name": "CE365 Agent API",
         "version": "1.0.0",
         "edition": settings.edition,
         "status": "running"

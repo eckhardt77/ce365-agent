@@ -1,5 +1,5 @@
 """
-TechCare Bot - Configuration
+CE365 Agent - Configuration
 Settings Management mit Pydantic
 """
 
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     edition: str = Field(default="free", env="EDITION")
     license_key: Optional[str] = Field(default=None, env="LICENSE_KEY")
     license_server_url: Optional[str] = Field(
-        default="https://license.techcare.local",
+        default="https://license.ce365.local",
         env="LICENSE_SERVER_URL"
     )
 
@@ -33,7 +33,7 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = Field(
-        default="postgresql+asyncpg://techcare:password@postgres:5432/techcare",
+        default="postgresql+asyncpg://ce365:password@postgres:5432/ce365",
         env="DATABASE_URL"
     )
 
@@ -70,20 +70,30 @@ class Settings(BaseSettings):
     # Data Directory
     data_dir: Path = Field(default=Path("/app/data"), env="DATA_DIR")
 
-    # Edition Limits
+    # Edition Limits (per-seat licensing)
     @property
-    def max_repairs_per_month(self) -> Optional[int]:
-        """Max repairs per month based on edition"""
+    def max_remediation_runs_per_month(self) -> Optional[int]:
+        """Max remediation runs per month based on edition"""
         if self.edition == "free":
             return 5
         return None  # Unlimited for paid editions
 
     @property
-    def max_users(self) -> Optional[int]:
-        """Max users based on edition"""
-        if self.edition in ["free", "pro"]:
-            return 1
-        return None  # Unlimited for business
+    def max_concurrent_sessions(self) -> int:
+        """Max concurrent repair sessions per seat (always 1)"""
+        return 1
+
+    @property
+    def max_systems_per_month(self) -> Optional[int]:
+        """Max active systems per 30-day window"""
+        if self.edition == "pro":
+            return 10
+        return None  # Free: unlimited (eval), Business: unlimited
+
+    @property
+    def commercial_use_allowed(self) -> bool:
+        """Commercial use requires Pro or Business"""
+        return self.edition in ["pro", "business"]
 
     @property
     def shared_learning_enabled(self) -> bool:

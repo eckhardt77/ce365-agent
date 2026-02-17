@@ -30,16 +30,16 @@ Der Setup-Wizard wird **automatisch beim ersten Start** ausgeführt, wenn noch k
 ### 1. Erster Start (ohne .env)
 
 ```bash
-techcare
+ce365
 ```
 
 Der Wizard startet automatisch:
 
 ```
 ╔════════════════════════════════════════════════════════════════╗
-║  🔧 TechCare Bot - Einrichtungsassistent                       ║
+║  🔧 CE365 Agent - Einrichtungsassistent                       ║
 ║                                                                ║
-║  Willkommen! Lass uns TechCare Bot einrichten.                ║
+║  Willkommen! Lass uns CE365 Agent einrichten.                ║
 ║  Das dauert nur 2 Minuten.                                    ║
 ╚════════════════════════════════════════════════════════════════╝
 
@@ -87,7 +87,7 @@ Der Wizard startet automatisch:
 
 ```
 4. Briefing / Use-Case (optional)
-   Beschreibe kurz wofür du TechCare nutzt
+   Beschreibe kurz wofür du CE365 nutzt
    Beispiel: 'Windows-Support für 50 Clients'
 
    Briefing: IT-Support für Büro, hauptsächlich Windows
@@ -109,13 +109,13 @@ API Key jetzt testen? [Y/n]: y
 ╔════════════════════════════════════════════════════════════════╗
 ║  ✅ Setup abgeschlossen!                                        ║
 ║                                                                ║
-║  Willkommen, Max Mustermann! TechCare Bot ist jetzt           ║
+║  Willkommen, Max Mustermann! CE365 Agent ist jetzt           ║
 ║  einsatzbereit.                                               ║
 ║                                                                ║
 ║  Starte mit: Neuer Fall                                       ║
 ╚════════════════════════════════════════════════════════════════╝
 
-TechCare Bot v0.2 - AI IT-Wartungsassistent
+CE365 Agent v0.2 - AI IT-Wartungsassistent
 ...
 ```
 
@@ -125,7 +125,7 @@ Nach dem Setup wird automatisch `.env` erstellt:
 
 ```bash
 # ============================================================================
-# TechCare Bot - Konfiguration
+# CE365 Agent - Konfiguration
 # ============================================================================
 # User: Max Mustermann
 # Firma: IT-Abteilung GmbH
@@ -153,15 +153,15 @@ Um den Setup-Wizard erneut auszuführen:
 # .env löschen oder umbenennen
 mv .env .env.old
 
-# TechCare starten
-techcare
+# CE365 starten
+ce365
 ```
 
 Der Wizard startet automatisch.
 
 ## Setup überspringen
 
-Falls `.env` bereits existiert, startet TechCare direkt ohne Setup-Wizard.
+Falls `.env` bereits existiert, startet CE365 direkt ohne Setup-Wizard.
 
 ## Manuelle Konfiguration
 
@@ -175,7 +175,7 @@ cp .env.example .env
 nano .env  # oder Editor deiner Wahl
 ```
 
-Dann startet TechCare ohne Wizard.
+Dann startet CE365 ohne Wizard.
 
 ## Abbruch
 
@@ -197,7 +197,7 @@ Setup abgebrochen.
 ❌ API Key Test fehlgeschlagen: Invalid API key
 
 ⚠️  API Key konnte nicht getestet werden.
-   Du kannst TechCare trotzdem nutzen.
+   Du kannst CE365 trotzdem nutzen.
 
 Trotzdem fortfahren? [Y/n]:
 ```
@@ -242,9 +242,9 @@ Der Test-Request:
 
 ## Code-Referenz
 
-**Setup-Wizard:** `techcare/setup/wizard.py`
+**Setup-Wizard:** `ce365/setup/wizard.py`
 
-**Integration:** `techcare/__main__.py` (Zeile 15-18)
+**Integration:** `ce365/__main__.py` (Zeile 15-18)
 
 ```python
 # Setup-Wizard (falls .env nicht existiert)

@@ -1,6 +1,6 @@
 # Remote DB Setup - Team Learning
 
-**TechCare Learning System mit zentraler PostgreSQL Datenbank**
+**CE365 Learning System mit zentraler PostgreSQL Datenbank**
 
 Alle Techniker im Team teilen die gleiche Case Library → Jeder lernt von allen!
 
@@ -47,7 +47,7 @@ cat >> .env << EOF
 
 # Learning System - Remote DB
 LEARNING_DB_TYPE=postgresql
-LEARNING_DB_URL=postgresql://techcare:change_this_password@localhost:5432/techcare_learning
+LEARNING_DB_URL=postgresql://ce365:change_this_password@localhost:5432/ce365_learning
 LEARNING_DB_FALLBACK=data/cases.db
 EOF
 ```
@@ -115,9 +115,9 @@ sudo systemctl enable postgresql
 sudo -u postgres psql
 
 # In psql:
-CREATE DATABASE techcare_learning;
-CREATE USER techcare WITH ENCRYPTED PASSWORD 'dein_sicheres_password';
-GRANT ALL PRIVILEGES ON DATABASE techcare_learning TO techcare;
+CREATE DATABASE ce365_learning;
+CREATE USER ce365 WITH ENCRYPTED PASSWORD 'dein_sicheres_password';
+GRANT ALL PRIVILEGES ON DATABASE ce365_learning TO ce365;
 \q
 ```
 
@@ -128,7 +128,7 @@ GRANT ALL PRIVILEGES ON DATABASE techcare_learning TO techcare;
 sudo nano /etc/postgresql/14/main/pg_hba.conf
 
 # Folgende Zeile hinzufügen (am Ende):
-host    techcare_learning    techcare    0.0.0.0/0    md5
+host    ce365_learning    ce365    0.0.0.0/0    md5
 
 # postgresql.conf bearbeiten
 sudo nano /etc/postgresql/14/main/postgresql.conf
@@ -158,7 +158,7 @@ Auf jedem Techniker-Laptop `.env` erstellen:
 ```bash
 # .env
 LEARNING_DB_TYPE=postgresql
-LEARNING_DB_URL=postgresql://techcare:password@192.168.1.100:5432/techcare_learning
+LEARNING_DB_URL=postgresql://ce365:password@192.168.1.100:5432/ce365_learning
 LEARNING_DB_FALLBACK=data/cases_local.db
 ```
 
@@ -173,13 +173,13 @@ LEARNING_DB_FALLBACK=data/cases_local.db
 ### **Managed PostgreSQL Services:**
 
 1. **AWS RDS**
-   - URL: `postgresql://user:pass@xxx.rds.amazonaws.com:5432/techcare`
+   - URL: `postgresql://user:pass@xxx.rds.amazonaws.com:5432/ce365`
 
 2. **Azure Database for PostgreSQL**
-   - URL: `postgresql://user@server:pass@xxx.postgres.database.azure.com:5432/techcare`
+   - URL: `postgresql://user@server:pass@xxx.postgres.database.azure.com:5432/ce365`
 
 3. **Google Cloud SQL**
-   - URL: `postgresql://user:pass@xxx/techcare`
+   - URL: `postgresql://user:pass@xxx/ce365`
 
 4. **DigitalOcean Managed Databases**
    - URL: Wird im Dashboard angezeigt
@@ -210,18 +210,18 @@ python tools/migrate_cases.py --source data/cases.db --export cases_backup.json
 
 ```bash
 # Manuelles Backup
-docker exec techcare-learning-db pg_dump -U techcare techcare_learning > backups/learning_$(date +%Y%m%d).sql
+docker exec ce365-learning-db pg_dump -U ce365 ce365_learning > backups/learning_$(date +%Y%m%d).sql
 
 # Restore
-cat backups/learning_20260217.sql | docker exec -i techcare-learning-db psql -U techcare techcare_learning
+cat backups/learning_20260217.sql | docker exec -i ce365-learning-db psql -U ce365 ce365_learning
 ```
 
 ### **Automatisches Backup (Cronjob)**
 
 ```bash
-# /etc/cron.daily/techcare-backup
+# /etc/cron.daily/ce365-backup
 #!/bin/bash
-docker exec techcare-learning-db pg_dump -U techcare techcare_learning > /path/to/backups/learning_$(date +%Y%m%d).sql
+docker exec ce365-learning-db pg_dump -U ce365 ce365_learning > /path/to/backups/learning_$(date +%Y%m%d).sql
 
 # Nur letzte 30 Tage behalten
 find /path/to/backups -name "learning_*.sql" -mtime +30 -delete
@@ -235,7 +235,7 @@ find /path/to/backups -name "learning_*.sql" -mtime +30 -delete
 
 ```bash
 # Von Laptop aus
-psql "postgresql://techcare:password@server-ip:5432/techcare_learning" -c "SELECT COUNT(*) FROM cases;"
+psql "postgresql://ce365:password@server-ip:5432/ce365_learning" -c "SELECT COUNT(*) FROM cases;"
 ```
 
 ### **pgAdmin Web-Interface**
@@ -244,17 +244,17 @@ psql "postgresql://techcare:password@server-ip:5432/techcare_learning" -c "SELEC
 http://localhost:5050
 
 Login:
-  Email: admin@techcare.local
+  Email: admin@ce365.local
   Password: admin (ändern!)
 
 Server hinzufügen:
   Host: learning-db
   Port: 5432
-  User: techcare
+  User: ce365
   Password: [dein_password]
 ```
 
-### **TechCare Test**
+### **CE365 Test**
 
 ```bash
 python test_remote_db.py
@@ -299,7 +299,7 @@ sudo ufw status
 **Lösung:**
 ```bash
 # Password überprüfen
-docker exec -it techcare-learning-db psql -U techcare -d techcare_learning
+docker exec -it ce365-learning-db psql -U ce365 -d ce365_learning
 
 # Wenn Zugriff funktioniert, .env prüfen
 cat .env | grep LEARNING_DB_URL
@@ -311,7 +311,7 @@ cat .env | grep LEARNING_DB_URL
 
 **Ursache:** Remote-DB nicht erreichbar
 
-**TechCare Verhalten:**
+**CE365 Verhalten:**
 - ✓ Funktioniert weiter mit lokalem SQLite
 - ⚠️ Kein Team-Learning
 - ℹ️ Versucht bei jedem Start erneut Remote zu verbinden
@@ -319,7 +319,7 @@ cat .env | grep LEARNING_DB_URL
 **Lösung:**
 ```bash
 # Remote-DB Status prüfen
-python -c "from techcare.learning.database import get_db_manager; print('Remote:', get_db_manager().is_remote())"
+python -c "from ce365.learning.database import get_db_manager; print('Remote:', get_db_manager().is_remote())"
 
 # Retry manuell
 python test_remote_db.py  # Testet Connection
@@ -354,7 +354,7 @@ python test_remote_db.py  # Testet Connection
 
 3. **Monitoring:**
    - pgAdmin für DB-Übersicht
-   - Regelmäßig Stats checken: `techcare stats`
+   - Regelmäßig Stats checken: `ce365 stats`
 
 ---
 
@@ -363,9 +363,9 @@ python test_remote_db.py  # Testet Connection
 Nach Setup sollte jeder Techniker sehen:
 
 ```bash
-$ techcare
+$ ce365
 
-✓ Remote Learning-DB verbunden: postgresql://techcare:****@server:5432/techcare_learning
+✓ Remote Learning-DB verbunden: postgresql://ce365:****@server:5432/ce365_learning
 💡 Learning: 237 Fälle gespeichert, 1453 Wiederverwendungen
 ```
 

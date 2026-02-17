@@ -50,7 +50,7 @@
 Funktioniert ohne Konfiguration:
 
 ```bash
-techcare
+ce365
 # ✓ Lokales SQLite Learning-DB: data/cases.db
 ```
 
@@ -66,7 +66,7 @@ docker-compose -f docker-compose.learning-db.yml up -d
 **2. .env konfigurieren:**
 ```bash
 LEARNING_DB_TYPE=postgresql
-LEARNING_DB_URL=postgresql://techcare:your_password@localhost:5432/techcare_learning
+LEARNING_DB_URL=postgresql://ce365:your_password@localhost:5432/ce365_learning
 ```
 
 **3. Bestehende Cases migrieren:**
@@ -76,8 +76,8 @@ python tools/migrate_cases.py --source data/cases.db --target remote
 
 **4. Fertig!**
 ```bash
-techcare
-# ✓ Remote Learning-DB verbunden: postgresql://techcare:****@localhost:5432/techcare_learning
+ce365
+# ✓ Remote Learning-DB verbunden: postgresql://ce365:****@localhost:5432/ce365_learning
 ```
 
 ---
@@ -89,7 +89,7 @@ techcare
 **Zentrale DB:**
 ```
 Server: 192.168.1.100
-DB: techcare_learning
+DB: ce365_learning
 Cases: 0 (Start)
 ```
 
@@ -100,13 +100,13 @@ Cases: 0 (Start)
 
 **Tag 2:**
 - Techniker B hat gleiches Problem
-- TechCare erkennt bekannte Lösung
+- CE365 erkennt bekannte Lösung
 - Techniker B spart 10 Minuten
 - Reuse-Counter: +1
 
 **Tag 3:**
 - Techniker C hat ähnliches Problem
-- TechCare bietet Lösung an
+- CE365 bietet Lösung an
 - 85% Ähnlichkeit
 - Techniker C wählt: Schnelle Lösung
 - Cases: 1, Reuses: 2
@@ -228,7 +228,7 @@ python test_remote_db.py
 docker ps | grep learning-db
 
 # 2. Manuelle Connection testen
-psql "postgresql://techcare:pass@localhost:5432/techcare_learning"
+psql "postgresql://ce365:pass@localhost:5432/ce365_learning"
 
 # 3. Wenn ok → Migration erneut
 python tools/migrate_cases.py --source data/cases.db --target remote
@@ -275,8 +275,8 @@ pip install -r requirements.txt
 ## 📚 **Files Übersicht**
 
 ### **Neu:**
-- `techcare/learning/database.py` - DB Abstraction Layer
-- `techcare/learning/case_library.py` - SQLAlchemy Version (alt→ case_library_old.py)
+- `ce365/learning/database.py` - DB Abstraction Layer
+- `ce365/learning/case_library.py` - SQLAlchemy Version (alt→ case_library_old.py)
 - `docker-compose.learning-db.yml` - PostgreSQL Server
 - `tools/migrate_cases.py` - Migration Tool
 - `docs/REMOTE_DB_SETUP.md` - Setup Guide
@@ -284,7 +284,7 @@ pip install -r requirements.txt
 
 ### **Geändert:**
 - `requirements.txt` - SQLAlchemy + psycopg2
-- `techcare/config/settings.py` - DB Config
+- `ce365/config/settings.py` - DB Config
 - `.env.example` - DB Env-Vars
 
 ---

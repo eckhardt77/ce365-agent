@@ -1,4 +1,4 @@
-# TechCare Bot - Edition Vergleich (v2.0.0)
+# CE365 Agent - Edition Vergleich (v2.0.0)
 
 **Community vs. Pro vs. Pro Business vs. Enterprise - Welche passt zu Ihnen?**
 
@@ -146,9 +146,9 @@ Perfekt für:
 **ROI-Beispiel:**
 ```
 Freelancer (€100/h Stundensatz):
-- 1 Kunde/Tag gespart durch TechCare = 2h × €100 = €200/Tag
+- 1 Kunde/Tag gespart durch CE365 = 2h × €100 = €200/Tag
 - 20 Arbeitstage/Monat = €4.000/Monat gespart
-- TechCare Kosten: €49/Monat
+- CE365 Kosten: €49/Monat
 - ROI: 8.063% (!!)
 ```
 
@@ -181,9 +181,9 @@ Perfekt für:
 ```
 IT-Techniker mit 15 Kunden:
 - 30 Tickets/Monat × 2h = 60h
-- Mit TechCare: 30 Tickets × 45min = 22,5h
+- Mit CE365: 30 Tickets × 45min = 22,5h
 - Ersparnis: 37,5h × €80/h = €3.000/Monat
-- TechCare Kosten: €99/Monat
+- CE365 Kosten: €99/Monat
 - ROI: 3.030%
 
 ODER: 2 zusätzliche Kunden pro Monat möglich
@@ -211,7 +211,7 @@ ODER: 2 zusätzliche Kunden pro Monat möglich
 🧠 **KILLER-FEATURE: Geteilte Wissensdatenbank**
 Jeder Techniker trägt zu einer gemeinsamen Learning-DB bei!
 - Techniker A löst Problem bei Kunde 1 → Lösung wird gespeichert
-- Techniker B bekommt gleiches Problem bei Kunde 2 → TechCare schlägt bewährte Lösung vor
+- Techniker B bekommt gleiches Problem bei Kunde 2 → CE365 schlägt bewährte Lösung vor
 - Je mehr Techniker arbeiten, desto schlauer wird das System
 - Team lernt gemeinsam, nicht jeder für sich!
 
@@ -263,7 +263,7 @@ MSP mit 20 Technikern:
 ## 🎯 Welche Edition passt zu mir?
 
 ### **Community Edition - Wenn...**
-- ✅ Du TechCare **testen** willst
+- ✅ Du CE365 **testen** willst
 - ✅ Du **privat** max 10 Reparaturen/Monat brauchst
 - ✅ Du als **Hobby-Admin** arbeitest
 - ✅ Du **open source** bevorzugst
@@ -438,13 +438,13 @@ Vertragslaufzeit: 12 Monate (danach monatlich kündbar)
 ### **Community Edition**
 ```
 🆓 Einfach downloaden:
-   https://techcare-bot.de/download
+   https://ce365-agent.de/download
 ```
 
 ### **Pro Edition**
 ```
 💼 Online kaufen:
-   https://techcare-bot.de/pricing
+   https://ce365-agent.de/pricing
 
 📧 Fragen? sales@eckhardt-marketing.de
 ```
@@ -454,7 +454,7 @@ Vertragslaufzeit: 12 Monate (danach monatlich kündbar)
 🏢 Individuelles Angebot:
    📧 Email: enterprise@eckhardt-marketing.de
    📞 Telefon: +49 (0) XXX XXXXXXX
-   📅 Demo buchen: https://techcare-bot.de/demo
+   📅 Demo buchen: https://ce365-agent.de/demo
 ```
 
 ---
@@ -505,7 +505,7 @@ Ein Repair-Tool-Aufruf (z.B. Service-Restart, Disk-Cleanup). Audit-Tools (System
 ### **Kann ich von Pro/Pro Business auf Enterprise upgraden?**
 ✅ Ja, jederzeit. Bereits gezahlter Betrag wird anteilig angerechnet. Enterprise benötigt mindestens 3 Lizenzen.
 
-### **Funktioniert TechCare offline?**
+### **Funktioniert CE365 offline?**
 ⚠️ Teilweise. Audit-Tools ja, aber Claude API benötigt Internet.
 
 ### **Sind meine Daten sicher?**
@@ -531,10 +531,10 @@ Ein Repair-Tool-Aufruf (z.B. Service-Restart, Disk-Cleanup). Audit-Tools (System
 ---
 
 **Jetzt starten:**
-- 🆓 Community: [Download](https://techcare-bot.de/download)
-- 💼 Pro: [30 Tage kostenlos testen](https://techcare-bot.de/trial)
-- 🔧 Pro Business: [30 Tage kostenlos testen](https://techcare-bot.de/trial-business)
-- 🏢 Enterprise: [Demo buchen](https://techcare-bot.de/demo)
+- 🆓 Community: [Download](https://ce365-agent.de/download)
+- 💼 Pro: [30 Tage kostenlos testen](https://ce365-agent.de/trial)
+- 🔧 Pro Business: [30 Tage kostenlos testen](https://ce365-agent.de/trial-business)
+- 🏢 Enterprise: [Demo buchen](https://ce365-agent.de/demo)
 
 ---
 

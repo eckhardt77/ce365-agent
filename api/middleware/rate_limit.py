@@ -1,5 +1,5 @@
 """
-TechCare Bot - Rate Limit Middleware
+CE365 Agent - Rate Limit Middleware
 Simple in-memory rate limiting
 """
 

@@ -1,14 +1,16 @@
-# TechCare Bot - Edition Features v2.1.0
+# CE365 Agent - Edition Features v2.2.0
 
-## Feature-Matrix nach Edition
+## Lizenzmodell: Per-Seat (pro Techniker)
 
-| | **Free** (0 EUR) | **Pro** (49 EUR/Mo) | **Business** (99 EUR/Mo) |
+| | **Free** (0 EUR) | **Pro** (49 EUR/Seat/Mo) | **Business** (99 EUR/Seat/Mo) |
 |---|---|---|---|
-| **Preis** | **Kostenlos** | **49 EUR/Monat** | **99 EUR/Monat** |
+| **Lizenz** | Keine nötig | Pro Techniker | Pro Techniker |
+| **Nutzung** | Evaluation / Privat | Kommerziell | Kommerziell / Team |
+| **Aktive Sessions** | 1 | 1 | 1 pro Seat |
 
 ---
 
-## Basis-Audit (alle Editionen)
+## Basis-Diagnose (alle Editionen)
 
 | Feature | Free | Pro | Business |
 |---------|------|-----|----------|
@@ -19,17 +21,18 @@
 | **Backup-Status** | ✅ | ✅ | ✅ |
 | **Security-Audit** | ✅ | ✅ | ✅ |
 | **Startup-Programme** | ✅ | ✅ | ✅ |
+| **AI-Diagnose** (eigener API-Key) | ✅ | ✅ | ✅ |
 
 ---
 
-## Basis-Repair (alle Editionen)
+## Basis-Remediation (alle Editionen)
 
 | Feature | Free | Pro | Business |
 |---------|------|-----|----------|
 | **Service-Manager** | ✅ | ✅ | ✅ |
 | **Disk-Cleanup** | ✅ | ✅ | ✅ |
 | **DNS-Flush** | ✅ | ✅ | ✅ |
-| **Reparaturen/Monat** | **5** | **Unbegrenzt** | **Unbegrenzt** |
+| **Remediation Runs/Monat** | **5** | **Unbegrenzt** | **Unbegrenzt** |
 
 ---
 
@@ -66,9 +69,18 @@
 
 | Feature | Free | Pro | Business |
 |---------|------|-----|----------|
-| **AI-Diagnose** (Claude) | ✅ | ✅ | ✅ |
 | **Web-Suche** (Problemlösung) | ❌ | ✅ | ✅ |
 | **Root-Cause-Analyse** | ❌ | ✅ | ✅ |
+
+---
+
+## Limits & Sessions
+
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **Aktive Systeme / 30 Tage** | Unbegrenzt | 10 | Unbegrenzt |
+| **Gleichzeitige Sessions** | 1 | 1 | 1 pro Seat |
+| **Kommerzielle Nutzung** | ❌ | ✅ | ✅ |
 
 ---
 
@@ -82,13 +94,14 @@
 
 ---
 
-## Multi-System & Team (nur Business)
+## Monitoring & Team (nur Business)
 
 | Feature | Free | Pro | Business |
 |---------|------|-----|----------|
-| **Max. Systeme** | 1 | 1 | Unbegrenzt |
-| **Monitoring-Sensor** | ❌ | ❌ | ✅ |
-| **Team-Features** | ❌ | ❌ | ✅ |
+| **Monitoring-Sensor** (Dauerbetrieb) | ❌ | ❌ | ✅ |
+| **Policies & Runbooks** | ❌ | ❌ | ✅ |
+| **Team-Branding** | ❌ | ❌ | ✅ |
+| **Shared Learning** | ❌ | ❌ | ✅ |
 
 ---
 
@@ -117,7 +130,7 @@
 ## Upgrade-Path
 
 ```
-Free (0 EUR)  →  Pro (49 EUR/Mo)  →  Business (99 EUR/Mo)
+Free (0 EUR)  →  Pro (49 EUR/Seat/Mo)  →  Business (99 EUR/Seat/Mo)
 ```
 
 **Upgrade jederzeit möglich, keine Vertragsbindung (monatlich kündbar)**
@@ -126,23 +139,26 @@ Free (0 EUR)  →  Pro (49 EUR/Mo)  →  Business (99 EUR/Mo)
 
 ## Empfehlung nach Use-Case
 
-### Privatnutzer / Hobby
+### Evaluation / Privatnutzer
 → **Free Edition**
-- Basis-Diagnose und einfache Reparaturen
-- 5 Reparaturen/Monat
+- Basis-Diagnose + AI
+- 5 Remediation Runs/Monat
+- Nicht-kommerzielle Nutzung
 
 ### Freiberufler / IT-Dienstleister
-→ **Pro Edition (49 EUR/Monat)**
+→ **Pro Edition (49 EUR/Seat/Monat)**
 - Alle Diagnose- und Repair-Tools
 - Web-Suche & Root-Cause-Analyse
-- Unbegrenzte Reparaturen
+- Bis 10 Systeme pro 30 Tage
+- 1 Seat = 1 Techniker
 
 ### MSP / IT-Abteilung / Teams
-→ **Business Edition (99 EUR/Monat)**
+→ **Business Edition (99 EUR/Seat/Monat)**
 - Unbegrenzte Systeme & Monitoring
 - Shared Learning (Team-Wissensdatenbank)
-- Team-Features
+- Policies, Runbooks, Branding
+- Mehrere Seats buchbar
 
 ---
 
-**Stand:** Februar 2026 | Version 2.1.0
+**Stand:** Februar 2026 | Version 2.2.0

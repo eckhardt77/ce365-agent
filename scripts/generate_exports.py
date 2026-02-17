@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TechCare Bot - Documentation Export Generator
+CE365 Agent - Documentation Export Generator
 
 Converts Markdown files to HTML and PDF with professional styling.
 
@@ -255,14 +255,14 @@ def markdown_to_html(md_content: str, title: str) -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{title} - TechCare Bot v2.0.0</title>
+    <title>{title} - CE365 Agent v2.0.0</title>
     <style>
         {CSS_STYLE}
     </style>
 </head>
 <body>
     <div class="header">
-        <strong>TechCare Bot v2.0.0</strong><br>
+        <strong>CE365 Agent v2.0.0</strong><br>
         {title}<br>
         Generiert: {now}
     </div>
@@ -270,9 +270,9 @@ def markdown_to_html(md_content: str, title: str) -> str:
     {html_content}
 
     <div class="footer">
-        <strong>TechCare Bot</strong> - AI-powered IT Maintenance Assistant<br>
+        <strong>CE365 Agent</strong> - AI-powered IT Maintenance Assistant<br>
         Copyright © 2026 Carsten Eckhardt / Eckhardt-Marketing<br>
-        <a href="https://techcare.eckhardt-marketing.de">techcare.eckhardt-marketing.de</a>
+        <a href="https://ce365.eckhardt-marketing.de">ce365.eckhardt-marketing.de</a>
     </div>
 </body>
 </html>
@@ -334,7 +334,7 @@ def export_file(file_info: dict):
 def main():
     """Main Entry Point"""
     print("=" * 60)
-    print("🔧 TechCare Bot - Documentation Export Generator")
+    print("🔧 CE365 Agent - Documentation Export Generator")
     print("=" * 60)
     print()
 

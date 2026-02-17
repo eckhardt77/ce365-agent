@@ -10,8 +10,8 @@ Testet den ECHTEN Bot-Flow:
 """
 
 import asyncio
-from techcare.core.bot import TechCareBot
-from techcare.learning.case_library import CaseLibrary, Case
+from ce365.core.bot import CE365Bot
+from ce365.learning.case_library import CaseLibrary, Case
 
 async def live_test_fixed():
     """Live-Test mit echtem Bot-Flow"""
@@ -88,7 +88,7 @@ Schritt 2: SoftwareDistribution Cache leeren
     print()
 
     # Bot initialisieren
-    bot = TechCareBot()
+    bot = CE365Bot()
 
     print("\n" + "="*80)
     print("  SIMULATION START")
@@ -141,7 +141,7 @@ Bereits versucht: Neustart, Windows Update Troubleshooter, aber Problem besteht.
             print("  ✅ ERFOLG! Learning System hat bekanntes Problem erkannt!")
             print("="*80)
             print()
-            print("TechCare hat eine bekannte Lösung angeboten!")
+            print("CE365 hat eine bekannte Lösung angeboten!")
             print("User könnte jetzt wählen:")
             print("  1 = Bewährte Lösung (schnell, ~2 Min)")
             print("  2 = Vollständiger Audit (gründlich, ~10 Min)")

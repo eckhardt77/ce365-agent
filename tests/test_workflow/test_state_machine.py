@@ -5,7 +5,7 @@ Testet alle State Transitions und Tool-Freigabe-Logik.
 """
 
 import pytest
-from techcare.workflow.state_machine import WorkflowStateMachine, WorkflowState
+from ce365.workflow.state_machine import WorkflowStateMachine, WorkflowState
 
 
 class TestWorkflowStates:

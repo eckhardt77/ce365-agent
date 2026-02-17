@@ -1,7 +1,7 @@
-# TechCare Bot - Tool Roadmap
+# CE365 Agent - Tool Roadmap
 
 ## Ziel
-TechCare soll ein **vollständiger IT-Wartungsassistent** sein der:
+CE365 soll ein **vollständiger IT-Wartungsassistent** sein der:
 - Analysiert
 - Optimiert
 - Updated
@@ -121,7 +121,7 @@ Installieren Updates
 
 ### Best Practices in System Prompt
 
-TechCare soll **automatisch wissen** was zu tun ist bei:
+CE365 soll **automatisch wissen** was zu tun ist bei:
 
 1. **Langsames System**
    - Prozesse prüfen

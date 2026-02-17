@@ -62,7 +62,7 @@ Success Rate: 100%
 
 ## 🏗️ Implementierte Komponenten
 
-### 1. `techcare/learning/case_library.py` ✅
+### 1. `ce365/learning/case_library.py` ✅
 
 **Classes:**
 - `Case`: Dataclass für gespeicherte Fälle
@@ -82,7 +82,7 @@ Success Rate: 100%
 
 ---
 
-### 2. `techcare/ui/console.py` (erweitert) ✅
+### 2. `ce365/ui/console.py` (erweitert) ✅
 
 **Neue Methoden:**
 - `display_known_solution()`: Bekannte Lösung anzeigen
@@ -90,7 +90,7 @@ Success Rate: 100%
 
 ---
 
-### 3. `techcare/core/bot.py` (integriert) ✅
+### 3. `ce365/core/bot.py` (integriert) ✅
 
 **Neue Features:**
 - Learning System initialisiert beim Start
@@ -125,7 +125,7 @@ User: "Windows Update Fehler 0x80070002"
 ```
 User: "Windows Update Fehler 0x80070002"
 
-TechCare:
+CE365:
 🎯 BEKANNTES PROBLEM ERKANNT!
 
 Ähnlichkeit: 100%
@@ -182,7 +182,7 @@ if similarity >= min_similarity (0.6):
 ```bash
 You: stats
 
-TechCare:
+CE365:
 📊 LEARNING SYSTEM STATISTIK
 
 Gespeicherte Fälle: 42
@@ -200,14 +200,14 @@ Wiederverwendungen: 127
 ## 📦 Dateien
 
 ### Neue Dateien:
-- ✅ `techcare/learning/__init__.py`
-- ✅ `techcare/learning/case_library.py` (450 Zeilen)
+- ✅ `ce365/learning/__init__.py`
+- ✅ `ce365/learning/case_library.py` (450 Zeilen)
 - ✅ `test_learning.py` (Test-Skript)
 - ✅ `docs/LEARNING_PHASE1_COMPLETE.md` (diese Datei)
 
 ### Geänderte Dateien:
-- ✅ `techcare/core/bot.py` (erweitert)
-- ✅ `techcare/ui/console.py` (erweitert)
+- ✅ `ce365/core/bot.py` (erweitert)
+- ✅ `ce365/ui/console.py` (erweitert)
 
 ### Datenbank:
 - ✅ `data/cases.db` (wird automatisch erstellt)
@@ -223,19 +223,19 @@ source venv/bin/activate
 python test_learning.py
 
 # 2. Bot starten und testen
-techcare
+ce365
 
 # 3. Erstes Problem (wird gespeichert)
 You: Neuer Fall
-TechCare: [Startfragen]
+CE365: [Startfragen]
 You: Ja Backup, Windows 11, Windows Update Fehler
 [... Audit, Plan, Repair ...]
 
 # 4. Zweites Mal gleiches Problem (wird erkannt!)
 You: Neuer Fall
-TechCare: [Startfragen]
+CE365: [Startfragen]
 You: Ja Backup, Windows 11, Windows Update Fehler
-TechCare: 🎯 BEKANNTES PROBLEM ERKANNT!
+CE365: 🎯 BEKANNTES PROBLEM ERKANNT!
 [... bietet bewährte Lösung ...]
 ```
 
@@ -290,14 +290,14 @@ TechCare: 🎯 BEKANNTES PROBLEM ERKANNT!
 ✅ Bot ist integriert
 ✅ Tests erfolgreich
 
-**TechCare kann jetzt aus vergangenen Fällen lernen!** 🧠
+**CE365 kann jetzt aus vergangenen Fällen lernen!** 🧠
 
 ---
 
 ## 📖 Nutzung
 
 ### Für User:
-1. Nutze TechCare normal
+1. Nutze CE365 normal
 2. Bei erfolgreichem Abschluss → Fall wird automatisch gespeichert
 3. Beim nächsten ähnlichen Problem → Bekommt bekannte Lösung angeboten
 4. Wähle: Bewährte Lösung (schnell) oder Full Audit (gründlich)

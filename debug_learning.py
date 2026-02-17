@@ -6,7 +6,7 @@ Zeigt Schritt-für-Schritt was bei der Similarity-Suche passiert
 """
 
 import sqlite3
-from techcare.learning.case_library import CaseLibrary
+from ce365.learning.case_library import CaseLibrary
 
 def debug_similarity_search():
     """Detailliertes Debugging der Similarity-Suche"""

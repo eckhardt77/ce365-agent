@@ -1,5 +1,5 @@
 """
-TechCare Bot - Chat Router
+CE365 Agent - Chat Router
 Chat Endpoints mit SSE Streaming
 """
 

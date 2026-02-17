@@ -1,4 +1,4 @@
-# 🔒 TechCare Bot - Security & Policy Audit Report
+# 🔒 CE365 Agent - Security & Policy Audit Report
 
 **Date:** 2026-02-17  
 **Version:** 1.0.0 Community Edition  
@@ -45,7 +45,7 @@
 - **Result:** 1 old file with potential issues
 - **Risk:** LOW (file not in use)
 - **Details:**
-  - `techcare/learning/case_library_old.py` - OLD VERSION, NOT USED
+  - `ce365/learning/case_library_old.py` - OLD VERSION, NOT USED
   - Current `case_library.py` uses SQLAlchemy ORM (safe)
   - All queries use parameterized statements
 
@@ -212,7 +212,7 @@ pip-audit
   - ✅ Attribution to Anthropic, Microsoft Presidio, Rich
 
 **Licenses:**
-- TechCare Bot: MIT + Non-Commercial
+- CE365 Agent: MIT + Non-Commercial
 - anthropic: MIT
 - presidio: MIT
 - rich: MIT
@@ -247,7 +247,7 @@ pip-audit
 - **Details:**
   - ✅ DISCLAIMER.txt (10-point haftungsausschluss)
   - ✅ ToS acceptance mandatory at first start
-  - ✅ Stored in `~/.techcare_tos_accepted`
+  - ✅ Stored in `~/.ce365_tos_accepted`
   - ✅ "AS IS" warranty disclaimer in LICENSE
   - ✅ No liability for damages, data loss, etc.
   - ✅ User responsibility emphasized
@@ -278,9 +278,9 @@ None ✅
 None ✅
 
 ### Medium Priority
-1. **Delete dead code:** `techcare/learning/case_library_old.py`
+1. **Delete dead code:** `ce365/learning/case_library_old.py`
    - Risk: Low (not used, but could confuse developers)
-   - Action: `rm techcare/learning/case_library_old.py`
+   - Action: `rm ce365/learning/case_library_old.py`
 
 ### Low Priority (Nice-to-Have)
 1. **Add pip-audit to CI/CD**
@@ -288,7 +288,7 @@ None ✅
    - Run weekly
    
 2. **Add .gitignore check**
-   - Ensure `.env`, `data/`, `.techcare_tos_accepted` not committed
+   - Ensure `.env`, `data/`, `.ce365_tos_accepted` not committed
 
 3. **Add SECURITY.md**
    - Responsible disclosure policy

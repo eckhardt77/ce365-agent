@@ -5,7 +5,7 @@ Testet das Parsing von GO REPAIR Befehlen und Schritt-Validierung.
 """
 
 import pytest
-from techcare.workflow.lock import ExecutionLock
+from ce365.workflow.lock import ExecutionLock
 
 
 class TestIsGoCommand:

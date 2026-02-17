@@ -1,8 +1,8 @@
-# TechCare Bot - Learning & Memory System
+# CE365 Agent - Learning & Memory System
 
 ## 🧠 Konzept-Übersicht
 
-TechCare soll aus vergangenen Fällen **lernen** und **bekannte Probleme schneller lösen**.
+CE365 soll aus vergangenen Fällen **lernen** und **bekannte Probleme schneller lösen**.
 
 ### Vision
 
@@ -13,7 +13,7 @@ Erstes Mal: "Windows Update Fehler 0x80070002"
 → Lösung gefunden: Service + Cache
 
 Zweites Mal: "Windows Update Fehler 0x80070002"
-→ TechCare erkennt Problem sofort!
+→ CE365 erkennt Problem sofort!
 → "Ich kenne dieses Problem bereits!"
 → Schnelle Lösung: 2 Minuten
 → Bietet bewährten Plan an
@@ -148,7 +148,7 @@ CREATE TABLE playbooks (
 ```
 1. User beschreibt Problem
    ↓
-2. TechCare sucht in Case Library
+2. CE365 sucht in Case Library
    - Keyword-Match
    - OS-Match
    - Error-Code-Match
@@ -165,7 +165,7 @@ CREATE TABLE playbooks (
 ### Implementation
 
 ```python
-# techcare/learning/case_library.py
+# ce365/learning/case_library.py
 
 import sqlite3
 from typing import Optional, List
@@ -443,7 +443,7 @@ RAG nutzt **Embeddings** für semantische Ähnlichkeitssuche.
 ### Implementation
 
 ```python
-# techcare/learning/rag.py
+# ce365/learning/rag.py
 
 from typing import List, Tuple
 import numpy as np
@@ -453,7 +453,7 @@ from chromadb.config import Settings
 
 class RAGSystem:
     """
-    RAG (Retrieval-Augmented Generation) für TechCare
+    RAG (Retrieval-Augmented Generation) für CE365
 
     Nutzt Sentence Transformers für Embeddings und
     ChromaDB für Vector Search
@@ -471,7 +471,7 @@ class RAGSystem:
 
         # Collection erstellen/laden
         self.collection = self.chroma_client.get_or_create_collection(
-            name="techcare_cases",
+            name="ce365_cases",
             metadata={"hnsw:space": "cosine"}
         )
 
@@ -557,11 +557,11 @@ chromadb>=0.4.0
 ### Implementation
 
 ```python
-# techcare/learning/context_builder.py
+# ce365/learning/context_builder.py
 
 from typing import List
-from techcare.learning.case_library import CaseLibrary, Case
-from techcare.learning.rag import RAGSystem
+from ce365.learning.case_library import CaseLibrary, Case
+from ce365.learning.rag import RAGSystem
 
 class SmartContextBuilder:
     """
@@ -622,17 +622,17 @@ class SmartContextBuilder:
 
 ---
 
-## 🔧 Integration in TechCare Bot
+## 🔧 Integration in CE365 Agent
 
 ### Änderungen in `bot.py`
 
 ```python
-# techcare/core/bot.py (erweitert)
+# ce365/core/bot.py (erweitert)
 
-from techcare.learning.case_library import CaseLibrary, Case
-from techcare.learning.context_builder import SmartContextBuilder
+from ce365.learning.case_library import CaseLibrary, Case
+from ce365.learning.context_builder import SmartContextBuilder
 
-class TechCareBot:
+class CE365Bot:
     def __init__(self):
         # ... existing code ...
 
@@ -737,7 +737,7 @@ Bitte antworte mit "1" oder "2".
 **Playbooks** = Vordefinierte Lösungen für häufige Probleme
 
 ```python
-# techcare/learning/playbooks.py
+# ce365/learning/playbooks.py
 
 from dataclasses import dataclass
 from typing import List
@@ -854,7 +854,7 @@ class PlaybookManager:
 ### Neue Ausgaben
 
 ```python
-# techcare/ui/console.py (erweitert)
+# ce365/ui/console.py (erweitert)
 
 def display_known_solution(self, case: Case):
     """Bekannte Lösung schön anzeigen"""
@@ -891,7 +891,7 @@ def display_known_solution(self, case: Case):
 ## 📊 Analytics & Reporting
 
 ```python
-# techcare/learning/analytics.py
+# ce365/learning/analytics.py
 
 class LearningAnalytics:
     """Analytics für Learning System"""
@@ -945,7 +945,7 @@ class LearningAnalytics:
         stats = self.get_statistics()
 
         print("\n" + "="*60)
-        print("  TECHCARE LEARNING SYSTEM - REPORT")
+        print("  CE365 LEARNING SYSTEM - REPORT")
         print("="*60)
         print(f"\n📊 Statistiken:")
         print(f"  Gespeicherte Fälle: {stats['total_cases']}")
@@ -996,7 +996,7 @@ class LearningAnalytics:
 
 ### Phase 5: Analytics (1-2 Tage)
 - ✅ Analytics-Dashboard
-- ✅ CLI-Command: `techcare stats`
+- ✅ CLI-Command: `ce365 stats`
 - ✅ Export-Funktion
 
 **Gesamt: ~2 Wochen**

@@ -6,11 +6,11 @@ Testet ob der Bot korrekt initialisiert wird: Tools registriert, State Machine b
 
 import pytest
 from unittest.mock import patch, MagicMock
-from techcare.tools.registry import ToolRegistry
-from techcare.tools.base import AuditTool, RepairTool
-from techcare.workflow.state_machine import WorkflowStateMachine, WorkflowState
-from techcare.workflow.lock import ExecutionLock
-from techcare.core.session import Session
+from ce365.tools.registry import ToolRegistry
+from ce365.tools.base import AuditTool, RepairTool
+from ce365.workflow.state_machine import WorkflowStateMachine, WorkflowState
+from ce365.workflow.lock import ExecutionLock
+from ce365.core.session import Session
 
 
 @pytest.mark.integration
@@ -19,13 +19,13 @@ class TestToolRegistration:
 
     def test_all_audit_tools_importable(self):
         """Prüft ob alle Audit-Tools importiert werden können"""
-        from techcare.tools.audit.system_info import SystemInfoTool
-        from techcare.tools.audit.logs import CheckSystemLogsTool
-        from techcare.tools.audit.processes import CheckRunningProcessesTool
-        from techcare.tools.audit.updates import CheckSystemUpdatesTool
-        from techcare.tools.audit.backup import CheckBackupStatusTool
-        from techcare.tools.audit.security import CheckSecurityStatusTool
-        from techcare.tools.audit.startup import CheckStartupProgramsTool
+        from ce365.tools.audit.system_info import SystemInfoTool
+        from ce365.tools.audit.logs import CheckSystemLogsTool
+        from ce365.tools.audit.processes import CheckRunningProcessesTool
+        from ce365.tools.audit.updates import CheckSystemUpdatesTool
+        from ce365.tools.audit.backup import CheckBackupStatusTool
+        from ce365.tools.audit.security import CheckSecurityStatusTool
+        from ce365.tools.audit.startup import CheckStartupProgramsTool
 
         tools = [
             SystemInfoTool(),
@@ -45,9 +45,9 @@ class TestToolRegistration:
 
     def test_all_repair_tools_importable(self):
         """Prüft ob alle Repair-Tools importiert werden können"""
-        from techcare.tools.repair.service_manager import ServiceManagerTool
-        from techcare.tools.repair.disk_cleanup import DiskCleanupTool
-        from techcare.tools.repair.network_tools import FlushDNSCacheTool, ResetNetworkStackTool
+        from ce365.tools.repair.service_manager import ServiceManagerTool
+        from ce365.tools.repair.disk_cleanup import DiskCleanupTool
+        from ce365.tools.repair.network_tools import FlushDNSCacheTool, ResetNetworkStackTool
 
         tools = [
             ServiceManagerTool(),
@@ -64,10 +64,10 @@ class TestToolRegistration:
 
     def test_registry_accepts_all_tools(self):
         """Prüft ob alle Tools ohne Konflikte registriert werden können"""
-        from techcare.tools.audit.system_info import SystemInfoTool
-        from techcare.tools.audit.logs import CheckSystemLogsTool
-        from techcare.tools.repair.disk_cleanup import DiskCleanupTool
-        from techcare.tools.repair.network_tools import FlushDNSCacheTool
+        from ce365.tools.audit.system_info import SystemInfoTool
+        from ce365.tools.audit.logs import CheckSystemLogsTool
+        from ce365.tools.repair.disk_cleanup import DiskCleanupTool
+        from ce365.tools.repair.network_tools import FlushDNSCacheTool
 
         registry = ToolRegistry()
         tools = [
@@ -86,7 +86,7 @@ class TestToolRegistration:
 
     def test_tool_definitions_valid_for_anthropic(self):
         """Prüft ob Tool-Definitionen das Anthropic-Format haben"""
-        from techcare.tools.audit.system_info import SystemInfoTool
+        from ce365.tools.audit.system_info import SystemInfoTool
 
         registry = ToolRegistry()
         registry.register(SystemInfoTool())
@@ -110,8 +110,8 @@ class TestWorkflowIntegration:
         sm = WorkflowStateMachine()
         registry = ToolRegistry()
 
-        from techcare.tools.audit.system_info import SystemInfoTool
-        from techcare.tools.repair.disk_cleanup import DiskCleanupTool
+        from ce365.tools.audit.system_info import SystemInfoTool
+        from ce365.tools.repair.disk_cleanup import DiskCleanupTool
 
         registry.register(SystemInfoTool())
         registry.register(DiskCleanupTool())

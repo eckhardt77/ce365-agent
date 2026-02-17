@@ -1,4 +1,4 @@
-# TechCare Bot - Tool Status Report
+# CE365 Agent - Tool Status Report
 
 **Generated:** 2026-02-17
 **Version:** v1.0.0
@@ -177,7 +177,7 @@ lxml>=5.0.0                 # XML Parsing
 
 3. **Test-Lauf durchführen:**
    ```bash
-   techcare
+   ce365
    > get system info
    > scan malware quick
    > analyze root cause "test problem"
@@ -199,7 +199,7 @@ Documentation:          100% ✅
 Testing:                 30% ⚠️
 ```
 
-**Overall:** TechCare Bot ist **funktional und einsatzbereit**, benötigt aber externe Dependencies (ClamAV) für volle Funktionalität.
+**Overall:** CE365 Agent ist **funktional und einsatzbereit**, benötigt aber externe Dependencies (ClamAV) für volle Funktionalität.
 
 ---
 

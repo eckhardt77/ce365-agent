@@ -1,12 +1,12 @@
 # ============================================================================
-# TechCare Bot - API Dockerfile
+# CE365 Agent - API Dockerfile
 # ============================================================================
 
 FROM python:3.11-slim
 
 LABEL maintainer="Carsten Eckhardt <carsten@eckhardt-marketing.de>"
 LABEL version="1.0.0"
-LABEL description="TechCare Bot API - FastAPI Backend"
+LABEL description="CE365 Agent API - FastAPI Backend"
 
 # Set working directory
 WORKDIR /app
@@ -35,8 +35,8 @@ RUN python -m spacy download de_core_news_md
 # Copy API code
 COPY api/ /app/api/
 
-# Copy TechCare core (für Tool-Logic)
-COPY techcare/ /app/techcare/
+# Copy CE365 core (für Tool-Logic)
+COPY ce365/ /app/ce365/
 
 # Create data directory
 RUN mkdir -p /app/data

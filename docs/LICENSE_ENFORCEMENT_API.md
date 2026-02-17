@@ -1,4 +1,4 @@
-# TechCare Bot - License Enforcement API Spezifikation
+# CE365 Agent - License Enforcement API Spezifikation
 
 ## Übersicht
 
@@ -13,7 +13,7 @@ Dieses Dokument beschreibt wie der License Server System-Limits enforcen soll.
 **Request:**
 ```json
 {
-  "license_key": "TECHCARE-PRO-ABC123",
+  "license_key": "CE365-PRO-ABC123",
   "system_fingerprint": "a3b5c7d9e1f2..." // Optional, SHA256-Hash
 }
 ```
@@ -155,7 +155,7 @@ User kann System manuell deregistrieren (z.B. bei Hardware-Wechsel):
 **Request:**
 ```json
 {
-  "license_key": "TECHCARE-PRO-ABC123",
+  "license_key": "CE365-PRO-ABC123",
   "system_fingerprint": "a3b5c7d9e1f2..."
 }
 ```
@@ -245,7 +245,7 @@ if cache_age > 24 hours:
 
 ### Lizenz-Übersicht
 ```
-Lizenz: TECHCARE-PRO-ABC123
+Lizenz: CE365-PRO-ABC123
 Edition: Pro
 Kunde: Max Mustermann
 Max. Systeme: 1
@@ -276,7 +276,7 @@ def revoke_license(license_key: str, reason: str):
 
 1. **Rate-Limiting:** Max 10 Validierungen pro Minute pro IP
 2. **Brute-Force-Schutz:** Nach 5 fehlgeschlagenen Versuchen → temporärer Block
-3. **Key-Format-Validierung:** `TECHCARE-{EDITION}-{RANDOM}`
+3. **Key-Format-Validierung:** `CE365-{EDITION}-{RANDOM}`
 4. **HTTPS erforderlich:** Alle API-Calls via HTTPS
 5. **API-Key für Backend:** License Server braucht Auth
 

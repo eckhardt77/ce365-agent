@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CE365 Agent - Installationsanleitung</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #ffffff;
+            --bg-alt: #f8fafc;
+            --bg-code: #1e293b;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent-green: #16a34a;
+            --accent-yellow: #d97706;
+            --accent-red: #dc2626;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        /* Layout */
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 280px;
+            background: var(--bg-alt);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        nav .logo {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        nav .logo h2 {
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        nav .logo span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        nav ul { list-style: none; }
+
+        nav ul li a {
+            display: block;
+            padding: 0.5rem 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        nav ul li.section-label {
+            padding: 1rem 1.5rem 0.3rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: 280px;
+            flex: 1;
+            max-width: 860px;
+            padding: 3rem 4rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        h1 + p { color: var(--text-muted); margin-bottom: 2.5rem; }
+
+        h2 {
+            font-size: 1.4rem;
+            margin: 3rem 0 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        h2:first-of-type { border-top: none; margin-top: 0; }
+
+        h3 {
+            font-size: 1.1rem;
+            margin: 2rem 0 0.75rem;
+            color: var(--text);
+        }
+
+        h4 {
+            font-size: 0.95rem;
+            margin: 1.5rem 0 0.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        p { margin-bottom: 1rem; }
+
+        /* Code */
+        pre {
+            background: var(--bg-code);
+            color: #e2e8f0;
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.875em;
+        }
+
+        p code, li code, td code {
+            background: #f1f5f9;
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+            color: #c026d3;
+            font-size: 0.85em;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.65rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-alt);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--text-muted);
+        }
+
+        tr:hover td { background: rgba(37, 99, 235, 0.02); }
+
+        /* Edition Table */
+        .edition-table th:nth-child(2),
+        .edition-table td:nth-child(2) { text-align: center; }
+        .edition-table th:nth-child(3),
+        .edition-table td:nth-child(3) { text-align: center; }
+        .edition-table th:nth-child(4),
+        .edition-table td:nth-child(4) { text-align: center; }
+
+        /* Lists */
+        ul, ol {
+            margin: 0.5rem 0 1.5rem 1.5rem;
+        }
+
+        li { margin-bottom: 0.3rem; }
+
+        /* Callouts */
+        .callout {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .callout-info {
+            background: #eff6ff;
+            border-left: 3px solid var(--primary);
+            color: #1e40af;
+        }
+
+        .callout-warning {
+            background: #fffbeb;
+            border-left: 3px solid var(--accent-yellow);
+            color: #92400e;
+        }
+
+        .callout-danger {
+            background: #fef2f2;
+            border-left: 3px solid var(--accent-red);
+            color: #991b1b;
+        }
+
+        .callout strong { display: block; margin-bottom: 0.25rem; }
+
+        /* Workflow Diagram */
+        .workflow {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .workflow .step {
+            background: var(--primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .workflow .arrow { color: var(--text-muted); font-size: 1.2rem; }
+
+        /* Links */
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.15em 0.5em;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            vertical-align: middle;
+        }
+
+        .badge-free { background: #dcfce7; color: #166534; }
+        .badge-pro { background: #dbeafe; color: #1e40af; }
+        .badge-business { background: #f3e8ff; color: #6b21a8; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            nav { display: none; }
+            main { margin-left: 0; padding: 2rem 1.5rem; }
+        }
+
+        @media print {
+            nav { display: none; }
+            main { margin-left: 0; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- Sidebar Navigation -->
+<nav>
+    <div class="logo">
+        <h2>CE365 Agent</h2>
+        <span>Installationsanleitung v1.0.0</span>
+    </div>
+    <ul>
+        <li class="section-label">Einstieg</li>
+        <li><a href="#voraussetzungen">Voraussetzungen</a></li>
+        <li><a href="#cli-installation">Option A: CLI-Installation</a></li>
+        <li><a href="#docker-installation">Option B: Docker-Installation</a></li>
+
+        <li class="section-label">Konfiguration</li>
+        <li><a href="#editionen">Editionen</a></li>
+        <li><a href="#konfiguration">Umgebungsvariablen</a></li>
+        <li><a href="#shared-learning-db">Shared Learning DB</a></li>
+
+        <li class="section-label">Nutzung</li>
+        <li><a href="#erster-start">Erster Start</a></li>
+        <li><a href="#workflow">Workflow</a></li>
+        <li><a href="#cli-befehle">CLI-Befehle</a></li>
+
+        <li class="section-label">Wartung</li>
+        <li><a href="#updates">Updates</a></li>
+        <li><a href="#deinstallation">Deinstallation</a></li>
+        <li><a href="#fehlerbehebung">Fehlerbehebung</a></li>
+    </ul>
+</nav>
+
+<!-- Main Content -->
+<main>
+
+<h1>CE365 Agent</h1>
+<p>AI-powered IT-Wartungsassistent &mdash; Installationsanleitung</p>
+
+<!-- Voraussetzungen -->
+<h2 id="voraussetzungen">Voraussetzungen</h2>
+
+<h3>Lokale Installation (CLI)</h3>
+<table>
+    <tr><th>Voraussetzung</th><th>Version</th></tr>
+    <tr><td>Python</td><td>&ge; 3.9</td></tr>
+    <tr><td>pip</td><td>aktuell</td></tr>
+    <tr><td>Betriebssystem</td><td>macOS oder Windows</td></tr>
+    <tr><td>Anthropic API Key</td><td><a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></td></tr>
+</table>
+
+<h3>Docker-Installation (Server/Team)</h3>
+<table>
+    <tr><th>Voraussetzung</th><th>Version</th></tr>
+    <tr><td>Docker</td><td>&ge; 20.10</td></tr>
+    <tr><td>Docker Compose</td><td>&ge; 2.0</td></tr>
+    <tr><td>Anthropic API Key</td><td><a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></td></tr>
+</table>
+
+<!-- CLI Installation -->
+<h2 id="cli-installation">Option A: Lokale Installation (CLI)</h2>
+
+<h3>1. Repository klonen</h3>
+<pre><code>git clone https://github.com/yourusername/ce365-agent.git
+cd ce365-agent</code></pre>
+
+<h3>2. Virtual Environment erstellen</h3>
+<pre><code># macOS / Linux
+python3 -m venv venv
+source venv/bin/activate
+
+# Windows
+python -m venv venv
+venv\Scripts\activate</code></pre>
+
+<h3>3. Abhängigkeiten installieren</h3>
+<pre><code>pip install -r requirements.txt</code></pre>
+
+<div class="callout callout-info">
+    <strong>PII-Detection (Presidio)</strong>
+    Die PII-Erkennung benötigt ein spaCy-Sprachmodell:
+    <code>python -m spacy download de_core_news_sm</code>
+</div>
+
+<h3>4. Konfiguration</h3>
+<p>Beim ersten Start führt ein <strong>Setup-Wizard</strong> durch die Konfiguration. Alternativ manuell:</p>
+<pre><code>cp .env.example .env</code></pre>
+<p><code>.env</code> bearbeiten und mindestens den API-Key setzen:</p>
+<pre><code>ANTHROPIC_API_KEY=sk-ant-dein-key-hier
+EDITION=free</code></pre>
+
+<h3>5. Starten</h3>
+<pre><code>python -m ce365</code></pre>
+
+<p>Der Setup-Wizard fragt beim ersten Start nach:</p>
+<ol>
+    <li>Name &amp; Firma</li>
+    <li>Edition (Free / Pro / Business)</li>
+    <li>Anthropic API Key</li>
+    <li>Lizenzschlüssel (nur Pro/Business)</li>
+    <li>Netzwerk-Konfiguration (nur Business)</li>
+    <li>Datenbank (nur Business)</li>
+    <li>Techniker-Passwort (optional)</li>
+</ol>
+
+<h3>6. Health-Check</h3>
+<pre><code>python -m ce365 --health</code></pre>
+<p>Prüft Python-Version, Dependencies, API-Verbindung und Konfiguration.</p>
+
+<!-- Docker Installation -->
+<h2 id="docker-installation">Option B: Docker-Installation (Server/Team)</h2>
+
+<h3>Interaktiver Installer (empfohlen)</h3>
+<pre><code>curl -O https://raw.githubusercontent.com/yourusername/ce365-agent/main/install.sh
+chmod +x install.sh
+./install.sh</code></pre>
+
+<p>Der Installer führt durch:</p>
+<ol>
+    <li>Editions-Auswahl &amp; Lizenzschlüssel</li>
+    <li>Netzwerkzugriff (Cloudflare / Tailscale / VPN / Lokal)</li>
+    <li>Anthropic API Key</li>
+    <li>Datenbank-Setup (Business)</li>
+    <li>Docker-Stack starten</li>
+</ol>
+
+<h3>Manuelle Docker-Installation</h3>
+<pre><code># Repository klonen
+git clone https://github.com/yourusername/ce365-agent.git
+cd ce365-agent
+
+# .env erstellen
+cp .env.docker.example .env
+
+# Sichere Passwörter generieren
+export POSTGRES_PASSWORD=$(openssl rand -base64 32)
+export REDIS_PASSWORD=$(openssl rand -base64 32)
+export SECRET_KEY=$(openssl rand -base64 32)
+export JWT_SECRET=$(openssl rand -base64 32)
+
+# .env bearbeiten: ANTHROPIC_API_KEY + Passwörter eintragen
+
+# Docker-Stack starten
+docker compose up -d</code></pre>
+
+<h3>Docker-Container</h3>
+<table>
+    <tr><th>Container</th><th>Beschreibung</th><th>Port</th></tr>
+    <tr><td><code>ce365-api</code></td><td>FastAPI Backend</td><td>intern 8000</td></tr>
+    <tr><td><code>ce365-web</code></td><td>Next.js Frontend</td><td>intern 3000</td></tr>
+    <tr><td><code>ce365-nginx</code></td><td>Reverse Proxy</td><td>80 / 443</td></tr>
+    <tr><td><code>ce365-postgres</code></td><td>PostgreSQL Datenbank</td><td>intern 5432</td></tr>
+    <tr><td><code>ce365-redis</code></td><td>Redis Cache</td><td>intern 6379</td></tr>
+</table>
+
+<h4>Optionale Container (via COMPOSE_PROFILES)</h4>
+<table>
+    <tr><th>Profil</th><th>Container</th><th>Beschreibung</th></tr>
+    <tr><td><code>cloudflare</code></td><td>cloudflared</td><td>Cloudflare Tunnel</td></tr>
+    <tr><td><code>tailscale</code></td><td>tailscale</td><td>Tailscale VPN</td></tr>
+    <tr><td><code>autoupdate</code></td><td>watchtower</td><td>Auto-Updates (täglich)</td></tr>
+</table>
+
+<h3>Netzwerk-Optionen</h3>
+<pre><code># Cloudflare Tunnel
+COMPOSE_PROFILES=cloudflare docker compose up -d
+
+# Tailscale VPN
+COMPOSE_PROFILES=tailscale docker compose up -d
+
+# Auto-Updates aktivieren
+COMPOSE_PROFILES=autoupdate docker compose up -d
+
+# Kombiniert
+COMPOSE_PROFILES=cloudflare,autoupdate docker compose up -d</code></pre>
+
+<!-- Editionen -->
+<h2 id="editionen">Editionen (per-Seat / pro Techniker)</h2>
+
+<table class="edition-table">
+    <tr>
+        <th></th>
+        <th><span class="badge badge-free">Free</span><br>0 EUR</th>
+        <th><span class="badge badge-pro">Pro</span><br>49 EUR/Seat/Mo</th>
+        <th><span class="badge badge-business">Business</span><br>99 EUR/Seat/Mo</th>
+    </tr>
+    <tr><td>Basis-Diagnose (7 Tools) + AI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    <tr><td>Basis-Remediation (3 Tools)</td><td>5 Runs/Mo</td><td>Unbegrenzt</td><td>Unbegrenzt</td></tr>
+    <tr><td>Erweiterte Audit &amp; Repair</td><td>&mdash;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    <tr><td>Web-Suche &amp; Root-Cause-Analyse</td><td>&mdash;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    <tr><td>Aktive Systeme / 30 Tage</td><td>Unbegrenzt</td><td>10</td><td>Unbegrenzt</td></tr>
+    <tr><td>Gleichzeitige Sessions</td><td>1</td><td>1</td><td>1 pro Seat</td></tr>
+    <tr><td>Monitoring-Sensor</td><td>&mdash;</td><td>&mdash;</td><td>&#10003;</td></tr>
+    <tr><td>Team (Policies, Runbooks, Learning)</td><td>&mdash;</td><td>&mdash;</td><td>&#10003;</td></tr>
+    <tr><td>Kommerzielle Nutzung</td><td>&mdash;</td><td>&#10003;</td><td>&#10003;</td></tr>
+    <tr><td>Lizenzschlüssel</td><td>Nicht nötig</td><td>Erforderlich</td><td>Erforderlich</td></tr>
+</table>
+
+<!-- Konfiguration -->
+<h2 id="konfiguration">Konfiguration</h2>
+
+<h3>Pflicht-Variablen</h3>
+<table>
+    <tr><th>Variable</th><th>Beschreibung</th><th>Beispiel</th></tr>
+    <tr><td><code>ANTHROPIC_API_KEY</code></td><td>Anthropic API Key</td><td><code>sk-ant-...</code></td></tr>
+    <tr><td><code>EDITION</code></td><td>Edition</td><td><code>free</code>, <code>pro</code>, <code>business</code></td></tr>
+</table>
+
+<h3>Pro / Business</h3>
+<table>
+    <tr><th>Variable</th><th>Beschreibung</th><th>Beispiel</th></tr>
+    <tr><td><code>LICENSE_KEY</code></td><td>Lizenzschlüssel</td><td><code>CE365-PRO-...</code></td></tr>
+    <tr><td><code>BACKEND_URL</code></td><td>Backend-URL</td><td><code>https://ce365.firma.de</code></td></tr>
+    <tr><td><code>NETWORK_METHOD</code></td><td>Verbindungsart</td><td><code>cloudflare</code>, <code>tailscale</code>, <code>vpn</code>, <code>direct</code></td></tr>
+</table>
+
+<h3>Business (Shared Learning)</h3>
+<table>
+    <tr><th>Variable</th><th>Beschreibung</th><th>Beispiel</th></tr>
+    <tr><td><code>LEARNING_DB_TYPE</code></td><td>Datenbank-Typ</td><td><code>sqlite</code>, <code>postgresql</code>, <code>mysql</code></td></tr>
+    <tr><td><code>LEARNING_DB_URL</code></td><td>Datenbank-URL</td><td><code>postgresql://user:pass@host:5432/db</code></td></tr>
+</table>
+
+<h3>Optional</h3>
+<table>
+    <tr><th>Variable</th><th>Beschreibung</th><th>Standard</th></tr>
+    <tr><td><code>CLAUDE_MODEL</code></td><td>Claude-Modell</td><td><code>claude-sonnet-4-5-20250929</code></td></tr>
+    <tr><td><code>LOG_LEVEL</code></td><td>Log-Level</td><td><code>INFO</code></td></tr>
+    <tr><td><code>PII_DETECTION_ENABLED</code></td><td>PII-Erkennung</td><td><code>true</code></td></tr>
+    <tr><td><code>PII_DETECTION_LEVEL</code></td><td>PII-Level</td><td><code>high</code></td></tr>
+    <tr><td><code>WEB_SEARCH_ENABLED</code></td><td>Web-Suche</td><td><code>true</code></td></tr>
+    <tr><td><code>TECHNICIAN_PASSWORD_HASH</code></td><td>Passwort (bcrypt)</td><td>leer</td></tr>
+    <tr><td><code>SESSION_TIMEOUT</code></td><td>Session-Timeout (Sek.)</td><td><code>3600</code></td></tr>
+</table>
+
+<!-- Shared Learning DB -->
+<h2 id="shared-learning-db">Shared Learning Datenbank (Business)</h2>
+
+<p>Für Team-Learning kann eine separate PostgreSQL-Datenbank gestartet werden:</p>
+<pre><code>docker compose -f docker-compose.learning-db.yml up -d</code></pre>
+
+<p>Zugehörige <code>.env</code>-Einträge:</p>
+<pre><code>LEARNING_DB_TYPE=postgresql
+LEARNING_DB_URL=postgresql://ce365:password@localhost:5432/ce365_learning</code></pre>
+
+<p>pgAdmin ist unter <code>http://localhost:5050</code> erreichbar.</p>
+
+<!-- Erster Start -->
+<h2 id="erster-start">Erster Start</h2>
+
+<pre><code>source venv/bin/activate
+python -m ce365</code></pre>
+
+<p>CE365 führt beim Start automatisch einen System-Statusbericht aus:</p>
+<ul>
+    <li>System-Info (OS, CPU, RAM, Disk)</li>
+    <li>Backup-Status</li>
+    <li>Security-Status (Firewall, Antivirus)</li>
+</ul>
+
+<p>Danach kannst du Probleme beschreiben:</p>
+<pre><code>Wie kann ich dir helfen?
+&gt; Mein Windows 11 PC ist langsam geworden</code></pre>
+
+<!-- Workflow -->
+<h2 id="workflow">Workflow</h2>
+
+<div class="workflow">
+    <span class="step">Audit</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step">Analyse</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step">Plan</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step">GO REPAIR</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step">Fertig</span>
+</div>
+
+<ol>
+    <li>CE365 analysiert das System automatisch</li>
+    <li>Erstellt einen Reparatur-Plan mit nummerierten Schritten</li>
+    <li>Du gibst Schritte frei mit <code>GO REPAIR: 1,2,3</code> oder <code>GO REPAIR: 1-3</code></li>
+    <li>CE365 führt nur die freigegebenen Schritte aus</li>
+</ol>
+
+<div class="callout callout-warning">
+    <strong>Sicherheit</strong>
+    CE365 führt niemals automatisch Reparaturen aus. Jede Aktion erfordert eine explizite Freigabe durch den Techniker.
+</div>
+
+<!-- CLI-Befehle -->
+<h2 id="cli-befehle">CLI-Befehle</h2>
+
+<table>
+    <tr><th>Befehl</th><th>Beschreibung</th></tr>
+    <tr><td><code>python -m ce365</code></td><td>Bot starten</td></tr>
+    <tr><td><code>python -m ce365 --health</code></td><td>Health-Check</td></tr>
+    <tr><td><code>python -m ce365 --version</code></td><td>Version anzeigen</td></tr>
+    <tr><td><code>python -m ce365 --set-password</code></td><td>Techniker-Passwort setzen</td></tr>
+    <tr><td><code>python -m ce365 --update</code></td><td>Auf neueste Version aktualisieren</td></tr>
+    <tr><td><code>python -m ce365 --rollback</code></td><td>Zur letzten Version zurückkehren</td></tr>
+    <tr><td><code>python -m ce365 --uninstall</code></td><td>Deinstallation (löscht Daten)</td></tr>
+</table>
+
+<h3>Befehle im Bot</h3>
+<table>
+    <tr><th>Eingabe</th><th>Beschreibung</th></tr>
+    <tr><td><code>stats</code></td><td>Learning-Statistiken anzeigen</td></tr>
+    <tr><td><code>GO REPAIR: 1,2,3</code></td><td>Reparatur-Schritte freigeben</td></tr>
+    <tr><td><code>exit</code> / <code>quit</code> / <code>q</code></td><td>Bot beenden</td></tr>
+</table>
+
+<!-- Updates -->
+<h2 id="updates">Updates &amp; Wartung</h2>
+
+<h3>CLI (pip)</h3>
+<pre><code>source venv/bin/activate
+python -m ce365 --update</code></pre>
+<p>Oder manuell:</p>
+<pre><code>git pull
+pip install -r requirements.txt</code></pre>
+
+<h3>Docker</h3>
+<pre><code>docker compose pull
+docker compose up -d</code></pre>
+
+<p>Mit Watchtower (automatisch, täglich):</p>
+<pre><code>COMPOSE_PROFILES=autoupdate docker compose up -d</code></pre>
+
+<h3>Rollback</h3>
+<pre><code>python -m ce365 --rollback</code></pre>
+
+<!-- Deinstallation -->
+<h2 id="deinstallation">Deinstallation</h2>
+
+<h3>CLI</h3>
+<pre><code>python -m ce365 --uninstall</code></pre>
+
+<p>Löscht:</p>
+<ul>
+    <li><code>.env</code> (Konfiguration)</li>
+    <li><code>data/</code> (Sessions, Changelogs, Cases)</li>
+    <li><code>~/.ce365/</code> (User-Config, Cache)</li>
+</ul>
+
+<p>Danach optional:</p>
+<pre><code>pip uninstall ce365
+deactivate
+rm -rf venv</code></pre>
+
+<h3>Docker</h3>
+<pre><code># Container + Volumes löschen
+docker compose down -v
+rm -rf .env nginx/</code></pre>
+
+<!-- Fehlerbehebung -->
+<h2 id="fehlerbehebung">Fehlerbehebung</h2>
+
+<h3>API Key funktioniert nicht</h3>
+<pre><code>&#10060; API Key Test fehlgeschlagen</code></pre>
+<ul>
+    <li>Prüfe ob Key mit <code>sk-ant-</code> beginnt</li>
+    <li>Prüfe auf <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> ob Key aktiv ist</li>
+    <li>Prüfe Guthaben/Credits</li>
+</ul>
+
+<h3>PII Detection nicht verfügbar</h3>
+<pre><code>&#9888;&#65039; PII Detection nicht verfügbar</code></pre>
+<pre><code>pip install presidio-analyzer presidio-anonymizer
+python -m spacy download de_core_news_sm</code></pre>
+
+<h3>Lizenz ungültig</h3>
+<pre><code>&#10060; Ungültige Lizenz</code></pre>
+<ul>
+    <li>Prüfe ob Key mit <code>CE365-</code> beginnt</li>
+    <li>Prüfe ob <code>BACKEND_URL</code> erreichbar ist</li>
+    <li>Offline-Cache ist 24h gültig, danach muss eine Online-Validierung erfolgen</li>
+</ul>
+
+<h3>Docker-Container starten nicht</h3>
+<pre><code># Logs prüfen
+docker compose logs api
+docker compose logs postgres
+
+# Neustart
+docker compose down
+docker compose up -d</code></pre>
+
+<h3>Tests ausführen</h3>
+<pre><code>source venv/bin/activate
+pip install -r requirements-dev.txt
+pytest tests/ -v</code></pre>
+
+<hr style="margin-top: 3rem; border: none; border-top: 1px solid var(--border);">
+<p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 1.5rem;">
+    Version 1.0.0 &middot; Stand: Februar 2026 &middot; &copy; 2026 Carsten Eckhardt / Eckhardt-Marketing
+</p>
+
+</main>
+</div>
+</body>
+</html>

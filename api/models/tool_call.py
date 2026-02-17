@@ -1,5 +1,5 @@
 """
-TechCare Bot - ToolCall Model
+CE365 Agent - ToolCall Model
 """
 
 from sqlalchemy import Column, String, DateTime, ForeignKey, Text, Boolean, Float

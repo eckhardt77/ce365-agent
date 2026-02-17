@@ -1,6 +1,6 @@
-# TechCare Bot - API Backend
+# CE365 Agent - API Backend
 
-FastAPI-basiertes Backend für TechCare Bot.
+FastAPI-basiertes Backend für CE365 Agent.
 
 ## Features
 
@@ -46,14 +46,14 @@ Docs: **http://localhost:8000/api/docs**
 
 ```bash
 # Aus root directory
-docker build -t techcare-api:latest -f api/Dockerfile .
+docker build -t ce365-api:latest -f api/Dockerfile .
 
 # Run
 docker run -p 8000:8000 \
   -e DATABASE_URL=postgresql+asyncpg://... \
   -e REDIS_URL=redis://... \
   -e ANTHROPIC_API_KEY=... \
-  techcare-api:latest
+  ce365-api:latest
 ```
 
 ## API Endpoints

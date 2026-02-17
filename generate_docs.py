@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TechCare Bot - Dokumentation HTML/PDF Generator
+CE365 Agent - Dokumentation HTML/PDF Generator
 Erstellt professionell gestylte HTML und PDF Versionen der Markdown-Dokumente
 """
 
@@ -15,7 +15,7 @@ CSS_TEMPLATE = """
     size: A4;
     margin: 2cm;
     @bottom-center {
-        content: "TechCare Bot © 2026 Carsten Eckhardt";
+        content: "CE365 Agent © 2026 Carsten Eckhardt";
         font-size: 9pt;
         color: #666;
     }
@@ -256,7 +256,7 @@ HTML_TEMPLATE = """
 </head>
 <body>
     <div class="header">
-        <h1>🔧 TechCare Bot</h1>
+        <h1>🔧 CE365 Agent</h1>
         <p>{subtitle}</p>
     </div>
 
@@ -358,7 +358,7 @@ def main():
     output_dir = docs_dir / "export"
     output_dir.mkdir(exist_ok=True)
 
-    print("🚀 TechCare Bot Dokumentation Generator\n")
+    print("🚀 CE365 Agent Dokumentation Generator\n")
 
     # Dokumente konvertieren
     documents = [

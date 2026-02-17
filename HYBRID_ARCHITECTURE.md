@@ -1,8 +1,8 @@
-# TechCare Bot - Hybrid Architecture
+# CE365 Agent - Hybrid Architecture
 
 ## Übersicht
 
-TechCare Bot verwendet eine **Hybrid-Architektur**:
+CE365 Agent verwendet eine **Hybrid-Architektur**:
 
 - **CLI auf Kunden-PC** (voller System-Zugriff für Reparaturen)
 - **Zentrale Docker-Services** (PostgreSQL, License Server, Redis)
@@ -15,7 +15,7 @@ TechCare Bot verwendet eine **Hybrid-Architektur**:
 │  Kunden-PC / Techniker-Laptop           │
 │                                         │
 │  ┌───────────────────────────────────┐ │
-│  │  TechCare CLI                     │ │
+│  │  CE365 CLI                     │ │
 │  │                                   │ │
 │  │  • System-Diagnose (lokal)       │ │
 │  │  • Reparaturen (Admin-Rechte)    │ │
@@ -52,14 +52,14 @@ TechCare Bot verwendet eine **Hybrid-Architektur**:
 
 ### 1. **Techniker-Passwort**
 
-Schützt TechCare vor unbefugtem Zugriff:
+Schützt CE365 vor unbefugtem Zugriff:
 
 ```bash
 # Beim ersten Start oder Setup:
 # Passwort wird abgefragt und als bcrypt-Hash gespeichert
 
 # Passwort ändern:
-techcare --set-password
+ce365 --set-password
 
 # Bei jedem Start:
 # Passwort-Eingabe (3 Versuche)
@@ -79,7 +79,7 @@ Verbindung zu zentralen Services über verschiedene Methoden:
 
 #### a) Cloudflare Tunnel (empfohlen)
 ```bash
-BACKEND_URL=https://techcare.deinefirma.de
+BACKEND_URL=https://ce365.deinefirma.de
 NETWORK_METHOD=cloudflare
 ```
 
@@ -92,15 +92,15 @@ NETWORK_METHOD=cloudflare
 **Setup:**
 ```bash
 # Auf Server:
-cloudflared tunnel create techcare
-cloudflared tunnel route dns techcare techcare.deinefirma.de
+cloudflared tunnel create ce365
+cloudflared tunnel route dns ce365 ce365.deinefirma.de
 
 # CLI-Installation beim Kunden: nichts nötig!
 ```
 
 #### b) Tailscale (Zero-Config VPN)
 ```bash
-BACKEND_URL=http://techcare  # Magic DNS
+BACKEND_URL=http://ce365  # Magic DNS
 NETWORK_METHOD=tailscale
 ```
 
@@ -129,7 +129,7 @@ NETWORK_METHOD=vpn
 
 #### d) Direkte IP / Port-Forwarding
 ```bash
-BACKEND_URL=https://techcare.firma.de:8443
+BACKEND_URL=https://ce365.firma.de:8443
 NETWORK_METHOD=direct
 ```
 
@@ -142,7 +142,7 @@ NETWORK_METHOD=direct
 Prüft Lizenzschlüssel beim Start:
 
 ```bash
-LICENSE_KEY=TECHCARE-PRO-BUSINESS-ABC123
+LICENSE_KEY=CE365-PRO-BUSINESS-ABC123
 EDITION=pro_business
 ```
 
@@ -169,10 +169,10 @@ Background-Service der System-Metriken sammelt:
 
 ```bash
 # Manuelle Ausführung:
-python -m techcare.monitoring.sensor
+python -m ce365.monitoring.sensor
 
 # Als Service installieren:
-python -m techcare.monitoring.service
+python -m ce365.monitoring.service
 
 # Windows: Windows Service
 # macOS: LaunchDaemon
@@ -217,7 +217,7 @@ Prüft Treiber-Status und empfiehlt Updates:
 "Prüfe Treiber-Updates"
 
 # CLI:
-python -m techcare.tools.drivers.driver_manager
+python -m ce365.tools.drivers.driver_manager
 ```
 
 **Quellen:**
@@ -245,7 +245,7 @@ python -m techcare.tools.drivers.driver_manager
 
 **Custom Database erweitern:**
 
-Bearbeite `techcare/tools/drivers/driver_database.json`:
+Bearbeite `ce365/tools/drivers/driver_database.json`:
 
 ```json
 {
@@ -267,16 +267,16 @@ Bearbeite `techcare/tools/drivers/driver_database.json`:
 Einfacher Uninstall-Befehl:
 
 ```bash
-techcare --uninstall
+ce365 --uninstall
 ```
 
 **Löscht:**
 - `.env` Datei (API-Key, Konfiguration)
 - `data/` Verzeichnis (Sessions, Changelogs, Cases)
-- `~/.techcare/` (User-Config, Cache)
+- `~/.ce365/` (User-Config, Cache)
 
 **Behält:**
-- Python-Package (manuell deinstallieren: `pip uninstall techcare`)
+- Python-Package (manuell deinstallieren: `pip uninstall ce365`)
 
 ---
 
@@ -289,7 +289,7 @@ Beim ersten Start führt der Setup-Wizard durch:
 3. **Lizenzschlüssel** (für Pro+)
 4. **API Key** (Anthropic)
 5. **Netzwerkverbindung** (Cloudflare / Tailscale / VPN / Direkt)
-6. **Backend-URL** (z.B. `https://techcare.firma.de`)
+6. **Backend-URL** (z.B. `https://ce365.firma.de`)
 7. **Learning Database** (nur Enterprise: PostgreSQL/MySQL)
 8. **Techniker-Passwort** (optional aber empfohlen)
 9. **Briefing** (optional)
@@ -312,8 +312,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=techcare_learning
-      - POSTGRES_USER=techcare
+      - POSTGRES_DB=ce365_learning
+      - POSTGRES_USER=ce365
       - POSTGRES_PASSWORD=secure_password
 
   redis:
@@ -322,7 +322,7 @@ services:
       - redis_data:/data
 
   license-server:
-    image: techcare/license-server:latest
+    image: ce365/license-server:latest
     environment:
       - DATABASE_URL=postgresql://...
       - JWT_SECRET=...
@@ -345,27 +345,27 @@ docker-compose up -d
 
 1. **Python installieren** (3.10+)
 
-2. **TechCare installieren:**
+2. **CE365 installieren:**
 ```bash
 git clone <repo>
-cd TechCare-Bot
+cd CE365-Bot
 pip install -e .
 ```
 
 3. **Setup ausführen:**
 ```bash
-techcare
+ce365
 # Setup-Wizard startet automatisch
 ```
 
 4. **Passwort setzen:**
 ```bash
-techcare --set-password
+ce365 --set-password
 ```
 
 5. **Optional: Sensor-Service installieren:**
 ```bash
-python -m techcare.monitoring.service
+python -m ce365.monitoring.service
 ```
 
 ---
@@ -376,7 +376,7 @@ python -m techcare.monitoring.service
 
 ```bash
 # Starten
-techcare
+ce365
 
 # Passwort eingeben (wenn gesetzt)
 # Bot startet
@@ -394,22 +394,22 @@ techcare
 
 ```bash
 # Service starten (Windows)
-sc start TechCareSensor
+sc start CE365Sensor
 
 # Service starten (macOS)
-sudo launchctl start com.techcare.sensor
+sudo launchctl start com.ce365.sensor
 
 # Service starten (Linux)
-sudo systemctl start techcare-sensor
+sudo systemctl start ce365-sensor
 
 # Logs anzeigen (Windows)
 # Event Viewer → Application Logs
 
 # Logs anzeigen (macOS)
-tail -f /var/log/techcare-sensor.log
+tail -f /var/log/ce365-sensor.log
 
 # Logs anzeigen (Linux)
-sudo journalctl -u techcare-sensor -f
+sudo journalctl -u ce365-sensor -f
 ```
 
 ---
@@ -449,7 +449,7 @@ sudo journalctl -u techcare-sensor -f
 
 ```bash
 # Passwort zurücksetzen:
-techcare --set-password
+ce365 --set-password
 ```
 
 ### "Connection refused"

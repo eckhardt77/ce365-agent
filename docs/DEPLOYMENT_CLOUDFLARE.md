@@ -1,8 +1,8 @@
-# TechCare Bot - Cloudflare Tunnel Deployment
+# CE365 Agent - Cloudflare Tunnel Deployment
 
 ## Überblick
 
-Cloudflare Tunnel bietet die sicherste und einfachste Methode für Remote-Zugriff auf TechCare Bot:
+Cloudflare Tunnel bietet die sicherste und einfachste Methode für Remote-Zugriff auf CE365 Agent:
 
 - ✅ **Kein VPN nötig** - Zugriff direkt über HTTPS
 - ✅ **Automatisches SSL** - Cloudflare managed Zertifikate
@@ -15,7 +15,7 @@ Cloudflare Tunnel bietet die sicherste und einfachste Methode für Remote-Zugrif
 1. **Cloudflare Account** (kostenlos)
 2. **Domain** bei Cloudflare (oder extern, dann NS-Records ändern)
 3. **Docker & Docker Compose** auf Server
-4. **TechCare Lizenz** (Pro Business oder Enterprise empfohlen)
+4. **CE365 Lizenz** (Pro Business oder Enterprise empfohlen)
 
 ## Schritt 1: Cloudflare Tunnel erstellen
 
@@ -28,12 +28,12 @@ Gehe zu: **https://one.dash.cloudflare.com/**
 1. Navigiere zu: **Zero Trust → Networks → Tunnels**
 2. Klicke auf **"Create a tunnel"**
 3. Wähle **"Cloudflared"** als Tunnel-Typ
-4. Gib einen Namen ein: `techcare-prod` (oder beliebig)
+4. Gib einen Namen ein: `ce365-prod` (oder beliebig)
 5. **Kopiere das Token** (sieht aus wie: `eyJhIjoiZXhhbXBsZSJ9...`)
 
 ⚠️ **WICHTIG**: Speichere das Token sicher - du brauchst es für die Installation!
 
-## Schritt 2: TechCare Installation
+## Schritt 2: CE365 Installation
 
 ### 2.1 Installer ausführen
 
@@ -61,7 +61,7 @@ Cloudflare Tunnel Token: eyJhIjoiZXhhbXBsZSJ9...
 
 **4. Domain:**
 ```
-Ihre Cloudflare Domain: techcare.ihrefirma.de
+Ihre Cloudflare Domain: ce365.ihrefirma.de
 ```
 
 **5. Anthropic API Key:**
@@ -89,7 +89,7 @@ Der Installer:
 Zurück im Cloudflare Dashboard:
 
 1. Navigiere zu: **Zero Trust → Networks → Tunnels**
-2. Wähle deinen Tunnel aus (`techcare-prod`)
+2. Wähle deinen Tunnel aus (`ce365-prod`)
 3. Tab **"Public Hostname"**
 4. Klicke **"Add a public hostname"**
 
@@ -97,7 +97,7 @@ Zurück im Cloudflare Dashboard:
 
 | Feld | Wert |
 |------|------|
-| **Subdomain** | `techcare` |
+| **Subdomain** | `ce365` |
 | **Domain** | `ihrefirma.de` |
 | **Type** | `HTTP` |
 | **URL** | `nginx:80` |
@@ -115,18 +115,18 @@ Klicke **"Save hostname"**
 Warte 1-2 Minuten, dann öffne:
 
 ```
-https://techcare.ihrefirma.de
+https://ce365.ihrefirma.de
 ```
 
 ### 4.2 Erfolg! 🎉
 
-Du solltest jetzt die TechCare Login-Seite sehen.
+Du solltest jetzt die CE365 Login-Seite sehen.
 
 ## Optional: Cloudflare Access aktivieren
 
 ### Zero Trust Access Control
 
-Schütze TechCare mit zusätzlicher Authentifizierung:
+Schütze CE365 mit zusätzlicher Authentifizierung:
 
 1. Navigiere zu: **Zero Trust → Access → Applications**
 2. Klicke **"Add an application"**
@@ -136,21 +136,21 @@ Schütze TechCare mit zusätzlicher Authentifizierung:
 
 | Feld | Wert |
 |------|------|
-| **Name** | `TechCare Bot` |
-| **Application Domain** | `techcare.ihrefirma.de` |
+| **Name** | `CE365 Agent` |
+| **Application Domain** | `ce365.ihrefirma.de` |
 | **Session Duration** | `24 hours` |
 
 #### Access Policy
 
 Erstelle eine Policy für dein Team:
 
-- **Name**: `TechCare Team Access`
+- **Name**: `CE365 Team Access`
 - **Include**: `Emails ending in @ihrefirma.de`
 - **Action**: `Allow`
 
 Speichern!
 
-Jetzt müssen sich alle User erst mit Cloudflare Access authentifizieren, bevor sie TechCare erreichen.
+Jetzt müssen sich alle User erst mit Cloudflare Access authentifizieren, bevor sie CE365 erreichen.
 
 ## Wartung & Management
 
@@ -162,12 +162,12 @@ docker-compose ps
 
 Alle Services sollten `Up` Status haben:
 ```
-techcare-api           Up
-techcare-web           Up
-techcare-postgres      Up
-techcare-redis         Up
-techcare-cloudflared   Up
-techcare-nginx         Up
+ce365-api           Up
+ce365-web           Up
+ce365-postgres      Up
+ce365-redis         Up
+ce365-cloudflared   Up
+ce365-nginx         Up
 ```
 
 ### Logs anzeigen
@@ -295,5 +295,5 @@ Für die meisten Firmen reicht **Free** völlig aus!
 
 Bei Problemen:
 - 📖 Cloudflare Docs: https://developers.cloudflare.com/cloudflare-one/
-- 💬 TechCare Support: https://github.com/your-repo/techcare-bot/issues
-- 📧 Email: support@techcare.local
+- 💬 CE365 Support: https://github.com/your-repo/ce365-agent/issues
+- 📧 Email: support@ce365.local

@@ -1,4 +1,4 @@
-# 🔧 TechCare Bot - Produktbeschreibung
+# 🔧 CE365 Agent - Produktbeschreibung
 
 **Version 2.0.0**
 
@@ -8,7 +8,7 @@
 
 ## 🎯 Elevator Pitch (30 Sekunden)
 
-TechCare Bot ist ein KI-Wartungs-Assistent der IT-Technikern hilft, Windows- und macOS-Systeme **10x schneller** zu diagnostizieren und zu reparieren. Während TeamViewer €299/Monat kostet und nur Remote-Support bietet, analysiert TechCare Ihr System **lokal mit KI**, findet automatisch die **wahre Ursache** von Problemen und repariert sie **nur mit Ihrer expliziten Freigabe** – für einen Bruchteil der Kosten.
+CE365 Agent ist ein KI-Wartungs-Assistent der IT-Technikern hilft, Windows- und macOS-Systeme **10x schneller** zu diagnostizieren und zu reparieren. Während TeamViewer €299/Monat kostet und nur Remote-Support bietet, analysiert CE365 Ihr System **lokal mit KI**, findet automatisch die **wahre Ursache** von Problemen und repariert sie **nur mit Ihrer expliziten Freigabe** – für einen Bruchteil der Kosten.
 
 **Made in Germany. DSGVO-konform. Keine Cloud, keine Uploads.**
 
@@ -35,13 +35,13 @@ TechCare Bot ist ein KI-Wartungs-Assistent der IT-Technikern hilft, Windows- und
 
 ---
 
-## ✨ Die Lösung: TechCare Bot
+## ✨ Die Lösung: CE365 Agent
 
 ### **Kernversprechen:**
 
 > **"Von 2 Stunden Fehlersuche zu 5 Minuten Lösung – mit KI-Präzision und menschlicher Kontrolle."**
 
-### **Wie TechCare hilft:**
+### **Wie CE365 hilft:**
 
 ✅ **10x schnellere Diagnose** - KI findet die ROOT CAUSE, nicht nur Symptome
 ✅ **Sicher** - GO REPAIR Lock verhindert autonome Änderungen
@@ -71,7 +71,7 @@ Installation:
 3. Nur autorisierte Techniker können Reparaturen durchführen
 
 Bei jedem Start:
-> techcare
+> ce365
 🔐 Techniker-Authentifizierung erforderlich
 Passwort: ********
 ✅ Zugriff gewährt
@@ -161,25 +161,25 @@ Passwort: ********
 *Sauberes Entfernen ohne Rückstände*
 
 **Features:**
-- Entfernt ALLE TechCare-Dateien
+- Entfernt ALLE CE365-Dateien
 - Löscht gespeicherte Logs und Cases
 - Entfernt Systemintegration (PATH, Registry)
 - Optional: Konfiguration behalten
 
 **Ausführung:**
 ```
-> techcare uninstall
+> ce365 uninstall
 
 ⚠️  DEINSTALLATION
 Folgende Daten werden entfernt:
-- TechCare Bot Installation
+- CE365 Agent Installation
 - Alle gespeicherten Cases
 - Konfigurationsdateien
 - System-Integration
 
 Fortfahren? (ja/nein): ja
 
-🗑️  Entferne TechCare Bot...
+🗑️  Entferne CE365 Agent...
 ✅ Deinstallation abgeschlossen
 
 Optional: Konfiguration behalten? (ja/nein): ja
@@ -221,12 +221,12 @@ Pro/Enterprise (optional):
 ```
 Problem: "Windows Update funktioniert nicht"
 
-❌ Ohne TechCare:
+❌ Ohne CE365:
    - Techniker prüft 10 Event Logs manuell
    - Trial & Error: Neustart, Service-Restart, Cache-Cleanup
    - Zeit: 1-2 Stunden
 
-✅ Mit TechCare:
+✅ Mit CE365:
    - Bot korreliert Event Logs, Services, System-Änderungen
    - AI identifiziert: "BITS Service hängt seit 3 Tagen"
    - Lösung in 5 Minuten
@@ -275,7 +275,7 @@ Zeit: 3 Minuten | Erfolgsrate: 87%
 |------|-----------|
 | **Auto-Repair-Tools** | ❌ Ändern System sofort |
 | **RMM-Software** | ⚠️ Admin hat volle Kontrolle (gefährlich) |
-| **TechCare Bot** | ✅ KEINE Änderung ohne Freigabe |
+| **CE365 Agent** | ✅ KEINE Änderung ohne Freigabe |
 
 ---
 
@@ -307,7 +307,7 @@ Zeit: 2m 34s (statt 15-30 Minuten manuell)
 #### **9. Learning System** 🧠 (Pro+)
 *Bot lernt aus jedem Fall*
 
-**Ab Pro Edition:** TechCare speichert erfolgreiche Lösungen und schlägt sie bei ähnlichen Problemen vor.
+**Ab Pro Edition:** CE365 speichert erfolgreiche Lösungen und schlägt sie bei ähnlichen Problemen vor.
 
 **Wie es funktioniert:**
 1. Bot löst Problem → speichert Case
@@ -349,12 +349,12 @@ Zeit: 2m 34s (statt 15-30 Minuten manuell)
 
 ### **1. IT-Dienstleister / MSPs** (Managed Service Provider)
 **Problem:** 50+ Kundensysteme manuell warten ist nicht skalierbar
-**Lösung:** TechCare automatisiert Diagnose, spart 60% Support-Zeit
+**Lösung:** CE365 automatisiert Diagnose, spart 60% Support-Zeit
 **ROI:** €15.000/Jahr gespart (bei 100 Tickets/Monat)
 
 **Use Case:**
 - Kunde ruft an: "PC ist langsam"
-- Techniker startet TechCare (remote oder vor Ort)
+- Techniker startet CE365 (remote oder vor Ort)
 - Bot analysiert in 2 Minuten: "23 Autostart-Programme"
 - Techniker gibt 5 Deaktivierungen frei → Problem gelöst
 - Zeit: 10 Minuten statt 1 Stunde
@@ -363,12 +363,12 @@ Zeit: 2m 34s (statt 15-30 Minuten manuell)
 
 ### **2. Unternehmens-IT (50-500 Mitarbeiter)**
 **Problem:** IT-Team überlastet, Ticket-Backlog wächst
-**Lösung:** Level-1-Support automatisieren mit TechCare
+**Lösung:** Level-1-Support automatisieren mit CE365
 **ROI:** 40% weniger Tickets, schnellere Resolution
 
 **Use Case:**
 - Employee: "Outlook ist langsam"
-- IT-Admin lässt TechCare scannen
+- IT-Admin lässt CE365 scannen
 - Bot identifiziert: "PST-Datei 8GB (Limit: 2GB)"
 - Lösung: PST archivieren → Outlook schnell
 - Zeit: 5 Minuten statt Neuinstallation (3 Stunden)
@@ -377,20 +377,20 @@ Zeit: 2m 34s (statt 15-30 Minuten manuell)
 
 ### **3. Freelance IT-Techniker**
 **Problem:** Zeit ist Geld, Trial & Error kostet
-**Lösung:** TechCare findet Root Cause sofort
+**Lösung:** CE365 findet Root Cause sofort
 **ROI:** 3x mehr Kunden pro Tag möglich
 
 **Use Case:**
 - Kunde bezahlt pro Stunde (€80-150/h)
-- Ohne TechCare: 2h Diagnose + 1h Fix = 3h
-- Mit TechCare: 10min Diagnose + 30min Fix = 40min
+- Ohne CE365: 2h Diagnose + 1h Fix = 3h
+- Mit CE365: 10min Diagnose + 30min Fix = 40min
 - Gewinn: 2h 20min für nächsten Kunden
 
 ---
 
 ### **4. Power-User / Technik-Enthusiasten**
 **Problem:** Keine Lust auf Google, Trial & Error nervt
-**Lösung:** TechCare wie ein IT-Experte im Terminal
+**Lösung:** CE365 wie ein IT-Experte im Terminal
 **ROI:** Zeitersparnis + Lerneffekt
 
 ---
@@ -466,24 +466,24 @@ Zeit: 2m 34s (statt 15-30 Minuten manuell)
 
 ### **Beispiel: IT-Dienstleister mit 100 Tickets/Monat**
 
-**Ohne TechCare:**
+**Ohne CE365:**
 ```
 100 Tickets × 2h Durchschnitt = 200h/Monat
 200h × €80/h Kosten = €16.000 Kosten/Monat
 ```
 
-**Mit TechCare Community (kostenlos!):**
+**Mit CE365 Community (kostenlos!):**
 ```
 100 Tickets × 45min Durchschnitt = 75h/Monat
 75h × €80/h = €6.000 Kosten/Monat
 
-Ersparnis: €10.000/Monat - €0 TechCare = €10.000/Monat
+Ersparnis: €10.000/Monat - €0 CE365 = €10.000/Monat
 ROI: UNENDLICH (Software ist kostenlos!)
 ```
 
-**Mit TechCare Pro (mit Remote-DB & Support):**
+**Mit CE365 Pro (mit Remote-DB & Support):**
 ```
-Ersparnis: €10.000/Monat - €49 TechCare = €9.951/Monat
+Ersparnis: €10.000/Monat - €49 CE365 = €9.951/Monat
 ROI: 20.329%
 ```
 
@@ -493,28 +493,28 @@ ROI: 20.329%
 
 ### **Beispiel: Unternehmens-IT (250 Mitarbeiter)**
 
-**Ohne TechCare:**
+**Ohne CE365:**
 ```
 5 IT-Admins × €5.000/Monat Gehalt = €25.000/Monat
 Produktivitätsverlust User: €10.000/Monat (Downtime)
 TOTAL: €35.000/Monat
 ```
 
-**Mit TechCare Community (kostenlos):**
+**Mit CE365 Community (kostenlos):**
 ```
 4 IT-Admins × €5.000/Monat = €20.000/Monat
 Produktivitätsverlust User: €4.000/Monat (60% weniger)
-TechCare: €0/Monat
+CE365: €0/Monat
 TOTAL: €24.000/Monat
 
 Ersparnis: €11.000/Monat = €132.000/Jahr
 ```
 
-**Mit TechCare Enterprise (mit LDAP + SSO + Telefon-Support):**
+**Mit CE365 Enterprise (mit LDAP + SSO + Telefon-Support):**
 ```
 4 IT-Admins × €5.000/Monat = €20.000/Monat
 Produktivitätsverlust User: €4.000/Monat (60% weniger)
-TechCare Enterprise: €199/Monat
+CE365 Enterprise: €199/Monat
 TOTAL: €24.199/Monat
 
 Ersparnis: €10.801/Monat = €129.612/Jahr
@@ -524,7 +524,7 @@ Ersparnis: €10.801/Monat = €129.612/Jahr
 
 ## 🏆 Wettbewerbsvergleich
 
-| Feature | TechCare Bot | TeamViewer Assist | Microsoft Intune | ServiceNow |
+| Feature | CE365 Agent | TeamViewer Assist | Microsoft Intune | ServiceNow |
 |---------|--------------|-------------------|------------------|------------|
 | **Preis/Monat** | **€0** (Community) | €299 | ~€100 (M365 E5) | €€€€ |
 | **KI-Diagnose** | ✅ Root Cause | ❌ Nein | ❌ Nein | ⚠️ Basic |
@@ -541,7 +541,7 @@ Ersparnis: €10.801/Monat = €129.612/Jahr
 | **Hybrid-Option** | ✅ Lokal + Cloud | ❌ Cloud-Only | ❌ Cloud-Only | ❌ Cloud-Only |
 
 **Unique Selling Proposition:**
-> **TechCare ist das EINZIGE Tool mit:**
+> **CE365 ist das EINZIGE Tool mit:**
 > - **Kostenloser Full-Feature-Version** (keine Freemium-Tricks)
 > - **KI-Root-Cause-Analyse + GO REPAIR Lock**
 > - **Lokaler Ausführung + optionaler Hybrid-Cloud**
@@ -598,9 +598,9 @@ Ersparnis: €10.801/Monat = €129.612/Jahr
 
 ---
 
-## 🙏 Warum TechCare?
+## 🙏 Warum CE365?
 
-### **5 Gründe für TechCare Bot:**
+### **5 Gründe für CE365 Agent:**
 
 1. **100% Kostenlos** - Volle Funktionalität ohne Paywall (Community Edition)
 2. **Zeit sparen** - 10x schnellere Diagnose durch KI
@@ -618,9 +618,9 @@ Ersparnis: €10.801/Monat = €129.612/Jahr
 
 ## 📞 Kontakt & Support
 
-**Website:** https://techcare-bot.de (coming soon)
+**Website:** https://ce365-agent.de (coming soon)
 **Email:** info@eckhardt-marketing.de
-**GitHub:** https://github.com/yourusername/techcare-bot
+**GitHub:** https://github.com/yourusername/ce365-agent
 
 **Support:**
 - 📖 Dokumentation: GitHub Wiki
@@ -635,10 +635,10 @@ Ersparnis: €10.801/Monat = €129.612/Jahr
 ### **Community Edition (100% kostenlos):**
 ```bash
 # Windows (PowerShell als Admin)
-irm https://techcare-bot.de/install.ps1 | iex
+irm https://ce365-agent.de/install.ps1 | iex
 
 # macOS / Linux
-curl -fsSL https://techcare-bot.de/install.sh | bash
+curl -fsSL https://ce365-agent.de/install.sh | bash
 ```
 
 **Das bekommen Sie KOSTENLOS:**
@@ -653,11 +653,11 @@ curl -fsSL https://techcare-bot.de/install.sh | bash
 
 ### **Optional: Pro/Enterprise Add-Ons:**
 Nur wenn Sie zentrale Services brauchen (Remote-DB, Priority Support, LDAP)
-→ https://techcare-bot.de/pricing
+→ https://ce365-agent.de/pricing
 
 ---
 
-**TechCare Bot v2.0.0** - Weil IT-Wartung kostenlos, schnell und sicher sein sollte.
+**CE365 Agent v2.0.0** - Weil IT-Wartung kostenlos, schnell und sicher sein sollte.
 
 *Copyright © 2026 Carsten Eckhardt / Eckhardt-Marketing*
 *Licensed under MIT + Non-Commercial Restriction*

@@ -1,4 +1,4 @@
-# TechCare Bot - Test Results (2026-02-17)
+# CE365 Agent - Test Results (2026-02-17)
 
 ## ✅ LIVE-TEST ERFOLGREICH
 
@@ -203,7 +203,7 @@ Rollback: [siehe Reparatur-Plan]
 2. **Bot starten**:
    ```bash
    source venv/bin/activate
-   techcare
+   ce365
    ```
 
 3. **Test-Szenario**:
@@ -259,7 +259,7 @@ Rollback: [siehe Reparatur-Plan]
 
 ## 🎉 Fazit
 
-**TechCare Bot ist produktionsreif für erste Tests mit echtem API Key!**
+**CE365 Agent ist produktionsreif für erste Tests mit echtem API Key!**
 
 Alle Komponenten funktionieren wie erwartet:
 - ✅ Sicherheitsregeln implementiert (wasserdicht)
@@ -273,7 +273,7 @@ Alle Komponenten funktionieren wie erwartet:
 
 ---
 
-**Test durchgeführt von**: TechCare Auto-Demo
+**Test durchgeführt von**: CE365 Auto-Demo
 **Datum**: 2026-02-17 10:39 Uhr
 **Version**: v0.2.0
 **Status**: ✅ ERFOLGREICH
