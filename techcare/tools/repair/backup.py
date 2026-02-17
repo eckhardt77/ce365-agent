@@ -13,6 +13,7 @@ import platform
 import subprocess
 from typing import Dict, Any
 from techcare.tools.base import RepairTool
+from techcare.tools.sanitize import validate_description
 
 
 class CreateRestorePointTool(RepairTool):
@@ -64,7 +65,7 @@ class CreateRestorePointTool(RepairTool):
         if os_type != "Windows":
             return "❌ Dieses Tool ist nur für Windows verfügbar"
 
-        description = kwargs.get("description", "TechCare Restore Point")
+        description = validate_description(kwargs.get("description", "TechCare Restore Point"))
 
         try:
             output = [

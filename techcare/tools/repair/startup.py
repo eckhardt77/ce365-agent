@@ -13,6 +13,12 @@ import os
 from typing import Dict, Any
 from pathlib import Path
 from techcare.tools.base import RepairTool
+from techcare.tools.sanitize import (
+    sanitize_powershell_string,
+    sanitize_applescript_string,
+    validate_program_name,
+    validate_file_path,
+)
 
 
 class DisableStartupProgramTool(RepairTool):
@@ -88,9 +94,11 @@ class DisableStartupProgramTool(RepairTool):
                 ""
             ]
 
+            safe_name = sanitize_powershell_string(validate_program_name(program_name))
+
             if startup_type == "registry_hkcu":
                 # Registry HKCU Run Key löschen
-                ps_cmd = f"Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name '{program_name}' -ErrorAction Stop"
+                ps_cmd = f"Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name '{safe_name}' -ErrorAction Stop"
                 result = subprocess.run(
                     ["powershell", "-Command", ps_cmd],
                     capture_output=True,
@@ -105,7 +113,7 @@ class DisableStartupProgramTool(RepairTool):
 
             elif startup_type == "registry_hklm":
                 # Registry HKLM Run Key löschen (Administrator-Rechte erforderlich)
-                ps_cmd = f"Remove-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name '{program_name}' -ErrorAction Stop"
+                ps_cmd = f"Remove-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name '{safe_name}' -ErrorAction Stop"
                 result = subprocess.run(
                     ["powershell", "-Command", ps_cmd],
                     capture_output=True,
@@ -163,11 +171,13 @@ class DisableStartupProgramTool(RepairTool):
                 ""
             ]
 
+            safe_name_as = sanitize_applescript_string(validate_program_name(program_name))
+
             if startup_type == "login_item":
                 # Login Item entfernen
                 applescript = f'''
                 tell application "System Events"
-                    delete login item "{program_name}"
+                    delete login item "{safe_name_as}"
                 end tell
                 '''
                 result = subprocess.run(
@@ -310,6 +320,9 @@ class EnableStartupProgramTool(RepairTool):
     def _enable_windows_startup(self, program_name: str, program_path: str, startup_type: str) -> str:
         """Windows Autostart aktivieren"""
         try:
+            safe_name = sanitize_powershell_string(validate_program_name(program_name))
+            safe_path = sanitize_powershell_string(validate_file_path(program_path))
+
             output = [
                 f"🔧 Aktiviere Autostart: {program_name}",
                 ""
@@ -317,7 +330,7 @@ class EnableStartupProgramTool(RepairTool):
 
             if startup_type == "registry_hkcu":
                 # Registry HKCU Run Key hinzufügen
-                ps_cmd = f"Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name '{program_name}' -Value '{program_path}'"
+                ps_cmd = f"Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name '{safe_name}' -Value '{safe_path}'"
                 result = subprocess.run(
                     ["powershell", "-Command", ps_cmd],
                     capture_output=True,
@@ -333,7 +346,7 @@ class EnableStartupProgramTool(RepairTool):
 
             elif startup_type == "registry_hklm":
                 # Registry HKLM Run Key hinzufügen (Administrator-Rechte erforderlich)
-                ps_cmd = f"Set-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name '{program_name}' -Value '{program_path}'"
+                ps_cmd = f"Set-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name '{safe_name}' -Value '{safe_path}'"
                 result = subprocess.run(
                     ["powershell", "-Command", ps_cmd],
                     capture_output=True,
@@ -376,6 +389,8 @@ class EnableStartupProgramTool(RepairTool):
     def _enable_macos_startup(self, program_name: str, program_path: str, startup_type: str) -> str:
         """macOS Autostart aktivieren"""
         try:
+            safe_path_as = sanitize_applescript_string(validate_file_path(program_path))
+
             output = [
                 f"🔧 Aktiviere Autostart: {program_name}",
                 ""
@@ -385,7 +400,7 @@ class EnableStartupProgramTool(RepairTool):
                 # Login Item hinzufügen
                 applescript = f'''
                 tell application "System Events"
-                    make login item at end with properties {{path:"{program_path}", hidden:false}}
+                    make login item at end with properties {{path:"{safe_path_as}", hidden:false}}
                 end tell
                 '''
                 result = subprocess.run(

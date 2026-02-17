@@ -6,7 +6,7 @@
 
 TechCare Bot is an AI-powered IT maintenance assistant that helps you diagnose and repair Windows and macOS systems. With natural language interaction and **30+ integrated tools**, IT maintenance becomes easy!
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Source Available](https://img.shields.io/badge/License-Source%20Available-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20Sonnet%204.5-blueviolet)](https://anthropic.com)
 
@@ -625,20 +625,15 @@ pip install -r requirements-dev.txt  # Dev dependencies
 
 ## 📄 License
 
-**MIT License**
+**Source Available License** - Free for non-commercial use.
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Community Edition is free for personal, educational, and non-commercial use.
+Commercial use (IT service providers, MSPs, enterprise IT) requires a
+[Commercial License](https://techcare.eckhardt-marketing.de).
 
-[Full MIT License text...]
-
-**Note:** Commercial support and licensing available for businesses.
+See [LICENSE](LICENSE) for full details.
 
 ---
 
@@ -684,7 +679,7 @@ See [SECURITY.md](SECURITY.md) for responsible disclosure policy.
 - **52 Error Codes** - Built-in knowledge base
 - **2 Languages** - English + German
 - **3 Platforms** - Windows, macOS, Linux (exp)
-- **100% Free** - Community Edition (MIT License)
+- **100% Free** - Community Edition (non-commercial use)
 
 ---
 

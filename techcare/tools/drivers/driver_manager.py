@@ -13,6 +13,7 @@ Prüft Treiber-Status und empfiehlt Updates aus mehreren Quellen:
 import platform
 import subprocess
 import json
+from techcare.tools.sanitize import sanitize_powershell_string, validate_program_name
 from pathlib import Path
 from typing import List, Dict, Optional
 from datetime import datetime
@@ -237,7 +238,7 @@ class DriverManager:
                         f"""
                         $UpdateSession = New-Object -ComObject Microsoft.Update.Session
                         $UpdateSearcher = $UpdateSession.CreateUpdateSearcher()
-                        $SearchResult = $UpdateSearcher.Search("IsInstalled=0 and Type='Driver' and Title like '*{driver_name}*'")
+                        $SearchResult = $UpdateSearcher.Search("IsInstalled=0 and Type='Driver' and Title like '*{sanitize_powershell_string(validate_program_name(driver_name))}*'")
 
                         if ($SearchResult.Updates.Count -eq 0) {{
                             Write-Host "Kein Update gefunden"
