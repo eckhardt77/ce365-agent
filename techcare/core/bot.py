@@ -112,53 +112,55 @@ class TechCareBot:
         self.system_prompt = get_system_prompt()
 
     def _register_tools(self):
-        """Alle Tools registrieren"""
-        # Audit Tools - System Info
+        """Alle Tools registrieren (mit Edition-basiertem Feature-Gating)"""
+        settings = get_settings()
+        edition = settings.edition
+
+        # === Basis-Audit Tools (alle Editionen) ===
         self.tool_registry.register(SystemInfoTool())
         self.tool_registry.register(CheckSystemLogsTool())
         self.tool_registry.register(CheckRunningProcessesTool())
         self.tool_registry.register(CheckSystemUpdatesTool())
         self.tool_registry.register(CheckBackupStatusTool())
-
-        # Audit Tools - Stress Tests & Diagnostics
-        self.tool_registry.register(StressTestCPUTool())
-        self.tool_registry.register(StressTestMemoryTool())
-        self.tool_registry.register(TestDiskSpeedTool())
-        self.tool_registry.register(CheckSystemTemperatureTool())
-        self.tool_registry.register(RunStabilityTestTool())
-
-        # Audit Tools - Reporting & Security
-        self.tool_registry.register(GenerateSystemReportTool())
         self.tool_registry.register(CheckSecurityStatusTool())
         self.tool_registry.register(CheckStartupProgramsTool())
-        self.tool_registry.register(MalwareScanTool())  # NEU - Malware Scanner
-        self.tool_registry.register(CheckDriversTool())  # NEU - Driver Check
 
-        # AI Analysis Tools
-        self.tool_registry.register(RootCauseAnalyzer())  # NEU - Root Cause Analysis
-
-        # Research Tools (Web Search)
-        self.tool_registry.register(WebSearchTool())
-        self.tool_registry.register(WebSearchInstantAnswerTool())
-
-        # Repair Tools - System
+        # === Basis-Repair Tools (alle Editionen, Free: 5/Monat) ===
         self.tool_registry.register(ServiceManagerTool())
         self.tool_registry.register(DiskCleanupTool())
         self.tool_registry.register(FlushDNSCacheTool())
-        self.tool_registry.register(ResetNetworkStackTool())
-        self.tool_registry.register(RunSFCScanTool())
-        self.tool_registry.register(RepairDiskPermissionsTool())
-        self.tool_registry.register(RepairDiskTool())
-        self.tool_registry.register(InstallSystemUpdatesTool())
 
-        # Repair Tools - Backup
-        self.tool_registry.register(CreateRestorePointTool())
-        self.tool_registry.register(TriggerTimeMachineBackupTool())
+        # === Erweiterte Audit Tools (Pro + Business) ===
+        if check_edition_features(edition, "advanced_audit"):
+            self.tool_registry.register(StressTestCPUTool())
+            self.tool_registry.register(StressTestMemoryTool())
+            self.tool_registry.register(TestDiskSpeedTool())
+            self.tool_registry.register(CheckSystemTemperatureTool())
+            self.tool_registry.register(RunStabilityTestTool())
+            self.tool_registry.register(MalwareScanTool())
+            self.tool_registry.register(GenerateSystemReportTool())
+            self.tool_registry.register(CheckDriversTool())
 
-        # Repair Tools - Startup Management & Update Scheduler
-        self.tool_registry.register(DisableStartupProgramTool())
-        self.tool_registry.register(EnableStartupProgramTool())
-        self.tool_registry.register(ScheduleSystemUpdatesTool())
+        # === Erweiterte Repair Tools (Pro + Business) ===
+        if check_edition_features(edition, "advanced_repair"):
+            self.tool_registry.register(RunSFCScanTool())
+            self.tool_registry.register(RepairDiskPermissionsTool())
+            self.tool_registry.register(RepairDiskTool())
+            self.tool_registry.register(ResetNetworkStackTool())
+            self.tool_registry.register(InstallSystemUpdatesTool())
+            self.tool_registry.register(CreateRestorePointTool())
+            self.tool_registry.register(TriggerTimeMachineBackupTool())
+            self.tool_registry.register(DisableStartupProgramTool())
+            self.tool_registry.register(EnableStartupProgramTool())
+            self.tool_registry.register(ScheduleSystemUpdatesTool())
+
+        # === Web Search + Root Cause Analysis (Pro + Business) ===
+        if check_edition_features(edition, "web_search"):
+            self.tool_registry.register(WebSearchTool())
+            self.tool_registry.register(WebSearchInstantAnswerTool())
+
+        if check_edition_features(edition, "root_cause_analysis"):
+            self.tool_registry.register(RootCauseAnalyzer())
 
         self.console.display_info(
             f"🔧 Tools registriert: {len(self.tool_registry)} "
@@ -341,9 +343,9 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
 
         # Nur prüfen wenn License Key gesetzt
         if not settings.license_key or not settings.backend_url:
-            # Community Edition ohne Remote-Backend
-            if settings.edition == "community":
-                self.console.display_info("📦 Edition: Community (keine Lizenz erforderlich)")
+            # Free Edition ohne Remote-Backend
+            if settings.edition == "free":
+                self.console.display_info("📦 Edition: Free (keine Lizenz erforderlich)")
             return
 
         try:
@@ -366,10 +368,9 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
 
             # Edition-Info anzeigen
             edition_names = {
-                "community": "Community",
+                "free": "Free",
                 "pro": "Pro",
-                "pro_business": "Pro Business",
-                "enterprise": "Enterprise"
+                "business": "Business"
             }
 
             edition_display = edition_names.get(result["edition"], result["edition"])

@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     environment: str = Field(default="production", env="ENVIRONMENT")
 
     # Edition & License
-    edition: str = Field(default="community", env="EDITION")
+    edition: str = Field(default="free", env="EDITION")
     license_key: Optional[str] = Field(default=None, env="LICENSE_KEY")
     license_server_url: Optional[str] = Field(
         default="https://license.techcare.local",
@@ -74,27 +74,21 @@ class Settings(BaseSettings):
     @property
     def max_repairs_per_month(self) -> Optional[int]:
         """Max repairs per month based on edition"""
-        if self.edition == "community":
-            return 10
+        if self.edition == "free":
+            return 5
         return None  # Unlimited for paid editions
 
     @property
     def max_users(self) -> Optional[int]:
         """Max users based on edition"""
-        if self.edition == "community":
+        if self.edition in ["free", "pro"]:
             return 1
-        elif self.edition == "pro":
-            return 1
-        elif self.edition == "pro_business":
-            return None  # Unlimited
-        elif self.edition == "enterprise":
-            return None  # Unlimited
-        return 1
+        return None  # Unlimited for business
 
     @property
     def shared_learning_enabled(self) -> bool:
-        """Shared learning enabled for Pro Business and Enterprise"""
-        return self.edition in ["pro_business", "enterprise"]
+        """Shared learning enabled for Business only"""
+        return self.edition == "business"
 
     @validator("cors_origins", pre=True)
     def parse_cors_origins(cls, v):
@@ -114,7 +108,7 @@ class Settings(BaseSettings):
     @validator("edition")
     def validate_edition(cls, v):
         """Validate edition"""
-        valid_editions = ["community", "pro", "pro_business", "enterprise"]
+        valid_editions = ["free", "pro", "business"]
         if v.lower() not in valid_editions:
             raise ValueError(f"Invalid edition: {v}")
         return v.lower()

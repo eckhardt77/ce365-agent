@@ -77,7 +77,7 @@ class LicenseValidator:
         Returns:
             {
                 "valid": bool,
-                "edition": str,  # "community", "pro", "pro_business", "enterprise"
+                "edition": str,  # "free", "pro", "business"
                 "expires_at": str,  # ISO timestamp oder "never"
                 "max_systems": int,  # 0 = unlimited
                 "registered_systems": int,  # Anzahl registrierter Systeme
@@ -243,31 +243,43 @@ def check_edition_features(edition: str, feature: str) -> bool:
     Prüft ob Edition ein Feature unterstützt
 
     Args:
-        edition: "community", "pro", "pro_business", "enterprise"
-        feature: "shared_learning", "unlimited_systems", "monitoring", etc.
+        edition: "free", "pro", "business"
+        feature: Feature-Name (siehe features_map)
 
     Returns:
         True wenn Feature verfügbar
     """
     features_map = {
-        "community": [
-            # Max 10 Reparaturen/Monat, 1 System, lokales Learning
+        "free": [
+            "local_learning",  # Lokales Learning (SQLite)
+            "pii_detection",  # PII Detection
+            # Basis-Audit (7 Tools), Basis-Repair (5/Monat), 1 System
         ],
         "pro": [
+            "local_learning",
+            "pii_detection",
             "unlimited_repairs",  # Unbegrenzte Reparaturen
+            "advanced_audit",  # Stress-Tests, Malware, Temp, Drivers, Report
+            "advanced_repair",  # SFC, Network, Updates, Startup, Restore
+            "web_search",  # Web-Suche für Problemlösung
+            "root_cause_analysis",  # KI Root-Cause-Analyse
+            "system_report",  # HTML System-Report
+            "driver_management",  # Treiber-Check
             # 1 System, lokales Learning
         ],
-        "pro_business": [
+        "business": [
+            "local_learning",
+            "pii_detection",
             "unlimited_repairs",
+            "advanced_audit",
+            "advanced_repair",
+            "web_search",
+            "root_cause_analysis",
+            "system_report",
+            "driver_management",
             "unlimited_systems",  # Unbegrenzte Systeme
             "monitoring",  # Sensor-Mode
-            # Lokales Learning
-        ],
-        "enterprise": [
-            "unlimited_repairs",
-            "unlimited_systems",
-            "monitoring",
-            "shared_learning",  # Gemeinsame Wissensdatenbank
+            "shared_learning",  # Gemeinsame Wissensdatenbank (PostgreSQL)
             "team_features",  # Team-Management
         ]
     }

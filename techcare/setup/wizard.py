@@ -65,21 +65,21 @@ class SetupWizard:
 
         # 4. Lizenzschlüssel (für Pro/Enterprise) - ERFORDERLICH
         license_key = ""
-        if edition in ["pro", "pro_business", "enterprise"]:
+        if edition in ["pro", "business"]:
             license_key = self._ask_license_key()
             if not license_key:
                 return False
 
         # 5. Netzwerkverbindung (für Remote Services) - ERFORDERLICH
         network_config = {}
-        if edition in ["pro_business", "enterprise"]:
+        if edition == "business":
             network_config = self._ask_network_connection()
             if network_config is None:
                 return False
 
-        # 6. Learning Database (nur für Enterprise) - ERFORDERLICH
+        # 6. Learning Database (nur für Business) - ERFORDERLICH
         db_config = {}
-        if edition == "enterprise":
+        if edition == "business":
             db_config = self._ask_database()
             if db_config is None:  # User abgebrochen
                 return False
@@ -177,29 +177,27 @@ class SetupWizard:
         self.console.print("\n[bold]2. Edition[/bold]")
         self.console.print("   [dim]Welche Edition möchtest du nutzen?[/dim]\n")
 
-        self.console.print("   [cyan]1[/cyan] Community (kostenlos, max 10 Reparaturen/Monat)")
-        self.console.print("   [cyan]2[/cyan] Pro (€49/Monat, 1 System)")
-        self.console.print("   [cyan]3[/cyan] Pro Business (€99/Monat, ∞ Systeme)")
-        self.console.print("   [cyan]4[/cyan] Enterprise (ab €149/Monat, Team + Shared Learning)\n")
+        self.console.print("   [cyan]1[/cyan] Free (kostenlos, Basis-Tools, 5 Reparaturen/Monat)")
+        self.console.print("   [cyan]2[/cyan] Pro (€49/Monat, alle Tools, 1 System)")
+        self.console.print("   [cyan]3[/cyan] Business (€99/Monat, ∞ Systeme, Monitoring, Team-Learning)\n")
 
         choice = Prompt.ask(
             "   Deine Wahl",
-            choices=["1", "2", "3", "4"],
+            choices=["1", "2", "3"],
             default="1"
         )
 
         edition_map = {
-            "1": "community",
+            "1": "free",
             "2": "pro",
-            "3": "pro_business",
-            "4": "enterprise"
+            "3": "business"
         }
 
         edition = edition_map[choice]
 
-        # Info für Enterprise
-        if edition == "enterprise":
-            self.console.print("\n   [yellow]💡 Enterprise benötigt eine gemeinsame Datenbank für das Team-Learning![/yellow]")
+        # Info für Business
+        if edition == "business":
+            self.console.print("\n   [yellow]💡 Business benötigt eine gemeinsame Datenbank für das Team-Learning![/yellow]")
 
         return edition
 
@@ -413,7 +411,7 @@ class SetupWizard:
         company: str,
         api_key: str,
         briefing: str,
-        edition: str = "community",
+        edition: str = "free",
         license_key: str = "",
         network_config: dict = None,
         db_config: dict = None,
@@ -427,7 +425,7 @@ class SetupWizard:
             company: Firma/Team
             api_key: Anthropic API Key
             briefing: Use-Case Beschreibung
-            edition: Edition (community/pro/pro_business/enterprise)
+            edition: Edition (free/pro/business)
             db_config: Datenbank-Konfiguration (nur Enterprise)
 
         Returns:
@@ -448,7 +446,7 @@ class SetupWizard:
 
             # Edition hinzufügen
             config = config.replace(
-                "EDITION=community",
+                "EDITION=free",
                 f"EDITION={edition}"
             )
 
