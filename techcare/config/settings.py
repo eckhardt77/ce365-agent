@@ -53,7 +53,7 @@ class Settings(BaseModel):
     network_method: str = "direct"  # "cloudflare", "tailscale", "vpn", "direct"
 
     # License
-    edition: str = "community"  # "community", "pro", "pro_business", "enterprise"
+    edition: str = "free"  # "free", "pro", "business"
     license_key: str = ""  # Lizenzschlüssel
 
     # Technician Security
@@ -111,7 +111,7 @@ class Settings(BaseModel):
             backend_url=os.getenv("BACKEND_URL", ""),
             network_method=os.getenv("NETWORK_METHOD", "direct"),
             # License Settings
-            edition=os.getenv("EDITION", "community"),
+            edition=os.getenv("EDITION", "free"),
             license_key=os.getenv("LICENSE_KEY", ""),
             # Security Settings
             technician_password_hash=os.getenv("TECHNICIAN_PASSWORD_HASH", ""),

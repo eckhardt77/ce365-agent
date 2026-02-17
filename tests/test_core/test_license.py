@@ -165,32 +165,50 @@ class TestOnlineValidation:
 
 
 class TestEditionFeatures:
-    """Tests für Edition Feature Checks"""
+    """Tests für Edition Feature Checks (Free / Pro / Business)"""
 
-    def test_community_has_no_features(self):
-        assert check_edition_features("community", "unlimited_repairs") is False
-        assert check_edition_features("community", "monitoring") is False
+    def test_free_has_basic_features(self):
+        assert check_edition_features("free", "local_learning") is True
+        assert check_edition_features("free", "pii_detection") is True
+        assert check_edition_features("free", "unlimited_repairs") is False
+        assert check_edition_features("free", "advanced_audit") is False
+        assert check_edition_features("free", "advanced_repair") is False
+        assert check_edition_features("free", "web_search") is False
+        assert check_edition_features("free", "root_cause_analysis") is False
+        assert check_edition_features("free", "monitoring") is False
+        assert check_edition_features("free", "shared_learning") is False
 
     def test_pro_features(self):
+        assert check_edition_features("pro", "local_learning") is True
+        assert check_edition_features("pro", "pii_detection") is True
         assert check_edition_features("pro", "unlimited_repairs") is True
+        assert check_edition_features("pro", "advanced_audit") is True
+        assert check_edition_features("pro", "advanced_repair") is True
+        assert check_edition_features("pro", "web_search") is True
+        assert check_edition_features("pro", "root_cause_analysis") is True
+        assert check_edition_features("pro", "system_report") is True
+        assert check_edition_features("pro", "driver_management") is True
         assert check_edition_features("pro", "unlimited_systems") is False
         assert check_edition_features("pro", "monitoring") is False
+        assert check_edition_features("pro", "shared_learning") is False
 
-    def test_pro_business_features(self):
-        assert check_edition_features("pro_business", "unlimited_repairs") is True
-        assert check_edition_features("pro_business", "unlimited_systems") is True
-        assert check_edition_features("pro_business", "monitoring") is True
-        assert check_edition_features("pro_business", "shared_learning") is False
-
-    def test_enterprise_all_features(self):
-        assert check_edition_features("enterprise", "unlimited_repairs") is True
-        assert check_edition_features("enterprise", "unlimited_systems") is True
-        assert check_edition_features("enterprise", "monitoring") is True
-        assert check_edition_features("enterprise", "shared_learning") is True
-        assert check_edition_features("enterprise", "team_features") is True
+    def test_business_all_features(self):
+        assert check_edition_features("business", "local_learning") is True
+        assert check_edition_features("business", "pii_detection") is True
+        assert check_edition_features("business", "unlimited_repairs") is True
+        assert check_edition_features("business", "advanced_audit") is True
+        assert check_edition_features("business", "advanced_repair") is True
+        assert check_edition_features("business", "web_search") is True
+        assert check_edition_features("business", "root_cause_analysis") is True
+        assert check_edition_features("business", "system_report") is True
+        assert check_edition_features("business", "driver_management") is True
+        assert check_edition_features("business", "unlimited_systems") is True
+        assert check_edition_features("business", "monitoring") is True
+        assert check_edition_features("business", "shared_learning") is True
+        assert check_edition_features("business", "team_features") is True
 
     def test_unknown_edition(self):
         assert check_edition_features("unknown", "monitoring") is False
 
     def test_unknown_feature(self):
-        assert check_edition_features("enterprise", "nonexistent_feature") is False
+        assert check_edition_features("business", "nonexistent_feature") is False

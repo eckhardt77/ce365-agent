@@ -1,196 +1,148 @@
-# TechCare Bot - Edition Features v2.0.0
+# TechCare Bot - Edition Features v2.1.0
 
 ## Feature-Matrix nach Edition
 
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **Preis** | **€0** | **€49/Monat** | **€99/Monat** | **€149+/Monat** |
+| | **Free** (0 EUR) | **Pro** (49 EUR/Mo) | **Business** (99 EUR/Mo) |
+|---|---|---|---|
+| **Preis** | **Kostenlos** | **49 EUR/Monat** | **99 EUR/Monat** |
 
 ---
 
-## 🔧 Basis-Tools & Diagnose
+## Basis-Audit (alle Editionen)
 
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **System-Info** (OS, CPU, RAM, Disk) | ✅ | ✅ | ✅ | ✅ |
-| **Prozess-Monitor** | ✅ | ✅ | ✅ | ✅ |
-| **System-Logs** (Event Log) | ✅ | ✅ | ✅ | ✅ |
-| **Netzwerk-Diagnose** | ✅ | ✅ | ✅ | ✅ |
-| **Service-Manager** | ✅ | ✅ | ✅ | ✅ |
-| **Disk-Cleanup** | ✅ | ✅ | ✅ | ✅ |
-| **DNS-Flush** | ✅ | ✅ | ✅ | ✅ |
-| **Update-Check** | ✅ | ✅ | ✅ | ✅ |
-| **Backup-Status** | ✅ | ✅ | ✅ | ✅ |
-| **Security-Audit** | ✅ | ✅ | ✅ | ✅ |
-| **GO REPAIR Lock** | ✅ | ✅ | ✅ | ✅ |
-| **Anzahl Basis-Tools** | **15 Tools** | **30+ Tools** | **30+ Tools** | **30+ Tools** |
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **System-Info** (OS, CPU, RAM, Disk) | ✅ | ✅ | ✅ |
+| **System-Logs** (Event Log) | ✅ | ✅ | ✅ |
+| **Prozess-Monitor** | ✅ | ✅ | ✅ |
+| **Update-Check** | ✅ | ✅ | ✅ |
+| **Backup-Status** | ✅ | ✅ | ✅ |
+| **Security-Audit** | ✅ | ✅ | ✅ |
+| **Startup-Programme** | ✅ | ✅ | ✅ |
 
 ---
 
-## 🆕 Erweiterte Features (v2.0)
+## Basis-Repair (alle Editionen)
 
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **🔐 Techniker-Passwort** | ✅ | ✅ | ✅ | ✅ |
-| **🔧 Treiber-Management** | ❌ | ✅ | ✅ | ✅ |
-| **📡 Monitoring-Sensor** | ❌ | ✅ | ✅ | ✅ |
-| **🗑️ Deinstallations-Befehl** | ✅ | ✅ | ✅ | ✅ |
-| **Malware-Scanner** | ❌ | ✅ | ✅ | ✅ |
-| **Stress-Tests** (CPU, RAM, Disk) | ❌ | ✅ | ✅ | ✅ |
-| **Root-Cause-Analyse** | ❌ | ✅ | ✅ | ✅ |
-| **Startup-Manager** | ❌ | ✅ | ✅ | ✅ |
-| **System-Report (HTML)** | ❌ | ✅ | ✅ | ✅ |
-| **Web-Suche** (Problemlösung) | ❌ | ✅ | ✅ | ✅ |
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **Service-Manager** | ✅ | ✅ | ✅ |
+| **Disk-Cleanup** | ✅ | ✅ | ✅ |
+| **DNS-Flush** | ✅ | ✅ | ✅ |
+| **Reparaturen/Monat** | **5** | **Unbegrenzt** | **Unbegrenzt** |
 
 ---
 
-## 🧠 KI & Learning
+## Erweiterte Audit Tools (Pro + Business)
 
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **AI-Diagnose** (Claude) | ✅ | ✅ | ✅ | ✅ |
-| **Lokales Learning** (SQLite) | ❌ | ✅ | ✅ | ✅ |
-| **Remote Team-Learning** (PostgreSQL) | ❌ | ❌ | ❌ | ✅ |
-| **Case-Wiederverwendung** | ❌ | ✅ | ✅ | ✅ |
-
----
-
-## 🔒 Sicherheit & Compliance
-
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **Techniker-Passwort** | ✅ | ✅ | ✅ | ✅ |
-| **PII-Detection** (Presidio) | ✅ | ✅ | ✅ | ✅ |
-| **Audit-Trail** (Changelog) | ✅ | ✅ | ✅ | ✅ |
-| **Lizenz-Validierung** | ❌ | ✅ | ✅ | ✅ |
-| **LDAP/SSO Integration** | ❌ | ❌ | ❌ | ✅ |
-| **Multi-User Management** | ❌ | ❌ | ❌ | ✅ |
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **Stress-Tests** (CPU, RAM, Disk) | ❌ | ✅ | ✅ |
+| **Temperatur-Check** | ❌ | ✅ | ✅ |
+| **Stabilitäts-Test** | ❌ | ✅ | ✅ |
+| **Malware-Scanner** | ❌ | ✅ | ✅ |
+| **System-Report (HTML)** | ❌ | ✅ | ✅ |
+| **Treiber-Management** | ❌ | ✅ | ✅ |
 
 ---
 
-## 🌐 Multi-System & Team
+## Erweiterte Repair Tools (Pro + Business)
 
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **Max. Systeme** | 1 System | 1 System | ∞ Systeme | ∞ Systeme |
-| **Zentrale Dashboards** | ❌ | ❌ | ✅ | ✅ |
-| **Fleet-Management** | ❌ | ❌ | ✅ | ✅ |
-| **Team-Sharing** | ❌ | ❌ | ❌ | ✅ |
-| **Remote PostgreSQL** | ❌ | ❌ | ❌ | ✅ |
-
----
-
-## 📊 Limits & Nutzung
-
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **Reparaturen/Monat** | 10 (Warnung) | ∞ Unbegrenzt | ∞ Unbegrenzt | ∞ Unbegrenzt |
-| **Systeme** | 1 | 1 | ∞ | ∞ |
-| **API-Nutzung** | Eigener Key | Eigener Key | Eigener Key | Eigener Key |
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **SFC Scan** | ❌ | ✅ | ✅ |
+| **Disk-Reparatur** | ❌ | ✅ | ✅ |
+| **Disk-Permissions** | ❌ | ✅ | ✅ |
+| **Netzwerk-Reset** | ❌ | ✅ | ✅ |
+| **System-Updates installieren** | ❌ | ✅ | ✅ |
+| **Restore-Point erstellen** | ❌ | ✅ | ✅ |
+| **Time Machine Backup** | ❌ | ✅ | ✅ |
+| **Startup-Programme verwalten** | ❌ | ✅ | ✅ |
+| **Update-Scheduler** | ❌ | ✅ | ✅ |
 
 ---
 
-## 💬 Support & Updates
+## KI & Research (Pro + Business)
 
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **GitHub Issues** | ✅ Community | ✅ Community | ✅ Community | ✅ Community |
-| **Email-Support** | ❌ | ✅ 48h Response | ✅ 24h Response | ✅ 12h Response |
-| **Priority Bug-Fixes** | ❌ | ✅ | ✅ | ✅ |
-| **Feature-Requests** | ❌ Voting | ❌ Voting | ✅ Priorität | ✅ Custom |
-| **Updates** | ✅ | ✅ | ✅ Early Access | ✅ Early Access |
-| **SLA** | ❌ | ❌ | ❌ | ✅ 99.9% |
-| **Dedicated Support** | ❌ | ❌ | ❌ | ✅ |
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **AI-Diagnose** (Claude) | ✅ | ✅ | ✅ |
+| **Web-Suche** (Problemlösung) | ❌ | ✅ | ✅ |
+| **Root-Cause-Analyse** | ❌ | ✅ | ✅ |
 
 ---
 
-## 🌍 Sprachen & Platform
+## Learning System
 
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **Deutsch** | ✅ | ✅ | ✅ | ✅ |
-| **Englisch** | ✅ | ✅ | ✅ | ✅ |
-| **Windows** | ✅ | ✅ | ✅ | ✅ |
-| **macOS** | ✅ | ✅ | ✅ | ✅ |
-| **Linux** | ⚠️ Experimentell | ⚠️ Experimentell | ⚠️ Experimentell | ✅ Supported |
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **Lokales Learning** (SQLite) | ✅ | ✅ | ✅ |
+| **Shared Learning** (PostgreSQL) | ❌ | ❌ | ✅ |
+| **Case-Wiederverwendung** | ✅ | ✅ | ✅ |
 
 ---
 
-## 📄 Lizenzierung
+## Multi-System & Team (nur Business)
 
-| Feature | Community | Pro | Pro Business | Enterprise |
-|---------|-----------|-----|--------------|------------|
-| **Open Source** | ✅ MIT | ❌ Proprietär | ❌ Proprietär | ❌ Proprietär |
-| **Source Code** | ✅ GitHub | ❌ Binary | ❌ Binary | ❌ Binary |
-| **Kommerzielle Nutzung** | ✅ Erlaubt | ✅ Erlaubt | ✅ Erlaubt | ✅ Erlaubt |
-| **Redistribution** | ✅ Erlaubt | ❌ Verboten | ❌ Verboten | ❌ Verboten |
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **Max. Systeme** | 1 | 1 | Unbegrenzt |
+| **Monitoring-Sensor** | ❌ | ❌ | ✅ |
+| **Team-Features** | ❌ | ❌ | ✅ |
 
 ---
 
-## 📈 Upgrade-Path
+## Sicherheit & Compliance
+
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **Techniker-Passwort** | ✅ | ✅ | ✅ |
+| **PII-Detection** (Presidio) | ✅ | ✅ | ✅ |
+| **Audit-Trail** (Changelog) | ✅ | ✅ | ✅ |
+| **GO REPAIR Lock** | ✅ | ✅ | ✅ |
+| **Lizenz-Validierung** | ❌ | ✅ | ✅ |
+
+---
+
+## Support
+
+| Feature | Free | Pro | Business |
+|---------|------|-----|----------|
+| **GitHub Issues** | ✅ | ✅ | ✅ |
+| **Email-Support** | ❌ | ✅ 48h | ✅ 24h |
+| **Priority Bug-Fixes** | ❌ | ✅ | ✅ |
+
+---
+
+## Upgrade-Path
 
 ```
-Community (€0)
-    ↓
-Pro (€49/Monat)
-    ↓
-Pro Business (€99/Monat)
-    ↓
-Enterprise (€149+/Monat)
+Free (0 EUR)  →  Pro (49 EUR/Mo)  →  Business (99 EUR/Mo)
 ```
 
 **Upgrade jederzeit möglich, keine Vertragsbindung (monatlich kündbar)**
 
 ---
 
-## 🎯 Empfehlung nach Use-Case
+## Empfehlung nach Use-Case
 
-### 👤 Privatnutzer / Hobby
-→ **Community Edition**
-- Ausreichend für gelegentliche Reparaturen
-- Keine Kosten
-- Basis-Funktionalität
+### Privatnutzer / Hobby
+→ **Free Edition**
+- Basis-Diagnose und einfache Reparaturen
+- 5 Reparaturen/Monat
 
-### 💼 Freiberufler / Einzelunternehmer
-→ **Pro Edition (€49/Monat)**
-- Alle Tools für professionelle Nutzung
-- Treiber-Management & Monitoring
-- Email-Support
+### Freiberufler / IT-Dienstleister
+→ **Pro Edition (49 EUR/Monat)**
+- Alle Diagnose- und Repair-Tools
+- Web-Suche & Root-Cause-Analyse
+- Unbegrenzte Reparaturen
 
-### 🏢 MSP / IT-Dienstleister (Multi-Client)
-→ **Pro Business (€99/Monat)**
-- Unbegrenzte Systeme
-- Zentrale Übersicht
-- Fleet-Management
-- Priority Support
-
-### 🏭 Unternehmen / Enterprise IT-Abteilung
-→ **Enterprise (ab €149/Monat)**
-- Team-Learning (gemeinsame Wissensdatenbank)
-- LDAP/SSO Integration
-- Custom Integrations
-- SLA & Dedicated Support
+### MSP / IT-Abteilung / Teams
+→ **Business Edition (99 EUR/Monat)**
+- Unbegrenzte Systeme & Monitoring
+- Shared Learning (Team-Wissensdatenbank)
+- Team-Features
 
 ---
 
-## ❓ Häufige Fragen
-
-### Kann ich von Community zu Pro upgraden?
-✅ Ja, jederzeit. Lizenzschlüssel eingeben und sofort freigeschaltet.
-
-### Verliere ich meine Daten beim Upgrade?
-❌ Nein, alle Daten (Learning-Cases, Changelogs) bleiben erhalten.
-
-### Kann ich Pro testen?
-✅ Ja, 14 Tage kostenlose Trial (keine Kreditkarte erforderlich).
-
-### Was passiert wenn ich Pro kündige?
-↩️ Downgrade zu Community Edition (Basis-Tools bleiben funktionsfähig).
-
-### Brauche ich für jedes System eine Lizenz?
-- Community/Pro: Ja (1 System = 1 Lizenz)
-- Pro Business/Enterprise: Nein (unbegrenzte Systeme)
-
----
-
-**Stand:** Februar 2026 | Version 2.0.0
+**Stand:** Februar 2026 | Version 2.1.0

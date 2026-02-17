@@ -77,17 +77,16 @@ echo -e "${CYAN}1. LIZENZSCHLÜSSEL${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
 echo ""
 echo "TechCare Editionen:"
-echo "  • Community (kostenlos) - max 10 Reparaturen/Monat"
-echo "  • Pro (€49/Monat) - 1 System, unbegrenzt"
-echo "  • Pro Business (€99/Monat) - ∞ Systeme, Datenbank"
-echo "  • Enterprise (ab €149/Seat) - Team + Shared Learning"
+echo "  • Free (kostenlos) - Basis-Tools, 5 Reparaturen/Monat"
+echo "  • Pro (€49/Monat) - alle Tools, 1 System"
+echo "  • Business (€99/Monat) - ∞ Systeme, Monitoring, Team-Learning"
 echo ""
-read -p "Lizenzschlüssel (leer für Community): " LICENSE_KEY
+read -p "Lizenzschlüssel (leer für Free): " LICENSE_KEY
 echo ""
 
 if [ -z "$LICENSE_KEY" ]; then
-    EDITION="community"
-    echo -e "${GREEN}✓ Community Edition aktiviert${NC}"
+    EDITION="free"
+    echo -e "${GREEN}✓ Free Edition aktiviert${NC}"
 else
     EDITION="pro"  # Wird vom License Server validiert
     echo -e "${GREEN}✓ Lizenz wird beim Start validiert${NC}"
@@ -199,7 +198,7 @@ fi
 POSTGRES_PASSWORD=$(openssl rand -base64 32)
 REDIS_PASSWORD=$(openssl rand -base64 32)
 
-if [ "$EDITION" == "enterprise" ] || [ "$EDITION" == "pro_business" ]; then
+if [ "$EDITION" == "business" ]; then
     echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
     echo -e "${CYAN}4. SHARED LEARNING DATENBANK${NC}"
     echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"

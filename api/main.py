@@ -36,8 +36,8 @@ async def lifespan(app: FastAPI):
     await init_db()
     logger.info("✓ Database initialized")
 
-    # License validieren (falls nicht Community)
-    if settings.edition != "community":
+    # License validieren (falls nicht Free)
+    if settings.edition != "free":
         from api.services.license_service import validate_license
         license_valid = await validate_license(settings.license_key)
         if not license_valid:
