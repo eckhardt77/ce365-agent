@@ -26,7 +26,12 @@ from techcare.security.pii_detector import get_pii_detector
 
 # Tools importieren
 from techcare.tools.audit.system_info import SystemInfoTool
+from techcare.tools.audit.logs import CheckSystemLogsTool
+from techcare.tools.audit.processes import CheckRunningProcessesTool
 from techcare.tools.repair.service_manager import ServiceManagerTool
+from techcare.tools.repair.disk_cleanup import DiskCleanupTool
+from techcare.tools.repair.network_tools import FlushDNSCacheTool, ResetNetworkStackTool
+from techcare.tools.repair.system_repair import RunSFCScanTool, RepairDiskPermissionsTool, RepairDiskTool
 from techcare.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 
 
@@ -82,6 +87,8 @@ class TechCareBot:
         """Alle Tools registrieren"""
         # Audit Tools
         self.tool_registry.register(SystemInfoTool())
+        self.tool_registry.register(CheckSystemLogsTool())
+        self.tool_registry.register(CheckRunningProcessesTool())
 
         # Research Tools (Web Search)
         self.tool_registry.register(WebSearchTool())
@@ -89,9 +96,15 @@ class TechCareBot:
 
         # Repair Tools
         self.tool_registry.register(ServiceManagerTool())
+        self.tool_registry.register(DiskCleanupTool())
+        self.tool_registry.register(FlushDNSCacheTool())
+        self.tool_registry.register(ResetNetworkStackTool())
+        self.tool_registry.register(RunSFCScanTool())
+        self.tool_registry.register(RepairDiskPermissionsTool())
+        self.tool_registry.register(RepairDiskTool())
 
         self.console.display_info(
-            f"Tools registriert: {len(self.tool_registry)} "
+            f"🔧 Tools registriert: {len(self.tool_registry)} "
             f"(Audit: {len(self.tool_registry.get_audit_tools())}, "
             f"Repair: {len(self.tool_registry.get_repair_tools())})"
         )
