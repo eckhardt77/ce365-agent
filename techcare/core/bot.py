@@ -29,11 +29,17 @@ from techcare.tools.audit.system_info import SystemInfoTool
 from techcare.tools.audit.logs import CheckSystemLogsTool
 from techcare.tools.audit.processes import CheckRunningProcessesTool
 from techcare.tools.audit.updates import CheckSystemUpdatesTool
+from techcare.tools.audit.backup import CheckBackupStatusTool
+from techcare.tools.audit.stress_tests import (
+    StressTestCPUTool, StressTestMemoryTool, TestDiskSpeedTool,
+    CheckSystemTemperatureTool, RunStabilityTestTool
+)
 from techcare.tools.repair.service_manager import ServiceManagerTool
 from techcare.tools.repair.disk_cleanup import DiskCleanupTool
 from techcare.tools.repair.network_tools import FlushDNSCacheTool, ResetNetworkStackTool
 from techcare.tools.repair.system_repair import RunSFCScanTool, RepairDiskPermissionsTool, RepairDiskTool
 from techcare.tools.repair.updates import InstallSystemUpdatesTool
+from techcare.tools.repair.backup import CreateRestorePointTool, TriggerTimeMachineBackupTool
 from techcare.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 
 
@@ -87,17 +93,25 @@ class TechCareBot:
 
     def _register_tools(self):
         """Alle Tools registrieren"""
-        # Audit Tools
+        # Audit Tools - System Info
         self.tool_registry.register(SystemInfoTool())
         self.tool_registry.register(CheckSystemLogsTool())
         self.tool_registry.register(CheckRunningProcessesTool())
         self.tool_registry.register(CheckSystemUpdatesTool())
+        self.tool_registry.register(CheckBackupStatusTool())
+
+        # Audit Tools - Stress Tests & Diagnostics
+        self.tool_registry.register(StressTestCPUTool())
+        self.tool_registry.register(StressTestMemoryTool())
+        self.tool_registry.register(TestDiskSpeedTool())
+        self.tool_registry.register(CheckSystemTemperatureTool())
+        self.tool_registry.register(RunStabilityTestTool())
 
         # Research Tools (Web Search)
         self.tool_registry.register(WebSearchTool())
         self.tool_registry.register(WebSearchInstantAnswerTool())
 
-        # Repair Tools
+        # Repair Tools - System
         self.tool_registry.register(ServiceManagerTool())
         self.tool_registry.register(DiskCleanupTool())
         self.tool_registry.register(FlushDNSCacheTool())
@@ -106,6 +120,10 @@ class TechCareBot:
         self.tool_registry.register(RepairDiskPermissionsTool())
         self.tool_registry.register(RepairDiskTool())
         self.tool_registry.register(InstallSystemUpdatesTool())
+
+        # Repair Tools - Backup
+        self.tool_registry.register(CreateRestorePointTool())
+        self.tool_registry.register(TriggerTimeMachineBackupTool())
 
         self.console.display_info(
             f"🔧 Tools registriert: {len(self.tool_registry)} "
