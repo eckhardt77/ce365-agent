@@ -108,6 +108,18 @@ class CE365Bot:
         self.diagnosed_root_cause: Optional[str] = None
         self.similar_case_offered: Optional[int] = None  # Case ID wenn angeboten
 
+        # Edition-Validierung VOR Tool-Registrierung:
+        # Nur "community" und "pro" sind gültige Editionen
+        if settings.edition not in ("community", "pro"):
+            settings.edition = "community"
+
+        # Pro ohne gültige Credentials → Downgrade auf Community
+        if settings.edition == "pro" and (not settings.license_key or not settings.license_server_url):
+            settings.edition = "community"
+            self._edition_downgraded = True
+        else:
+            self._edition_downgraded = False
+
         # Usage Tracker (Community: 5 Repair Runs/Monat)
         self.usage_tracker = UsageTracker(edition=settings.edition)
 
@@ -368,11 +380,19 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
         """
         settings = get_settings()
 
-        # Nur prüfen wenn License Key gesetzt
-        if not settings.license_key or not settings.license_server_url:
-            # Community Edition ohne Lizenzserver
-            if settings.edition == "community":
-                self.console.display_info("📦 Edition: Community (keine Lizenz erforderlich)")
+        # Edition wurde in __init__ downgraded (Pro ohne Credentials)
+        if self._edition_downgraded:
+            self.console.display_error(
+                "❌ Pro Edition erfordert einen gültigen Lizenzschlüssel und Lizenzserver.\n"
+                "   Setze LICENSE_KEY und LICENSE_SERVER_URL in der .env Datei.\n"
+                "   Oder nutze EDITION=community für die kostenlose Version."
+            )
+            import sys
+            sys.exit(1)
+
+        # Community braucht keine Lizenz
+        if settings.edition == "community":
+            self.console.display_info("📦 Edition: Community (keine Lizenz erforderlich)")
             return
 
         try:
