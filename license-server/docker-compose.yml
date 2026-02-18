@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  license-server:
+    build: .
+    ports:
+      - "9000:9000"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./data/license.db
+      - SESSION_SECRET=${SESSION_SECRET:-change-me-in-production}
+      - SESSION_TIMEOUT_MINUTES=10
+      - HEARTBEAT_INTERVAL_MINUTES=5
+    volumes:
+      - license-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  license-data:

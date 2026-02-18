@@ -5,7 +5,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="ce365-agent",
-    version="0.2.0",
+    version="2.0.0",
     description="AI-powered IT-Wartungs-Assistent für Windows/macOS Systeme",
     author="Carsten Eckhardt / Eckhardt-Marketing",
     author_email="info@eckhardt-marketing.de",

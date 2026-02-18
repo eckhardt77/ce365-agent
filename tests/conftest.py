@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, AsyncMock
 
 # Setze Test-Environment BEVOR Settings geladen werden
 os.environ.setdefault("ANTHROPIC_API_KEY", "test-key-not-real")
-os.environ.setdefault("EDITION", "free")
+os.environ.setdefault("EDITION", "community")
 os.environ.setdefault("LICENSE_KEY", "")
 
 

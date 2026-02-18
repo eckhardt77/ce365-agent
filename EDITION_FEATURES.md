@@ -1,164 +1,102 @@
-# CE365 Agent - Edition Features v2.2.0
+# CE365 Agent - Edition Features v2.0.0
 
 ## Lizenzmodell: Per-Seat (pro Techniker)
 
-| | **Free** (0 EUR) | **Pro** (49 EUR/Seat/Mo) | **Business** (99 EUR/Seat/Mo) |
-|---|---|---|---|
-| **Lizenz** | Keine nötig | Pro Techniker | Pro Techniker |
-| **Nutzung** | Evaluation / Privat | Kommerziell | Kommerziell / Team |
-| **Aktive Sessions** | 1 | 1 | 1 pro Seat |
+| | **Community** (0 EUR) | **Pro** (99 EUR/Seat/Monat) |
+|---|---|---|
+| **Lizenz** | Keine nötig | Pro Techniker |
+| **Nutzung** | Evaluation / Privat | Kommerziell |
+| **Aktive Sessions** | 1 | 1 pro Seat |
+| **LLM-Provider** | Anthropic, OpenAI, OpenRouter | Anthropic, OpenAI, OpenRouter |
 
 ---
 
-## Basis-Diagnose (alle Editionen)
+## Diagnose (Audit)
 
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **System-Info** (OS, CPU, RAM, Disk) | ✅ | ✅ | ✅ |
-| **System-Logs** (Event Log) | ✅ | ✅ | ✅ |
-| **Prozess-Monitor** | ✅ | ✅ | ✅ |
-| **Update-Check** | ✅ | ✅ | ✅ |
-| **Backup-Status** | ✅ | ✅ | ✅ |
-| **Security-Audit** | ✅ | ✅ | ✅ |
-| **Startup-Programme** | ✅ | ✅ | ✅ |
-| **AI-Diagnose** (eigener API-Key) | ✅ | ✅ | ✅ |
-
----
-
-## Basis-Remediation (alle Editionen)
-
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **Service-Manager** | ✅ | ✅ | ✅ |
-| **Disk-Cleanup** | ✅ | ✅ | ✅ |
-| **DNS-Flush** | ✅ | ✅ | ✅ |
-| **Remediation Runs/Monat** | **5** | **Unbegrenzt** | **Unbegrenzt** |
+| Feature | Community | Pro |
+|---------|-----------|-----|
+| **System-Info** (OS, CPU, RAM, Disk) | Ja | Ja |
+| **System-Logs** (Event-Log Analyse) | Ja | Ja |
+| **Prozesse** (Laufende Prozesse) | Ja | Ja |
+| **Updates** (Verfügbare Updates) | Ja | Ja |
+| **Backup-Status** | Ja | Ja |
+| **Security-Status** (Firewall, AV) | Ja | Ja |
+| **Startup-Programme** | Ja | Ja |
+| **Stress-Tests** (CPU, RAM, Disk) | - | Ja |
+| **Temperatur-Check** | - | Ja |
+| **Stabilitäts-Test** | - | Ja |
+| **Malware-Scan** | - | Ja |
+| **HTML System-Report** | - | Ja |
+| **Treiber-Check** | - | Ja |
 
 ---
 
-## Erweiterte Audit Tools (Pro + Business)
+## Reparatur (Repair)
 
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **Stress-Tests** (CPU, RAM, Disk) | ❌ | ✅ | ✅ |
-| **Temperatur-Check** | ❌ | ✅ | ✅ |
-| **Stabilitäts-Test** | ❌ | ✅ | ✅ |
-| **Malware-Scanner** | ❌ | ✅ | ✅ |
-| **System-Report (HTML)** | ❌ | ✅ | ✅ |
-| **Treiber-Management** | ❌ | ✅ | ✅ |
-
----
-
-## Erweiterte Repair Tools (Pro + Business)
-
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **SFC Scan** | ❌ | ✅ | ✅ |
-| **Disk-Reparatur** | ❌ | ✅ | ✅ |
-| **Disk-Permissions** | ❌ | ✅ | ✅ |
-| **Netzwerk-Reset** | ❌ | ✅ | ✅ |
-| **System-Updates installieren** | ❌ | ✅ | ✅ |
-| **Restore-Point erstellen** | ❌ | ✅ | ✅ |
-| **Time Machine Backup** | ❌ | ✅ | ✅ |
-| **Startup-Programme verwalten** | ❌ | ✅ | ✅ |
-| **Update-Scheduler** | ❌ | ✅ | ✅ |
+| Feature | Community | Pro |
+|---------|-----------|-----|
+| **Service Manager** | 5/Monat | Unbegrenzt |
+| **Disk Cleanup** | 5/Monat | Unbegrenzt |
+| **DNS Flush** | 5/Monat | Unbegrenzt |
+| **SFC Scan** | - | Ja |
+| **Disk Repair** | - | Ja |
+| **Network Reset** | - | Ja |
+| **System Updates** | - | Ja |
+| **Restore Point** | - | Ja |
+| **Startup Management** | - | Ja |
+| **Update Scheduler** | - | Ja |
 
 ---
 
-## KI & Research (Pro + Business)
+## KI & Recherche
 
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **Web-Suche** (Problemlösung) | ❌ | ✅ | ✅ |
-| **Root-Cause-Analyse** | ❌ | ✅ | ✅ |
-
----
-
-## Limits & Sessions
-
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **Aktive Systeme / 30 Tage** | Unbegrenzt | 10 | Unbegrenzt |
-| **Gleichzeitige Sessions** | 1 | 1 | 1 pro Seat |
-| **Kommerzielle Nutzung** | ❌ | ✅ | ✅ |
+| Feature | Community | Pro |
+|---------|-----------|-----|
+| **Web-Suche** (DuckDuckGo) | - | Ja |
+| **Root-Cause-Analyse** | - | Ja |
 
 ---
 
 ## Learning System
 
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **Lokales Learning** (SQLite) | ✅ | ✅ | ✅ |
-| **Shared Learning** (PostgreSQL) | ❌ | ❌ | ✅ |
-| **Case-Wiederverwendung** | ✅ | ✅ | ✅ |
-
----
-
-## Monitoring & Team (nur Business)
-
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **Monitoring-Sensor** (Dauerbetrieb) | ❌ | ❌ | ✅ |
-| **Policies & Runbooks** | ❌ | ❌ | ✅ |
-| **Team-Branding** | ❌ | ❌ | ✅ |
-| **Shared Learning** | ❌ | ❌ | ✅ |
+| Feature | Community | Pro |
+|---------|-----------|-----|
+| **Lokales Learning** (SQLite) | Ja | Ja |
+| **Shared Learning** (PostgreSQL) | - | Ja |
 
 ---
 
 ## Sicherheit & Compliance
 
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **Techniker-Passwort** | ✅ | ✅ | ✅ |
-| **PII-Detection** (Presidio) | ✅ | ✅ | ✅ |
-| **Audit-Trail** (Changelog) | ✅ | ✅ | ✅ |
-| **GO REPAIR Lock** | ✅ | ✅ | ✅ |
-| **Lizenz-Validierung** | ❌ | ✅ | ✅ |
+| Feature | Community | Pro |
+|---------|-----------|-----|
+| **Techniker-Passwort** | Ja | Ja |
+| **PII-Detection** (Presidio) | Ja | Ja |
+| **Audit-Trail** (Changelog) | Ja | Ja |
+| **GO REPAIR Lock** | Ja | Ja |
+| **Lizenz-Validierung** | - | Ja |
+| **Session-Heartbeat** | - | Ja |
 
 ---
 
 ## Support
 
-| Feature | Free | Pro | Business |
-|---------|------|-----|----------|
-| **GitHub Issues** | ✅ | ✅ | ✅ |
-| **Email-Support** | ❌ | ✅ 48h | ✅ 24h |
-| **Priority Bug-Fixes** | ❌ | ✅ | ✅ |
+| Feature | Community | Pro |
+|---------|-----------|-----|
+| **GitHub Issues** | Ja | Ja |
+| **Email-Support** | - | Ja (48h) |
+| **Priority Bug-Fixes** | - | Ja |
 
 ---
 
 ## Upgrade-Path
 
 ```
-Free (0 EUR)  →  Pro (49 EUR/Seat/Mo)  →  Business (99 EUR/Seat/Mo)
+Community (0 EUR)  →  Pro (99 EUR/Seat/Monat)
 ```
 
 **Upgrade jederzeit möglich, keine Vertragsbindung (monatlich kündbar)**
 
 ---
 
-## Empfehlung nach Use-Case
-
-### Evaluation / Privatnutzer
-→ **Free Edition**
-- Basis-Diagnose + AI
-- 5 Remediation Runs/Monat
-- Nicht-kommerzielle Nutzung
-
-### Freiberufler / IT-Dienstleister
-→ **Pro Edition (49 EUR/Seat/Monat)**
-- Alle Diagnose- und Repair-Tools
-- Web-Suche & Root-Cause-Analyse
-- Bis 10 Systeme pro 30 Tage
-- 1 Seat = 1 Techniker
-
-### MSP / IT-Abteilung / Teams
-→ **Business Edition (99 EUR/Seat/Monat)**
-- Unbegrenzte Systeme & Monitoring
-- Shared Learning (Team-Wissensdatenbank)
-- Policies, Runbooks, Branding
-- Mehrere Seats buchbar
-
----
-
-**Stand:** Februar 2026 | Version 2.2.0
+**Stand:** Februar 2026 | Version 2.0.0

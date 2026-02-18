@@ -58,30 +58,23 @@ class SetupWizard:
         # 2. Edition
         edition = self._ask_edition()
 
-        # 3. API Key
-        api_key = self._ask_api_key()
+        # 3. Provider + API Key
+        provider, api_key = self._ask_provider()
         if not api_key:
             return False
 
-        # 4. Lizenzschlüssel (für Pro/Enterprise) - ERFORDERLICH
+        # 4. Lizenzschlüssel (für Pro) - ERFORDERLICH
         license_key = ""
-        if edition in ["pro", "business"]:
+        if edition == "pro":
             license_key = self._ask_license_key()
             if not license_key:
                 return False
 
-        # 5. Netzwerkverbindung (für Remote Services) - ERFORDERLICH
-        network_config = {}
-        if edition == "business":
-            network_config = self._ask_network_connection()
-            if network_config is None:
-                return False
-
-        # 6. Learning Database (nur für Business) - ERFORDERLICH
+        # 5. Learning Database (optional für Pro)
         db_config = {}
-        if edition == "business":
+        if edition == "pro":
             db_config = self._ask_database()
-            if db_config is None:  # User abgebrochen
+            if db_config is None:
                 return False
 
         # 7. Techniker-Passwort (optional aber empfohlen)
@@ -96,11 +89,11 @@ class SetupWizard:
             success = self._create_env_file(
                 user_name=user_name,
                 company=company,
+                provider=provider,
                 api_key=api_key,
                 briefing=briefing,
                 edition=edition,
                 license_key=license_key,
-                network_config=network_config,
                 db_config=db_config,
                 technician_password=technician_password
             )
@@ -177,29 +170,21 @@ class SetupWizard:
         self.console.print("\n[bold]2. Edition[/bold]")
         self.console.print("   [dim]Welche Edition möchtest du nutzen?[/dim]\n")
 
-        self.console.print("   [cyan]1[/cyan] Free (kostenlos, Basis-Diagnose, 5 Remediation Runs/Monat)")
-        self.console.print("   [cyan]2[/cyan] Pro (€49/Seat/Monat, alle Tools, bis 10 Systeme)")
-        self.console.print("   [cyan]3[/cyan] Business (€99/Seat/Monat, ∞ Systeme, Monitoring, Team)\n")
+        self.console.print("   [cyan]1[/cyan] Community (kostenlos, Basis-Diagnose, 5 Repair Runs/Monat)")
+        self.console.print("   [cyan]2[/cyan] Pro (€99/Seat/Monat, alle Tools, Shared Learning, kommerziell)\n")
 
         choice = Prompt.ask(
             "   Deine Wahl",
-            choices=["1", "2", "3"],
+            choices=["1", "2"],
             default="1"
         )
 
         edition_map = {
-            "1": "free",
+            "1": "community",
             "2": "pro",
-            "3": "business"
         }
 
-        edition = edition_map[choice]
-
-        # Info für Business
-        if edition == "business":
-            self.console.print("\n   [yellow]💡 Business benötigt eine gemeinsame Datenbank für das Team-Learning![/yellow]")
-
-        return edition
+        return edition_map[choice]
 
     def _ask_license_key(self) -> Optional[str]:
         """Fragt nach Lizenzschlüssel (erforderlich)"""
@@ -227,55 +212,55 @@ class SetupWizard:
 
             return license_key.strip()
 
-    def _ask_network_connection(self) -> Optional[dict]:
-        """Fragt nach Netzwerkverbindung zu Backend-Services"""
-        self.console.print("\n[bold]🌐 Netzwerkverbindung[/bold]")
-        self.console.print("   [dim]Wie soll CE365 mit dem Backend verbinden?[/dim]\n")
+    def _ask_provider(self) -> tuple:
+        """Fragt nach LLM Provider und API Key"""
+        self.console.print("\n[bold]3. LLM Provider[/bold]")
+        self.console.print("   [dim]Welchen KI-Provider möchtest du nutzen? (BYOK)[/dim]\n")
 
-        self.console.print("   [cyan]1[/cyan] Cloudflare Tunnel (empfohlen, automatisches HTTPS)")
-        self.console.print("   [cyan]2[/cyan] Tailscale (Zero-Config VPN, Magic DNS)")
-        self.console.print("   [cyan]3[/cyan] VPN (WireGuard, OpenVPN, etc.)")
-        self.console.print("   [cyan]4[/cyan] Direkte IP/Hostname (LAN oder Port-Forwarding)\n")
+        self.console.print("   [cyan]1[/cyan] Anthropic (Claude) — empfohlen")
+        self.console.print("   [cyan]2[/cyan] OpenAI (GPT-4o)")
+        self.console.print("   [cyan]3[/cyan] OpenRouter (viele Modelle)\n")
 
-        method_choice = Prompt.ask(
-            "   Netzwerk-Methode",
-            choices=["1", "2", "3", "4"],
+        choice = Prompt.ask(
+            "   Deine Wahl",
+            choices=["1", "2", "3"],
             default="1"
         )
 
-        method_map = {
-            "1": "cloudflare",
-            "2": "tailscale",
-            "3": "vpn",
-            "4": "direct"
+        provider_map = {
+            "1": "anthropic",
+            "2": "openai",
+            "3": "openrouter",
         }
 
-        method = method_map[method_choice]
+        provider = provider_map[choice]
 
-        # Backend-URL eingeben
-        self.console.print(f"\n   [bold]Backend-URL:[/bold]\n")
-
-        if method == "cloudflare":
-            self.console.print("   [dim]Beispiel: https://ce365.deinefirma.de[/dim]")
-        elif method == "tailscale":
-            self.console.print("   [dim]Beispiel: http://ce365 (Magic DNS)[/dim]")
-        elif method == "vpn":
-            self.console.print("   [dim]Beispiel: http://192.168.1.100[/dim]")
-        else:  # direct
-            self.console.print("   [dim]Beispiel: http://192.168.1.100 oder https://ce365.firma.de[/dim]")
-
-        backend_url = Prompt.ask("   Backend-URL")
-
-        if not backend_url or backend_url.lower() in ["exit", "quit", "q"]:
-            self.console.print("\n[yellow]Setup abgebrochen.[/yellow]")
-            return None
-
-        self.console.print("\n   [green]✓ Netzwerk-Konfiguration gespeichert[/green]")
-
-        return {
-            "method": method,
-            "backend_url": backend_url.strip()
+        # API Key abfragen
+        key_info = {
+            "anthropic": ("Anthropic API Key", "https://console.anthropic.com", "sk-ant-"),
+            "openai": ("OpenAI API Key", "https://platform.openai.com/api-keys", "sk-"),
+            "openrouter": ("OpenRouter API Key", "https://openrouter.ai/keys", "sk-or-"),
         }
+
+        label, url, prefix = key_info[provider]
+
+        self.console.print(f"\n[bold]   {label}[/bold] [red](erforderlich)[/red]")
+        self.console.print(f"   [dim]Erstelle einen Key: {url}[/dim]\n")
+
+        while True:
+            api_key = Prompt.ask("   API Key", password=True)
+
+            if not api_key or api_key.lower() in ["exit", "quit", "q"]:
+                self.console.print("\n[yellow]Setup abgebrochen.[/yellow]")
+                return provider, None
+
+            if not api_key.startswith(prefix):
+                self.console.print(f"\n   [red]❌ Ungültiges Format. Keys beginnen mit '{prefix}'[/red]")
+                if not Confirm.ask("   Nochmal versuchen?", default=True):
+                    return provider, None
+                continue
+
+            return provider, api_key.strip()
 
     def _ask_technician_password(self) -> Optional[str]:
         """Fragt nach Techniker-Passwort (bcrypt hash)"""
@@ -312,39 +297,15 @@ class SetupWizard:
             self.console.print("\n   [green]✓ Passwort gespeichert[/green]")
             return password_hash
 
-    def _ask_api_key(self) -> Optional[str]:
-        """Fragt nach Anthropic API Key"""
-        self.console.print("\n[bold]3. Anthropic API Key[/bold] [red](erforderlich)[/red]")
-        self.console.print("   [dim]Erstelle einen Key: https://console.anthropic.com[/dim]\n")
-
-        while True:
-            api_key = Prompt.ask(
-                "   API Key",
-                password=True
-            )
-
-            if not api_key or api_key.lower() in ["exit", "quit", "q"]:
-                self.console.print("\n[yellow]Setup abgebrochen.[/yellow]")
-                return None
-
-            # Format-Validierung
-            if not api_key.startswith("sk-ant-"):
-                self.console.print("\n   [red]❌ Ungültiges Format. API Keys beginnen mit 'sk-ant-'[/red]")
-                if not Confirm.ask("   Nochmal versuchen?", default=True):
-                    return None
-                continue
-
-            return api_key.strip()
-
     def _ask_database(self) -> Optional[dict]:
-        """Fragt nach Datenbank-Konfiguration (Enterprise)"""
-        self.console.print("\n[bold]🧠 Shared Learning Database[/bold] [red](Enterprise)[/red]")
-        self.console.print("   [dim]Dein Team braucht eine gemeinsame Datenbank.[/dim]")
-        self.console.print("   [dim]Jeder Techniker trägt zum kollektiven Wissen bei![/dim]\n")
+        """Fragt nach Datenbank-Konfiguration (Pro)"""
+        self.console.print("\n[bold]🧠 Shared Learning Database[/bold] [dim](optional)[/dim]")
+        self.console.print("   [dim]Shared Learning ermöglicht Team-Wissensdatenbank.[/dim]")
+        self.console.print("   [dim]Ohne DB wird lokales SQLite verwendet.[/dim]\n")
 
-        self.console.print("   [cyan]1[/cyan] MySQL/MariaDB (empfohlen für Teams)")
-        self.console.print("   [cyan]2[/cyan] PostgreSQL")
-        self.console.print("   [cyan]3[/cyan] SQLite (nur für Testing/Demo)\n")
+        self.console.print("   [cyan]1[/cyan] SQLite (lokal, Standard)")
+        self.console.print("   [cyan]2[/cyan] PostgreSQL (empfohlen für Teams)")
+        self.console.print("   [cyan]3[/cyan] MySQL/MariaDB\n")
 
         db_choice = Prompt.ask(
             "   Datenbank-Typ",
@@ -353,17 +314,14 @@ class SetupWizard:
         )
 
         db_type_map = {
-            "1": "mysql",
+            "1": "sqlite",
             "2": "postgresql",
-            "3": "sqlite"
+            "3": "mysql",
         }
 
         db_type = db_type_map[db_choice]
 
         if db_type == "sqlite":
-            self.console.print("\n   [yellow]⚠️  SQLite ist NICHT für Teams geeignet![/yellow]")
-            self.console.print("   [yellow]   Nutze MySQL oder PostgreSQL für Shared Learning.[/yellow]")
-
             return {
                 "type": "sqlite",
                 "url": ""
@@ -409,11 +367,11 @@ class SetupWizard:
         self,
         user_name: str,
         company: str,
-        api_key: str,
-        briefing: str,
-        edition: str = "free",
+        provider: str = "anthropic",
+        api_key: str = "",
+        briefing: str = "",
+        edition: str = "community",
         license_key: str = "",
-        network_config: dict = None,
         db_config: dict = None,
         technician_password: str = None
     ) -> bool:
@@ -423,10 +381,11 @@ class SetupWizard:
         Args:
             user_name: Name des Users
             company: Firma/Team
-            api_key: Anthropic API Key
+            provider: LLM Provider (anthropic/openai/openrouter)
+            api_key: API Key für den gewählten Provider
             briefing: Use-Case Beschreibung
-            edition: Edition (free/pro/business)
-            db_config: Datenbank-Konfiguration (nur Enterprise)
+            edition: Edition (community/pro)
+            db_config: Datenbank-Konfiguration (optional, Pro)
 
         Returns:
             True wenn erfolgreich
@@ -438,15 +397,33 @@ class SetupWizard:
             else:
                 template = self._get_default_template()
 
-            # Platzhalter ersetzen
+            # Provider + API Key setzen
             config = template.replace(
-                "ANTHROPIC_API_KEY=your_api_key_here",
-                f"ANTHROPIC_API_KEY={api_key}"
+                "LLM_PROVIDER=anthropic",
+                f"LLM_PROVIDER={provider}"
             )
+
+            # API Key für den richtigen Provider setzen
+            key_env_map = {
+                "anthropic": "ANTHROPIC_API_KEY",
+                "openai": "OPENAI_API_KEY",
+                "openrouter": "OPENROUTER_API_KEY",
+            }
+            key_var = key_env_map.get(provider, "ANTHROPIC_API_KEY")
+            if key_var == "ANTHROPIC_API_KEY":
+                config = config.replace(
+                    "ANTHROPIC_API_KEY=your_api_key_here",
+                    f"ANTHROPIC_API_KEY={api_key}"
+                )
+            else:
+                config = config.replace(
+                    f"{key_var}=",
+                    f"{key_var}={api_key}"
+                )
 
             # Edition hinzufügen
             config = config.replace(
-                "EDITION=free",
+                "EDITION=community",
                 f"EDITION={edition}"
             )
 
@@ -455,17 +432,6 @@ class SetupWizard:
                 config = config.replace(
                     "LICENSE_KEY=",
                     f"LICENSE_KEY={license_key}"
-                )
-
-            # Netzwerk-Config hinzufügen
-            if network_config:
-                config = config.replace(
-                    "BACKEND_URL=",
-                    f"BACKEND_URL={network_config['backend_url']}"
-                )
-                config = config.replace(
-                    "NETWORK_METHOD=direct",
-                    f"NETWORK_METHOD={network_config['method']}"
                 )
 
             # Techniker-Passwort hinzufügen
@@ -519,7 +485,7 @@ class SetupWizard:
 
     def _test_api_key(self, api_key: str) -> bool:
         """
-        Testet API Key mit einfachem Request
+        Testet API Key mit einfachem Request (Anthropic)
 
         Args:
             api_key: API Key zum Testen
@@ -531,7 +497,6 @@ class SetupWizard:
             with self.console.status("[bold cyan]Teste API Key..."):
                 client = Anthropic(api_key=api_key)
 
-                # Einfacher Test-Request (minimal tokens)
                 response = client.messages.create(
                     model="claude-sonnet-4-5-20250929",
                     max_tokens=10,

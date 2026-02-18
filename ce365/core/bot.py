@@ -8,7 +8,7 @@ Licensed under MIT License
 import asyncio
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from ce365.core.client import AnthropicClient
+from ce365.core.providers import create_provider
 from ce365.core.session import Session
 from ce365.tools.registry import ToolRegistry
 from ce365.tools.executor import CommandExecutor
@@ -55,8 +55,9 @@ from ce365.tools.repair.update_scheduler import ScheduleSystemUpdatesTool
 from ce365.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 from ce365.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
 
-# License & Network
+# License & Usage
 from ce365.core.license import validate_license, check_edition_features
+from ce365.core.usage_tracker import UsageTracker
 from ce365.config.settings import get_settings
 
 
@@ -72,8 +73,18 @@ class CE365Bot:
     """
 
     def __init__(self):
-        # Core Components
-        self.client = AnthropicClient()
+        # Core Components — Multi-Provider
+        settings = get_settings()
+        provider_keys = {
+            "anthropic": settings.anthropic_api_key,
+            "openai": settings.openai_api_key,
+            "openrouter": settings.openrouter_api_key,
+        }
+        self.client = create_provider(
+            provider_name=settings.llm_provider,
+            api_key=provider_keys[settings.llm_provider],
+            model=settings.llm_model,
+        )
         self.session = Session()
         self.console = RichConsole()
         self.state_machine = WorkflowStateMachine()
@@ -97,6 +108,13 @@ class CE365Bot:
         self.diagnosed_root_cause: Optional[str] = None
         self.similar_case_offered: Optional[int] = None  # Case ID wenn angeboten
 
+        # Usage Tracker (Community: 5 Repair Runs/Monat)
+        self.usage_tracker = UsageTracker(edition=settings.edition)
+
+        # Session Management (Pro: Heartbeat)
+        self._session_token: Optional[str] = None
+        self._heartbeat_task: Optional[asyncio.Task] = None
+
         # Tool System
         self.tool_registry = ToolRegistry()
         self._register_tools()
@@ -106,6 +124,7 @@ class CE365Bot:
             tool_registry=self.tool_registry,
             state_machine=self.state_machine,
             changelog_writer=self.changelog,
+            usage_tracker=self.usage_tracker,
         )
 
         # System Prompt
@@ -130,7 +149,7 @@ class CE365Bot:
         self.tool_registry.register(DiskCleanupTool())
         self.tool_registry.register(FlushDNSCacheTool())
 
-        # === Erweiterte Audit Tools (Pro + Business) ===
+        # === Erweiterte Audit Tools (Pro) ===
         if check_edition_features(edition, "advanced_audit"):
             self.tool_registry.register(StressTestCPUTool())
             self.tool_registry.register(StressTestMemoryTool())
@@ -141,7 +160,7 @@ class CE365Bot:
             self.tool_registry.register(GenerateSystemReportTool())
             self.tool_registry.register(CheckDriversTool())
 
-        # === Erweiterte Repair Tools (Pro + Business) ===
+        # === Erweiterte Repair Tools (Pro) ===
         if check_edition_features(edition, "advanced_repair"):
             self.tool_registry.register(RunSFCScanTool())
             self.tool_registry.register(RepairDiskPermissionsTool())
@@ -154,7 +173,7 @@ class CE365Bot:
             self.tool_registry.register(EnableStartupProgramTool())
             self.tool_registry.register(ScheduleSystemUpdatesTool())
 
-        # === Web Search + Root Cause Analysis (Pro + Business) ===
+        # === Web Search + Root Cause Analysis (Pro) ===
         if check_edition_features(edition, "web_search"):
             self.tool_registry.register(WebSearchTool())
             self.tool_registry.register(WebSearchInstantAnswerTool())
@@ -174,6 +193,11 @@ class CE365Bot:
 
         # Lizenz-Check (wenn License Key gesetzt ist)
         await self._check_license()
+
+        # Pro: Session starten + Heartbeat
+        settings = get_settings()
+        if settings.edition == "pro" and settings.license_server_url:
+            await self._start_session()
 
         # ToS Akzeptanz prüfen (nur beim ersten Start)
         if not self._check_tos_acceptance():
@@ -244,6 +268,9 @@ class CE365Bot:
                 break
             except Exception as e:
                 self.console.display_error(f"Unerwarteter Fehler: {str(e)}")
+
+        # Session freigeben (Pro)
+        await self._release_session()
 
         # Cleanup
         if self.changelog.entries:
@@ -342,10 +369,10 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
         settings = get_settings()
 
         # Nur prüfen wenn License Key gesetzt
-        if not settings.license_key or not settings.backend_url:
-            # Free Edition ohne Remote-Backend
-            if settings.edition == "free":
-                self.console.display_info("📦 Edition: Free (keine Lizenz erforderlich)")
+        if not settings.license_key or not settings.license_server_url:
+            # Community Edition ohne Lizenzserver
+            if settings.edition == "community":
+                self.console.display_info("📦 Edition: Community (keine Lizenz erforderlich)")
             return
 
         try:
@@ -354,7 +381,7 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
             # Lizenz validieren
             result = await validate_license(
                 license_key=settings.license_key,
-                backend_url=settings.backend_url,
+                license_server_url=settings.license_server_url,
                 timeout=5
             )
 
@@ -368,9 +395,8 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
 
             # Edition-Info anzeigen
             edition_names = {
-                "free": "Free",
+                "community": "Community",
                 "pro": "Pro",
-                "business": "Business"
             }
 
             edition_display = edition_names.get(result["edition"], result["edition"])
@@ -638,6 +664,87 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
             elif isinstance(block, str):
                 text_parts.append(block)
         return "\n".join(text_parts)
+
+    # ==========================================
+    # SESSION MANAGEMENT (Pro)
+    # ==========================================
+
+    async def _start_session(self):
+        """Startet Session auf Lizenzserver (Pro)"""
+        settings = get_settings()
+        if not settings.license_server_url:
+            return
+
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=5) as client:
+                response = await client.post(
+                    f"{settings.license_server_url}/api/license/session/start",
+                    json={
+                        "license_key": settings.license_key,
+                        "system_fingerprint": "",
+                    },
+                )
+
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("success"):
+                        self._session_token = data["session_token"]
+                        # Heartbeat starten
+                        self._heartbeat_task = asyncio.create_task(self._heartbeat_loop())
+                    else:
+                        self.console.display_error(
+                            f"Session konnte nicht gestartet werden: {data.get('error', '')}"
+                        )
+                        import sys
+                        sys.exit(1)
+        except Exception as e:
+            self.console.display_warning(f"Session-Start fehlgeschlagen: {e}")
+
+    async def _heartbeat_loop(self):
+        """Sendet Heartbeat alle 5 Minuten"""
+        settings = get_settings()
+        while True:
+            try:
+                await asyncio.sleep(300)  # 5 Minuten
+                if not self._session_token:
+                    break
+
+                import httpx
+                async with httpx.AsyncClient(timeout=5) as client:
+                    await client.post(
+                        f"{settings.license_server_url}/api/license/session/heartbeat",
+                        json={"session_token": self._session_token},
+                    )
+            except asyncio.CancelledError:
+                break
+            except Exception:
+                pass  # Heartbeat-Fehler ignorieren
+
+    async def _release_session(self):
+        """Gibt Session auf Lizenzserver frei"""
+        if self._heartbeat_task:
+            self._heartbeat_task.cancel()
+            self._heartbeat_task = None
+
+        if not self._session_token:
+            return
+
+        settings = get_settings()
+        if not settings.license_server_url:
+            return
+
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=5) as client:
+                await client.post(
+                    f"{settings.license_server_url}/api/license/session/release",
+                    json={"session_token": self._session_token},
+                )
+        except Exception:
+            pass  # Bei Exit ignorieren
+
+        self._session_token = None
 
     # ==========================================
     # LEARNING SYSTEM METHODS

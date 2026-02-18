@@ -30,13 +30,13 @@ class LicenseValidator:
     # HMAC key derived from machine-specific data (not a secret, but prevents simple file copy)
     _CACHE_HMAC_SALT = b"ce365-license-cache-v1"
 
-    def __init__(self, backend_url: str, cache_dir: Path = None):
+    def __init__(self, license_server_url: str, cache_dir: Path = None):
         """
         Args:
-            backend_url: URL zum Backend (via VPN/Cloudflare/Tailscale)
+            license_server_url: URL zum Lizenzserver
             cache_dir: Verzeichnis für gecachte Lizenzen
         """
-        self.backend_url = backend_url.rstrip("/")
+        self.license_server_url = license_server_url.rstrip("/")
         self.cache_dir = cache_dir or Path.home() / ".ce365" / "cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.cache_file = self.cache_dir / "license.json"
@@ -77,7 +77,7 @@ class LicenseValidator:
         Returns:
             {
                 "valid": bool,
-                "edition": str,  # "free", "pro", "business"
+                "edition": str,  # "community", "pro"
                 "expires_at": str,  # ISO timestamp oder "never"
                 "max_systems": int,  # 0 = unlimited
                 "registered_systems": int,  # Anzahl registrierter Systeme
@@ -131,7 +131,7 @@ class LicenseValidator:
                 payload["system_fingerprint"] = system_fingerprint
 
             response = await client.post(
-                f"{self.backend_url}/api/license/validate",
+                f"{self.license_server_url}/api/license/validate",
                 json=payload
             )
 
@@ -218,7 +218,7 @@ class LicenseValidator:
 
 async def validate_license(
     license_key: str,
-    backend_url: str,
+    license_server_url: str,
     system_fingerprint: str = None,
     timeout: int = 10
 ) -> Dict:
@@ -227,14 +227,14 @@ async def validate_license(
 
     Args:
         license_key: Lizenzschlüssel
-        backend_url: Backend URL
+        license_server_url: Lizenzserver URL
         system_fingerprint: System-Fingerprint (für System-Limit Check)
         timeout: Request-Timeout
 
     Returns:
         Lizenz-Info Dict
     """
-    validator = LicenseValidator(backend_url)
+    validator = LicenseValidator(license_server_url)
     return await validator.validate(license_key, system_fingerprint, timeout)
 
 
@@ -243,18 +243,18 @@ def check_edition_features(edition: str, feature: str) -> bool:
     Prüft ob Edition ein Feature unterstützt
 
     Args:
-        edition: "free", "pro", "business"
+        edition: "community", "pro"
         feature: Feature-Name (siehe features_map)
 
     Returns:
         True wenn Feature verfügbar
     """
     features_map = {
-        "free": [
+        "community": [
             "local_learning",  # Lokales Learning (SQLite)
             "pii_detection",  # PII Detection
             # Basis-Audit (7 Tools), 5 Remediation Runs/Monat
-            # Evaluation / nicht-kommerzielle Nutzung
+            # Nicht-kommerzielle Nutzung
         ],
         "pro": [
             "local_learning",
@@ -267,24 +267,9 @@ def check_edition_features(edition: str, feature: str) -> bool:
             "system_report",  # HTML System-Report
             "driver_management",  # Treiber-Check
             "commercial_use",  # Kommerzielle Nutzung erlaubt
-            # 1 Seat, 1 aktive Session, max 10 Systeme/30 Tage
-        ],
-        "business": [
-            "local_learning",
-            "pii_detection",
-            "unlimited_repairs",
-            "advanced_audit",
-            "advanced_repair",
-            "web_search",
-            "root_cause_analysis",
-            "system_report",
-            "driver_management",
-            "commercial_use",
-            "unlimited_systems",  # Unbegrenzte Systeme
-            "monitoring",  # Sensor-Mode (Dauerbetrieb)
             "shared_learning",  # Gemeinsame Wissensdatenbank (PostgreSQL)
-            "team_features",  # Policies, Runbooks, Branding
-        ]
+            # 1 Seat per License
+        ],
     }
 
     return feature in features_map.get(edition, [])

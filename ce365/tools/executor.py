@@ -2,6 +2,7 @@ from typing import Dict, Any, Optional
 from ce365.tools.registry import ToolRegistry
 from ce365.workflow.state_machine import WorkflowStateMachine
 from ce365.storage.changelog import ChangelogWriter
+from ce365.core.usage_tracker import UsageTracker
 
 
 class CommandExecutor:
@@ -11,6 +12,7 @@ class CommandExecutor:
     Responsibilities:
     - Tool Execution mit State Machine Validation
     - Changelog Writing für Repair-Tools
+    - Usage Tracking (Community: 5 Repair Runs/Monat)
     - Error Handling
     """
 
@@ -19,10 +21,12 @@ class CommandExecutor:
         tool_registry: ToolRegistry,
         state_machine: WorkflowStateMachine,
         changelog_writer: ChangelogWriter,
+        usage_tracker: UsageTracker = None,
     ):
         self.tool_registry = tool_registry
         self.state_machine = state_machine
         self.changelog_writer = changelog_writer
+        self.usage_tracker = usage_tracker
 
     async def execute_tool(
         self, tool_name: str, tool_input: Dict[str, Any]
@@ -51,12 +55,16 @@ class CommandExecutor:
         if not can_execute:
             return False, error_msg
 
+        # Usage Limit prüfen (Community: 5 Repair Runs/Monat)
+        if is_repair_tool and self.usage_tracker and not self.usage_tracker.can_run_repair():
+            return False, f"⛔ {self.usage_tracker.get_limit_message()}"
+
         # Tool ausführen
         try:
             result = await tool.execute(**tool_input)
             success = True
 
-            # Changelog schreiben (nur für Repair-Tools)
+            # Changelog schreiben + Usage tracking (nur für Repair-Tools)
             if is_repair_tool:
                 self.changelog_writer.add_entry(
                     tool_name=tool_name,
@@ -64,6 +72,8 @@ class CommandExecutor:
                     result=result,
                     success=True,
                 )
+                if self.usage_tracker:
+                    self.usage_tracker.increment_repair()
 
             return success, result
 
