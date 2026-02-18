@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CE365 Agent — KI-gestützter IT-Service-Assistent</title>
+    <meta name="description" content="CE365 Agent: Der KI-Sidekick für IT-Techniker. Diagnose, Reparatur und Dokumentation — direkt im Terminal.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="/" class="logo">🔧 CE365 Agent</a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#pricing">Preise</a>
+                <a href="#faq">FAQ</a>
+                <a href="#pricing" class="btn btn-sm">Jetzt starten</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">KI-gestützter IT-Service</div>
+            <h1>Dein KI-Sidekick<br>für IT-Reparaturen</h1>
+            <p class="hero-sub">
+                CE365 Agent diagnostiziert, repariert und dokumentiert — direkt im Terminal.
+                Wie ein erfahrener Kollege, der immer dabei ist.
+            </p>
+            <div class="hero-actions">
+                <a href="#pricing" class="btn btn-primary btn-lg">Pro starten — 99 €/Monat</a>
+                <a href="#features" class="btn btn-outline btn-lg">Mehr erfahren</a>
+            </div>
+            <div class="hero-terminal">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">ce365</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line"><span class="prompt">$</span> ce365</div>
+                    <div class="terminal-line output">🔧 CE365 Agent v2.0 — Hallo, ich bin Steve!</div>
+                    <div class="terminal-line output">Was liegt an?</div>
+                    <div class="terminal-line"><span class="prompt">></span> Laptop wird sehr heiß und Lüfter dreht ständig hoch</div>
+                    <div class="terminal-line output">Alles klar, schauen wir uns das an. Ich starte die Diagnose...</div>
+                    <div class="terminal-line output"></div>
+                    <div class="terminal-line output">📊 <span class="highlight">Diagnose-Ergebnis:</span></div>
+                    <div class="terminal-line output">  CPU-Temperatur: <span class="warn">89°C</span> (kritisch)</div>
+                    <div class="terminal-line output">  Top-Prozess: chrome (47 Tabs, 3.2 GB RAM)</div>
+                    <div class="terminal-line output">  Thermal Throttling: aktiv seit 12 Min</div>
+                    <div class="terminal-line output"></div>
+                    <div class="terminal-line output">🔧 <span class="highlight">Vorschlag:</span></div>
+                    <div class="terminal-line output">  1. Chrome-Tabs reduzieren (47 → empfohlen: max 15)</div>
+                    <div class="terminal-line output">  2. Lüfter-Profil optimieren</div>
+                    <div class="terminal-line output">  3. Startup-Optimierung (8 unnötige Autostart-Programme)</div>
+                    <div class="terminal-line cursor">_</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Was CE365 Agent kann</h2>
+            <p class="section-sub">Ein erfahrener IT-Kollege — als CLI-Tool</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Intelligente Diagnose</h3>
+                    <p>7 Diagnose-Tools analysieren CPU, RAM, Festplatte, Netzwerk, Prozesse, Event-Logs und installierte Software.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Geführte Reparatur</h3>
+                    <p>Reparaturen werden vorgeschlagen und erst nach deiner expliziten Freigabe ausgeführt. Kein Blindflug.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Auto-Dokumentation</h3>
+                    <p>Jede Aktion wird automatisch als Changelog protokolliert. Audit-Trail inklusive, DSGVO-konform.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Lernfähig</h3>
+                    <p>Bewährte Lösungen werden als Cases gespeichert und bei ähnlichen Problemen automatisch vorgeschlagen.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Multi-Provider</h3>
+                    <p>Nutze Anthropic (Claude), OpenAI (GPT) oder OpenRouter — du bringst deinen eigenen API-Key mit.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Datenschutz first</h3>
+                    <p>PII-Erkennung anonymisiert personenbezogene Daten automatisch. Alles bleibt lokal auf dem Techniker-PC.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2>So funktioniert's</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Installieren</h3>
+                    <p><code>pip install ce365</code> oder Firmenpaket entpacken. Setup-Wizard konfiguriert Provider + API-Key.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Problem beschreiben</h3>
+                    <p>Sag Steve was los ist — in deinen Worten. Er stellt Rückfragen und startet die passende Diagnose.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Reparatur freigeben</h3>
+                    <p>Steve schlägt Lösungen vor. Du wählst aus und gibst frei mit <code>GO REPAIR</code>. Alles wird dokumentiert.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2>Preise</h2>
+            <p class="section-sub">Starte kostenlos, upgrade wenn du mehr brauchst</p>
+            <div class="pricing-grid">
+                <!-- Community -->
+                <div class="price-card">
+                    <div class="price-edition">Community</div>
+                    <div class="price-amount">0 €</div>
+                    <div class="price-period">Für immer kostenlos</div>
+                    <ul class="price-features">
+                        <li class="included">7 Diagnose-Tools</li>
+                        <li class="included">3 Basis-Repair-Tools</li>
+                        <li class="included">5 Repairs pro Monat</li>
+                        <li class="included">PII-Erkennung</li>
+                        <li class="included">Lokales Learning (SQLite)</li>
+                        <li class="included">Multi-Provider (BYOK)</li>
+                        <li class="excluded">Erweiterte Audit-Tools</li>
+                        <li class="excluded">Erweiterte Repair-Tools</li>
+                        <li class="excluded">Web-Recherche</li>
+                        <li class="excluded">Shared Learning (PostgreSQL)</li>
+                        <li class="excluded">Kommerzielle Nutzung</li>
+                    </ul>
+                    <a href="https://github.com/eckhardt-marketing/ce365-agent" class="btn btn-outline btn-block" target="_blank">
+                        Download
+                    </a>
+                </div>
+
+                <!-- Pro -->
+                <div class="price-card featured">
+                    <div class="price-badge">Empfohlen</div>
+                    <div class="price-edition">Pro</div>
+                    <div class="price-amount">99 €</div>
+                    <div class="price-period">pro Seat / Monat</div>
+                    <ul class="price-features">
+                        <li class="included">Alles aus Community</li>
+                        <li class="included">Unbegrenzte Repairs</li>
+                        <li class="included">Erweiterte Audit-Tools</li>
+                        <li class="included">Erweiterte Repair-Tools (SFC, Network, Updates...)</li>
+                        <li class="included">Web-Recherche + Root-Cause-Analyse</li>
+                        <li class="included">Shared Learning (PostgreSQL)</li>
+                        <li class="included">Kommerzielle Nutzung</li>
+                        <li class="included">Firmen-Deployment-Paket</li>
+                        <li class="included">Priority Support</li>
+                    </ul>
+                    <button onclick="startCheckout(1)" class="btn btn-primary btn-block">
+                        Jetzt starten
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2>Häufige Fragen</h2>
+            <div class="faq-grid">
+                <details class="faq-item">
+                    <summary>Brauche ich einen eigenen API-Key?</summary>
+                    <p>Ja. CE365 Agent nutzt KI-APIs (Anthropic, OpenAI oder OpenRouter) im BYOK-Modell (Bring Your Own Key). Du zahlst die API-Kosten direkt beim Provider — typisch 1-5 € pro Monat bei normaler Nutzung.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Welche Betriebssysteme werden unterstützt?</summary>
+                    <p>CE365 Agent läuft auf Windows, macOS und Linux. Die Diagnose- und Repair-Tools sind plattformspezifisch und nutzen jeweils die nativen System-Tools.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Werden Kundendaten in die Cloud geschickt?</summary>
+                    <p>Nein. Alle Daten bleiben lokal. Nur anonymisierte Problembeschreibungen werden an den KI-Provider gesendet. Personenbezogene Daten werden vorher automatisch erkannt und anonymisiert (Microsoft Presidio).</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Kann CE365 Schaden anrichten?</summary>
+                    <p>CE365 führt KEINE Aktionen ohne deine explizite Freigabe aus. Reparaturen werden vorgeschlagen und müssen mit "GO REPAIR" bestätigt werden. Jede Aktion wird protokolliert.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Was bedeutet "pro Seat"?</summary>
+                    <p>Ein Seat = ein gleichzeitig aktiver Techniker. Wenn dein Team 3 Techniker hat, die CE365 gleichzeitig nutzen, brauchst du 3 Seats. Ein Techniker der nicht aktiv ist, belegt keinen Seat.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Kann ich kündigen?</summary>
+                    <p>Jederzeit. Das Abo läuft monatsweise, keine Mindestlaufzeit. Nach Kündigung läuft die Lizenz bis zum Ende des bezahlten Zeitraums.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo">🔧 CE365 Agent</div>
+                <p>&copy; 2026 Eckhardt-Marketing</p>
+            </div>
+            <div class="footer-links">
+                <a href="/impressum.html">Impressum</a>
+                <a href="/datenschutz.html">Datenschutz</a>
+                <a href="mailto:info@eckhardt-marketing.de">Kontakt</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

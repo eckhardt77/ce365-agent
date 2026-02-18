@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vielen Dank! — CE365 Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+</head>
+<body>
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="/" class="logo">🔧 CE365 Agent</a>
+            <div class="nav-links">
+                <a href="/" class="btn btn-sm btn-outline">Zur Startseite</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="thankyou">
+        <div class="container">
+            <div id="loading">
+                <div class="spinner"></div>
+                <h2 style="margin-top: 24px;">Deine Lizenz wird erstellt...</h2>
+                <p class="section-sub">Bitte warte einen Moment.</p>
+            </div>
+
+            <div id="success" style="display: none;">
+                <h1>Willkommen bei CE365 Pro! 🎉</h1>
+                <p class="hero-sub" style="margin-top: 16px;">
+                    Deine Lizenz wurde erfolgreich erstellt. Kopiere den Schlüssel und füge ihn im Setup-Wizard ein.
+                </p>
+
+                <div class="license-box">
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">Dein Lizenzschlüssel</div>
+                    <div class="license-key" id="license-key">—</div>
+                    <button onclick="copyKey()" class="btn btn-primary btn-sm" id="copy-btn">Kopieren</button>
+                </div>
+
+                <div style="max-width: 500px; margin: 40px auto; text-align: left;">
+                    <h3 style="margin-bottom: 12px;">Nächste Schritte</h3>
+                    <ol style="color: var(--text-muted); font-size: 0.9rem; line-height: 2; padding-left: 20px;">
+                        <li>CE365 Agent installieren: <code style="background: rgba(37,99,235,0.15); color: var(--primary); padding: 2px 6px; border-radius: 4px;">pip install ce365</code></li>
+                        <li>Setup-Wizard starten: <code style="background: rgba(37,99,235,0.15); color: var(--primary); padding: 2px 6px; border-radius: 4px;">python -m ce365 --setup</code></li>
+                        <li>Edition "Pro" wählen und Lizenzschlüssel einfügen</li>
+                        <li>Loslegen!</li>
+                    </ol>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 32px;">
+                    Eine Bestätigung wurde an <strong id="customer-email"></strong> gesendet.<br>
+                    Bei Fragen: <a href="mailto:info@eckhardt-marketing.de" style="color: var(--primary);">info@eckhardt-marketing.de</a>
+                </p>
+            </div>
+
+            <div id="error" style="display: none;">
+                <h2>Etwas ist schiefgelaufen</h2>
+                <p class="section-sub">
+                    Die Zahlung wurde verarbeitet, aber die Lizenz konnte noch nicht abgerufen werden.
+                    Bitte warte einen Moment und lade die Seite neu.
+                </p>
+                <p class="section-sub">
+                    Falls das Problem bestehen bleibt, kontaktiere uns:
+                    <a href="mailto:info@eckhardt-marketing.de" style="color: var(--primary);">info@eckhardt-marketing.de</a>
+                </p>
+                <button onclick="location.reload()" class="btn btn-primary">Seite neu laden</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo">🔧 CE365 Agent</div>
+                <p>&copy; 2026 Eckhardt-Marketing</p>
+            </div>
+            <div class="footer-links">
+                <a href="/impressum.html">Impressum</a>
+                <a href="/datenschutz.html">Datenschutz</a>
+                <a href="mailto:info@eckhardt-marketing.de">Kontakt</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = "https://license.ce365.de";
+
+        function copyKey() {
+            const key = document.getElementById("license-key").textContent;
+            navigator.clipboard.writeText(key).then(() => {
+                const btn = document.getElementById("copy-btn");
+                btn.textContent = "Kopiert!";
+                setTimeout(() => btn.textContent = "Kopieren", 2000);
+            });
+        }
+
+        async function checkStatus() {
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get("session_id");
+
+            if (!sessionId) {
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("error").style.display = "block";
+                return;
+            }
+
+            // Retry-Logik (Webhook kann etwas dauern)
+            let attempts = 0;
+            const maxAttempts = 10;
+
+            async function tryFetch() {
+                attempts++;
+                try {
+                    const response = await fetch(
+                        `${API_URL}/api/stripe/checkout-status?session_id=${sessionId}`
+                    );
+                    const data = await response.json();
+
+                    if (data.status === "complete" && data.license_key) {
+                        document.getElementById("loading").style.display = "none";
+                        document.getElementById("success").style.display = "block";
+                        document.getElementById("license-key").textContent = data.license_key;
+                        document.getElementById("customer-email").textContent = data.customer_email;
+                    } else if (attempts < maxAttempts) {
+                        setTimeout(tryFetch, 2000);
+                    } else {
+                        document.getElementById("loading").style.display = "none";
+                        document.getElementById("error").style.display = "block";
+                    }
+                } catch (e) {
+                    if (attempts < maxAttempts) {
+                        setTimeout(tryFetch, 2000);
+                    } else {
+                        document.getElementById("loading").style.display = "none";
+                        document.getElementById("error").style.display = "block";
+                    }
+                }
+            }
+
+            // Kurz warten, dann starten
+            setTimeout(tryFetch, 1500);
+        }
+
+        checkStatus();
+    </script>
+</body>
+</html>
