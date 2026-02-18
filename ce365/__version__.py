@@ -2,7 +2,7 @@
 CE365 Agent - Version Information
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License with Non-Commercial Restriction
+Licensed under Source Available License with Non-Commercial Restriction
 """
 
 __version__ = "2.0.0"

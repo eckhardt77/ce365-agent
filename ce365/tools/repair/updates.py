@@ -2,7 +2,7 @@
 CE365 Agent - Update Installation Tools
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 System-Updates installieren:
 - Windows: Windows Update Installation

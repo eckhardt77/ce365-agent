@@ -1,4 +1,5 @@
 import json
+import os
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
@@ -45,7 +46,7 @@ class ChangelogWriter:
         success: bool,
     ):
         """
-        Changelog-Eintrag hinzufügen
+        Changelog-Eintrag hinzufügen (mit PII-Anonymisierung)
 
         Args:
             tool_name: Name des ausgeführten Tools
@@ -53,11 +54,15 @@ class ChangelogWriter:
             result: Execution Result
             success: True wenn erfolgreich
         """
+        # PII in tool_input und result anonymisieren
+        anonymized_input = self._anonymize_dict(tool_input)
+        anonymized_result = self._anonymize_text(result)
+
         entry = ChangelogEntry(
             timestamp=datetime.now().isoformat(),
             tool_name=tool_name,
-            tool_input=tool_input,
-            result=result,
+            tool_input=anonymized_input,
+            result=anonymized_result,
             success=success,
         )
         self.entries.append(entry)
@@ -65,16 +70,58 @@ class ChangelogWriter:
         # Sofort persistieren
         self._save()
 
+    def _anonymize_text(self, text: str) -> str:
+        """Anonymisiert PII in einem Text-String"""
+        try:
+            from ce365.security.pii_detector import get_pii_detector
+            detector = get_pii_detector()
+            if detector and detector.enabled:
+                anonymized, _ = detector.anonymize(text)
+                return anonymized
+        except (ImportError, Exception):
+            pass
+        return text
+
+    def _anonymize_dict(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Anonymisiert PII in Dictionary-Werten (rekursiv)"""
+        result = {}
+        for key, value in data.items():
+            if isinstance(value, str):
+                result[key] = self._anonymize_text(value)
+            elif isinstance(value, dict):
+                result[key] = self._anonymize_dict(value)
+            elif isinstance(value, list):
+                result[key] = [
+                    self._anonymize_text(v) if isinstance(v, str) else v
+                    for v in value
+                ]
+            else:
+                result[key] = value
+        return result
+
     def _save(self):
-        """Changelog zu JSON-Datei schreiben"""
+        """Changelog zu JSON-Datei schreiben (mit restriktiven Berechtigungen)"""
         data = {
             "session_id": self.session_id,
             "created_at": self.created_at,
             "entries": [asdict(entry) for entry in self.entries],
         }
 
+        # Verzeichnis mit restriktiven Berechtigungen erstellen
+        self.log_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.chmod(self.log_path.parent, 0o700)
+        except OSError:
+            pass
+
         with open(self.log_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
+
+        # Datei nur für Owner lesbar
+        try:
+            os.chmod(self.log_path, 0o600)
+        except OSError:
+            pass
 
     def get_entries(self) -> List[ChangelogEntry]:
         """Alle Einträge zurückgeben"""

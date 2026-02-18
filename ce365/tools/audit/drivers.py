@@ -2,7 +2,7 @@
 CE365 Agent - Driver Check Audit Tool
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Integriert Driver-Prüfung in CE365 Agent Tool-System
 """

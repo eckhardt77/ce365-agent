@@ -2,7 +2,7 @@
 CE365 Agent - AI-powered IT Maintenance Assistant
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 """
 
 import asyncio

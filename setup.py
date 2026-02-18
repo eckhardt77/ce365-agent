@@ -10,7 +10,7 @@ setup(
     author="Carsten Eckhardt / Eckhardt-Marketing",
     author_email="info@eckhardt-marketing.de",
     url="https://github.com/carsten-eckhardt/ce365-agent",
-    license="MIT",
+    license="Source Available License",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -22,7 +22,7 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: MIT License",
+        "License :: Other/Proprietary License",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",

@@ -2,7 +2,7 @@
 CE365 Agent - Multi-Provider LLM Abstraction
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Unterstützt: Anthropic (Claude), OpenAI (GPT), OpenRouter (viele Modelle)
 BYOK (Bring Your Own Key) Modell.

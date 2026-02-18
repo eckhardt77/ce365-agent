@@ -2,7 +2,7 @@
 CE365 Agent - Secure Secrets Management
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Verwendet OS Keychain für sichere API-Key Speicherung:
 - macOS: Keychain Access

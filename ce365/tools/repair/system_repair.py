@@ -2,7 +2,7 @@
 CE365 Agent - System Repair Tools
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 System-Reparatur:
 - Windows: SFC /scannow, DISM
