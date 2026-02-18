@@ -38,6 +38,42 @@ async function startCheckout(seats) {
 }
 
 /**
+ * Newsletter-Anmeldung
+ */
+async function submitNewsletter(e) {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value.trim();
+    const name = form.name.value.trim();
+    const btn = form.querySelector("button");
+    const successEl = document.getElementById("newsletter-success");
+    const errorEl = document.getElementById("newsletter-error");
+
+    successEl.style.display = "none";
+    errorEl.style.display = "none";
+    btn.textContent = "Wird gesendet...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(`${API_URL}/api/newsletter/subscribe`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, name }),
+        });
+
+        if (!response.ok) throw new Error();
+
+        successEl.style.display = "block";
+        form.reset();
+    } catch {
+        errorEl.style.display = "block";
+    } finally {
+        btn.textContent = "Anmelden";
+        btn.disabled = false;
+    }
+}
+
+/**
  * Smooth Scroll für Anchor-Links
  */
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {

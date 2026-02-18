@@ -13,6 +13,7 @@ Endpoints:
 - PATCH /api/admin/license/{key}/deactivate — Lizenz deaktivieren (Admin)
 - POST /api/stripe/create-checkout — Stripe Checkout Session erstellen
 - POST /api/stripe/webhook — Stripe Webhook (nach Bezahlung)
+- POST /api/newsletter/subscribe — Newsletter-Anmeldung (Brevo)
 """
 
 import hashlib
@@ -31,10 +32,12 @@ from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 from models import Base, License, Session as SessionModel
+import httpx
+
 from config import (
     DATABASE_URL, SESSION_SECRET, SESSION_TIMEOUT_MINUTES,
     ADMIN_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET,
-    STRIPE_PRICE_ID_PRO, SITE_URL,
+    STRIPE_PRICE_ID_PRO, SITE_URL, BREVO_API_KEY, BREVO_LIST_ID,
 )
 
 
@@ -483,7 +486,8 @@ async def stripe_webhook(request: Request):
             db.add(new_license)
             await db.commit()
 
-        # TODO: E-Mail mit Lizenzschlüssel an Kunden senden
+        # Kunde zu Brevo hinzufügen
+        await add_to_brevo(customer_email, customer_name, "customer")
         print(f"[STRIPE] Neue Lizenz erstellt: {license_key} für {customer_email}")
 
     return {"received": True}
@@ -525,6 +529,56 @@ async def checkout_status(session_id: str):
 
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+# === Brevo (Newsletter) ===
+
+async def add_to_brevo(email: str, name: str = "", source: str = "website"):
+    """Kontakt zu Brevo-Liste hinzufügen"""
+    if not BREVO_API_KEY:
+        print(f"[BREVO] Skipped (kein API-Key): {email}")
+        return
+
+    first_name = name.split(" ")[0] if name else ""
+    last_name = " ".join(name.split(" ")[1:]) if name and " " in name else ""
+
+    async with httpx.AsyncClient() as client:
+        try:
+            await client.post(
+                "https://api.brevo.com/v3/contacts",
+                headers={
+                    "api-key": BREVO_API_KEY,
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "email": email,
+                    "attributes": {
+                        "VORNAME": first_name,
+                        "NACHNAME": last_name,
+                        "SOURCE": source,
+                    },
+                    "listIds": [BREVO_LIST_ID],
+                    "updateEnabled": True,
+                },
+            )
+            print(f"[BREVO] Kontakt hinzugefügt: {email} (source={source})")
+        except Exception as e:
+            print(f"[BREVO] Fehler: {e}")
+
+
+class NewsletterRequest(BaseModel):
+    email: str
+    name: str = ""
+
+
+@app.post("/api/newsletter/subscribe")
+async def newsletter_subscribe(request: NewsletterRequest):
+    """Newsletter-Anmeldung"""
+    if not request.email or "@" not in request.email:
+        raise HTTPException(status_code=400, detail="Ungültige E-Mail-Adresse")
+
+    await add_to_brevo(request.email, request.name, "newsletter")
+    return {"success": True}
 
 
 if __name__ == "__main__":

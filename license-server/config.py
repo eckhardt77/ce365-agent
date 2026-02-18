@@ -26,6 +26,10 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 STRIPE_PRICE_ID_PRO = os.getenv("STRIPE_PRICE_ID_PRO", "")  # Pro Monthly Price ID
 SITE_URL = os.getenv("SITE_URL", "https://agent.ce365.de")
 
+# Brevo (E-Mail-Marketing)
+BREVO_API_KEY = os.getenv("BREVO_API_KEY", "")
+BREVO_LIST_ID = int(os.getenv("BREVO_LIST_ID", "2"))  # Kontaktliste-ID
+
 # Server
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "9000"))

@@ -218,6 +218,27 @@
         </div>
     </section>
 
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-box">
+                <h2>Bleib auf dem Laufenden</h2>
+                <p class="section-sub">Updates, Tipps und neue Features — kein Spam, jederzeit abbestellbar.</p>
+                <form id="newsletter-form" class="newsletter-form" onsubmit="submitNewsletter(event)">
+                    <input type="text" name="name" placeholder="Vorname (optional)" class="input">
+                    <input type="email" name="email" placeholder="E-Mail-Adresse" required class="input">
+                    <button type="submit" class="btn btn-primary">Anmelden</button>
+                </form>
+                <div id="newsletter-success" style="display: none; color: #22c55e; margin-top: 12px; font-weight: 600;">
+                    Anmeldung erfolgreich!
+                </div>
+                <div id="newsletter-error" style="display: none; color: #ef4444; margin-top: 12px;">
+                    Fehler bei der Anmeldung. Bitte versuche es erneut.
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container footer-inner">
