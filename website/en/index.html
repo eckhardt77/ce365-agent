@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CE365 Agent — Your AI Sidekick for IT Repairs</title>
+    <meta name="description" content="CE365 Agent makes IT technicians 10x more productive. AI-powered diagnostics, guided repairs and automatic documentation in one CLI tool.">
+    <meta property="og:title" content="CE365 Agent — AI-Powered IT Service Assistant">
+    <meta property="og:description" content="Diagnostics, repairs and documentation — in one tool. The AI sidekick for IT pros.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://agent.ce365.de/en/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function loadGTM() {
+        if (window.gtmLoaded) return;
+        window.gtmLoaded = true;
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-TCHJGSFX');
+    }
+    </script>
+</head>
+<body>
+    <div id="cookie-banner" class="cookie-banner" style="display:none;">
+        <div class="cookie-inner">
+            <div class="cookie-text">
+                <strong>We respect your privacy.</strong>
+                We use cookies for analytics and marketing. You decide which ones to allow.
+                <a href="/en/privacy.html">Learn more</a>
+            </div>
+            <div class="cookie-actions">
+                <button onclick="acceptCookies('essential')" class="cookie-btn cookie-btn-outline">Essential only</button>
+                <button onclick="acceptCookies('all')" class="cookie-btn cookie-btn-primary">Accept all</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="/en/" class="logo">CE365 <span class="logo-agent">Agent</span></a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how">How it works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+                <a href="/" class="lang-switch">DE</a>
+                <a href="#pricing" class="btn btn-nav">Get started free</a>
+            </div>
+            <button class="nav-mobile" onclick="toggleMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-eyebrow">For IT technicians who want to solve faster</div>
+            <h1 class="hero-title">
+                Every IT problem.<br>
+                <span class="gradient-text">Solved faster.</span>
+            </h1>
+            <p class="hero-description">
+                CE365 Agent is your AI sidekick in the terminal. It diagnoses problems,
+                suggests repairs and documents everything &mdash; while you focus on
+                your client.
+            </p>
+            <div class="hero-cta">
+                <a href="#pricing" class="btn btn-primary btn-xl">Get started &mdash; free</a>
+                <p class="hero-hint">No credit card required &middot; Community Edition free forever</p>
+            </div>
+
+            <div class="terminal" role="img" aria-label="CE365 Agent Terminal Demo">
+                <div class="terminal-chrome">
+                    <div class="terminal-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="terminal-tab">steve@ce365</div>
+                </div>
+                <div class="terminal-screen">
+                    <div class="t-line"><span class="t-prompt">$</span> ce365</div>
+                    <div class="t-line t-out t-fade-1">Hey, I'm <span class="t-bold">Steve</span> &mdash; your IT sidekick. What's going on?</div>
+                    <div class="t-line t-fade-2"><span class="t-prompt">&gt;</span> Client reports: Laptop extremely slow for 2 weeks</div>
+                    <div class="t-line t-out t-fade-3">Got it. Running a full diagnostic...</div>
+                    <div class="t-line t-out t-fade-4">&nbsp;</div>
+                    <div class="t-line t-out t-fade-4"><span class="t-accent">&#9608; Diagnostic complete</span> (7 tools, 12 sec)</div>
+                    <div class="t-line t-out t-fade-5">&nbsp;</div>
+                    <div class="t-line t-out t-fade-5">  <span class="t-red">&#10060;</span> Disk: 97% full (only 4 GB free)</div>
+                    <div class="t-line t-out t-fade-5">  <span class="t-red">&#10060;</span> 14 startup programs (boot time: 3m 20s)</div>
+                    <div class="t-line t-out t-fade-6">  <span class="t-yellow">&#9888;&#65039;</span>  RAM: 7.2/8 GB used (Chrome: 4.1 GB)</div>
+                    <div class="t-line t-out t-fade-6">  <span class="t-green">&#10004;</span> CPU temp: 62&deg;C (OK)</div>
+                    <div class="t-line t-out t-fade-7">&nbsp;</div>
+                    <div class="t-line t-out t-fade-7"><span class="t-bold">My suggestion:</span></div>
+                    <div class="t-line t-out t-fade-8">  1. Clean temp files (~18 GB recoverable)</div>
+                    <div class="t-line t-out t-fade-8">  2. Disable 9 unnecessary startup programs</div>
+                    <div class="t-line t-out t-fade-8">  3. Optimize Chrome profile</div>
+                    <div class="t-line t-out t-fade-9">&nbsp;</div>
+                    <div class="t-line t-out t-fade-9">Shall I proceed? Type <span class="t-accent">GO REPAIR: 1,2,3</span></div>
+                    <div class="t-line t-cursor"><span class="t-prompt">&gt;</span> <span class="cursor">&#9608;</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="proof">
+        <div class="container">
+            <div class="proof-grid">
+                <div class="proof-item">
+                    <div class="proof-number">7+</div>
+                    <div class="proof-label">Diagnostic tools</div>
+                </div>
+                <div class="proof-item">
+                    <div class="proof-number">12s</div>
+                    <div class="proof-label">&empty; Diagnostic time</div>
+                </div>
+                <div class="proof-item">
+                    <div class="proof-number">3</div>
+                    <div class="proof-label">LLM Providers</div>
+                </div>
+                <div class="proof-item">
+                    <div class="proof-number">100%</div>
+                    <div class="proof-label">Local &amp; GDPR compliant</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="problem">
+        <div class="container">
+            <div class="split">
+                <div class="split-left">
+                    <h2 class="section-label">The problem</h2>
+                    <h3 class="section-title">IT repairs take too long.</h3>
+                    <p class="section-text">
+                        Digging through event logs. Dozens of browser tabs with forum posts.
+                        Documentation no one reads. A technician spends
+                        <strong>40% of their time</strong> on tasks that have nothing to do with the actual problem.
+                    </p>
+                </div>
+                <div class="split-right">
+                    <h2 class="section-label">The solution</h2>
+                    <h3 class="section-title">A colleague who never calls in sick.</h3>
+                    <p class="section-text">
+                        CE365 Agent thinks along. It analyzes the system, finds the root cause,
+                        suggests solutions and documents everything automatically.
+                        <strong>You just approve.</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-label center">Features</h2>
+            <h3 class="section-title center">Everything an IT pro needs.</h3>
+            <p class="section-text center">No bloated software. No cloud dependency. A focused CLI tool that does exactly what you need.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card feature-large">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#129504;</span></div>
+                    <h4>AI-Powered Diagnostics</h4>
+                    <p>7 specialized tools analyze CPU, RAM, disk, network, processes, event logs and software &mdash; in parallel, in seconds. The AI correlates results and finds connections that would take hours manually.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#128736;</span></div>
+                    <h4>Controlled Repairs</h4>
+                    <p>No blind execution: Steve suggests solutions, you decide. Nothing runs until you type <code>GO REPAIR</code>.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#128203;</span></div>
+                    <h4>Auto Documentation</h4>
+                    <p>Every diagnosis, every repair is automatically logged as a changelog. Audit trail without extra effort.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#127760;</span></div>
+                    <h4>Multi-Provider</h4>
+                    <p>Use Claude, GPT-4o or OpenRouter &mdash; BYOK. You keep full control over costs and data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#128274;</span></div>
+                    <h4>Privacy by Design</h4>
+                    <p>PII detection automatically anonymizes personal data before it leaves the device. GDPR compliant.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#128218;</span></div>
+                    <h4>Learning System</h4>
+                    <p>Proven solutions are saved and automatically suggested for similar problems. Your team gets better with every repair.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how" class="how">
+        <div class="container">
+            <h2 class="section-label center">How it works</h2>
+            <h3 class="section-title center">Results in 3 steps.</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">01</div>
+                    <h4>Install &amp; configure</h4>
+                    <p>One command, one setup wizard. Pick your provider, enter your API key &mdash; done. No servers, no databases, no overhead.</p>
+                </div>
+                <div class="step-arrow">&rarr;</div>
+                <div class="step">
+                    <div class="step-num">02</div>
+                    <h4>Describe the problem</h4>
+                    <p>Tell Steve what's going on &mdash; in your own words. He asks follow-up questions, runs the right diagnostics and analyzes the results.</p>
+                </div>
+                <div class="step-arrow">&rarr;</div>
+                <div class="step">
+                    <div class="step-num">03</div>
+                    <h4>Approve &amp; document</h4>
+                    <p>Choose from the suggested solutions, approve with <code>GO REPAIR</code>. Everything is automatically logged.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2 class="section-label center">Pricing</h2>
+            <h3 class="section-title center">One price. No surprises.</h3>
+            <p class="section-text center">Start free, upgrade when your business grows.</p>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div class="price-header">
+                        <h4 class="price-name">Community</h4>
+                        <div class="price-tag">
+                            <span class="price-amount">0 &euro;</span>
+                            <span class="price-period">forever</span>
+                        </div>
+                        <p class="price-desc">Perfect for trying out and personal use.</p>
+                    </div>
+                    <ul class="price-list">
+                        <li class="yes">7 diagnostic tools</li>
+                        <li class="yes">3 basic repair tools</li>
+                        <li class="yes">5 repairs / month</li>
+                        <li class="yes">PII detection</li>
+                        <li class="yes">Local learning</li>
+                        <li class="yes">Multi-provider (BYOK)</li>
+                        <li class="no">Advanced audit &amp; repair</li>
+                        <li class="no">Web research</li>
+                        <li class="no">Shared learning</li>
+                        <li class="no">Commercial use</li>
+                    </ul>
+                    <a href="https://github.com/eckhardt-marketing/ce365-agent" target="_blank" class="btn btn-secondary btn-block">Download free</a>
+                </div>
+                <div class="price-card price-card-pro">
+                    <div class="price-popular">Most Popular</div>
+                    <div class="price-header">
+                        <h4 class="price-name">Pro</h4>
+                        <div class="price-tag">
+                            <span class="price-amount">99 &euro;</span>
+                            <span class="price-period">/ seat / month</span>
+                            <span class="price-vat">excl. VAT</span>
+                        </div>
+                        <p class="price-desc">For IT service providers who want to work smarter.</p>
+                    </div>
+                    <ul class="price-list">
+                        <li class="yes">Everything in Community</li>
+                        <li class="yes"><strong>Unlimited</strong> repairs</li>
+                        <li class="yes">Advanced audit tools</li>
+                        <li class="yes">SFC, Network, Updates, Startup, Restore</li>
+                        <li class="yes">Web research &amp; root cause analysis</li>
+                        <li class="yes">Shared learning (PostgreSQL)</li>
+                        <li class="yes">Commercial use</li>
+                        <li class="yes">Enterprise deployment package</li>
+                        <li class="yes">Priority support</li>
+                    </ul>
+                    <button onclick="startCheckout(1)" class="btn btn-primary btn-block">Start Pro</button>
+                    <p class="price-footnote">Cancel anytime &middot; No minimum term</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2 class="section-label center">FAQ</h2>
+            <h3 class="section-title center">Frequently asked questions</h3>
+            <div class="faq-list">
+                <details class="faq-item" open>
+                    <summary>Do I need my own API key?</summary>
+                    <p>Yes. CE365 Agent uses AI APIs in a BYOK model (Bring Your Own Key). You pay API costs directly to the provider &mdash; typically &euro;1&ndash;5 per month with normal usage. Supported: Anthropic (Claude), OpenAI (GPT), and OpenRouter.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Which operating systems are supported?</summary>
+                    <p>CE365 Agent runs on Windows, macOS, and Linux. The diagnostic and repair tools use each platform's native system tools.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Is customer data sent to the cloud?</summary>
+                    <p>No. All data stays local on the technician's PC. Only anonymized problem descriptions are sent to the AI provider. Personal data is automatically detected and removed before transmission (PII Detection via Microsoft Presidio).</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Can CE365 damage a client's PC?</summary>
+                    <p>CE365 never executes actions without your explicit approval. Repairs are suggested and must be confirmed with <code>GO REPAIR</code>. Every action is logged and traceable.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>What does "per seat" mean?</summary>
+                    <p>One seat = one concurrently active technician. If your team has 3 technicians using CE365 simultaneously, you need 3 seats. Inactive technicians don't occupy a seat.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Can I cancel anytime?</summary>
+                    <p>Yes. The subscription runs monthly with no minimum term. After cancellation, the license remains active until the end of the paid period.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <div class="cta-box">
+                <div class="cta-content">
+                    <h3 class="cta-title">Ready to be more productive?</h3>
+                    <p class="cta-text">Get updates, tips and early access to new features. No spam &mdash; unsubscribe anytime.</p>
+                    <form id="newsletter-form" class="cta-form" onsubmit="submitNewsletter(event)">
+                        <div class="cta-inputs">
+                            <input type="text" name="name" placeholder="First name" class="input">
+                            <input type="email" name="email" placeholder="Email address" required class="input input-grow">
+                            <button type="submit" class="btn btn-primary">Subscribe</button>
+                        </div>
+                        <div id="newsletter-success" class="form-msg form-msg-ok" style="display:none;">Successfully subscribed!</div>
+                        <div id="newsletter-error" class="form-msg form-msg-err" style="display:none;">Error &mdash; please try again.</div>
+                    </form>
+                    <p class="cta-privacy">By subscribing, you accept our <a href="/en/privacy.html">privacy policy</a>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">CE365 <span class="logo-agent">Agent</span></div>
+                    <p class="footer-tagline">AI-powered IT service assistant</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Product</h5>
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Legal</h5>
+                    <a href="/en/imprint.html">Site Notice</a>
+                    <a href="/en/privacy.html">Privacy Policy</a>
+                    <a href="/en/terms.html">Terms</a>
+                    <a href="/en/cancellation.html">Cancellation Policy</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Contact</h5>
+                    <a href="mailto:info@eckhardt-marketing.de">info@eckhardt-marketing.de</a>
+                    <a href="/">Deutsche Version</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Carsten Eckhardt / Eckhardt-Marketing. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>

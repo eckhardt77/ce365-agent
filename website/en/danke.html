@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vielen Dank! — CE365 Agent</title>
+    <title>Thank You! — CE365 Agent</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,9 +12,9 @@
 <body>
     <nav class="nav">
         <div class="container nav-inner">
-            <a href="/" class="logo">CE365 <span class="logo-agent">Agent</span></a>
+            <a href="/en/" class="logo">CE365 <span class="logo-agent">Agent</span></a>
             <div class="nav-links">
-                <a href="/" class="btn btn-nav">Zur Startseite</a>
+                <a href="/en/" class="btn btn-nav">Back to Home</a>
             </div>
         </div>
     </nav>
@@ -23,36 +23,36 @@
         <div class="container">
             <div id="loading">
                 <div class="spinner"></div>
-                <h2 style="margin-top: 24px;">Deine Lizenz wird erstellt...</h2>
-                <p class="hero-description">Bitte warte einen Moment.</p>
+                <h2 style="margin-top: 24px;">Creating your license...</h2>
+                <p class="hero-description">Please wait a moment.</p>
             </div>
             <div id="success" style="display: none;">
-                <h1 class="hero-title">Willkommen bei Pro!</h1>
-                <p class="hero-description">Deine Lizenz wurde erfolgreich erstellt. Kopiere den Schl&uuml;ssel und f&uuml;ge ihn im Setup-Wizard ein.</p>
+                <h1 class="hero-title">Welcome to Pro!</h1>
+                <p class="hero-description">Your license has been created successfully. Copy the key and paste it into the Setup Wizard.</p>
                 <div class="license-box">
-                    <div style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 8px;">Dein Lizenzschl&uuml;ssel</div>
+                    <div style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 8px;">Your License Key</div>
                     <div class="license-key" id="license-key">&mdash;</div>
-                    <button onclick="copyKey()" class="btn btn-primary" id="copy-btn" style="margin-top: 8px;">Kopieren</button>
+                    <button onclick="copyKey()" class="btn btn-primary" id="copy-btn" style="margin-top: 8px;">Copy</button>
                 </div>
                 <div style="max-width: 480px; margin: 40px auto; text-align: left;">
-                    <h3 style="margin-bottom: 12px;">N&auml;chste Schritte</h3>
+                    <h3 style="margin-bottom: 12px;">Next Steps</h3>
                     <ol style="color: var(--text-secondary); font-size: 0.9rem; line-height: 2.2; padding-left: 20px;">
-                        <li>CE365 installieren: <code>pip install ce365</code></li>
-                        <li>Setup starten: <code>python -m ce365 --setup</code></li>
-                        <li>Edition &ldquo;Pro&rdquo; w&auml;hlen und Lizenzschl&uuml;ssel einf&uuml;gen</li>
-                        <li>Loslegen!</li>
+                        <li>Install CE365: <code>pip install ce365</code></li>
+                        <li>Run setup: <code>python -m ce365 --setup</code></li>
+                        <li>Select &ldquo;Pro&rdquo; edition and paste your license key</li>
+                        <li>You&rsquo;re all set!</li>
                     </ol>
                 </div>
                 <p style="color: var(--text-tertiary); font-size: 0.82rem; margin-top: 32px;">
-                    Best&auml;tigung wurde an <strong id="customer-email" style="color: var(--text-secondary);"></strong> gesendet.<br>
-                    Fragen? <a href="mailto:info@eckhardt-marketing.de">info@eckhardt-marketing.de</a>
+                    Confirmation sent to <strong id="customer-email" style="color: var(--text-secondary);"></strong>.<br>
+                    Questions? <a href="mailto:info@eckhardt-marketing.de">info@eckhardt-marketing.de</a>
                 </p>
             </div>
             <div id="error" style="display: none;">
-                <h2 class="section-title">Etwas ist schiefgelaufen</h2>
-                <p class="hero-description">Die Zahlung wurde verarbeitet, aber die Lizenz konnte noch nicht abgerufen werden. Bitte lade die Seite neu.</p>
-                <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 20px;">Seite neu laden</button>
-                <p style="color: var(--text-tertiary); font-size: 0.82rem; margin-top: 16px;">Falls das Problem bestehen bleibt: <a href="mailto:info@eckhardt-marketing.de">info@eckhardt-marketing.de</a></p>
+                <h2 class="section-title">Something went wrong</h2>
+                <p class="hero-description">Your payment was processed, but the license could not be retrieved yet. Please reload the page.</p>
+                <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 20px;">Reload Page</button>
+                <p style="color: var(--text-tertiary); font-size: 0.82rem; margin-top: 16px;">If the problem persists: <a href="mailto:info@eckhardt-marketing.de">info@eckhardt-marketing.de</a></p>
             </div>
         </div>
     </section>
@@ -60,7 +60,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>&copy; 2026 Carsten Eckhardt / Eckhardt-Marketing. Alle Rechte vorbehalten.</p>
+                <p>&copy; 2026 Carsten Eckhardt / Eckhardt-Marketing. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -70,8 +70,8 @@
         function copyKey() {
             navigator.clipboard.writeText(document.getElementById("license-key").textContent).then(function() {
                 var btn = document.getElementById("copy-btn");
-                btn.textContent = "Kopiert!";
-                setTimeout(function() { btn.textContent = "Kopieren"; }, 2000);
+                btn.textContent = "Copied!";
+                setTimeout(function() { btn.textContent = "Copy"; }, 2000);
             });
         }
         (function() {

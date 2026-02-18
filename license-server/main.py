@@ -415,6 +415,7 @@ async def admin_deactivate_license(
 @app.post("/api/stripe/create-checkout")
 async def create_checkout_session(
     seats: int = 1,
+    lang: str = "de",
 ):
     """Stripe Checkout Session erstellen"""
     if not STRIPE_SECRET_KEY:
@@ -422,6 +423,16 @@ async def create_checkout_session(
 
     import stripe
     stripe.api_key = STRIPE_SECRET_KEY
+
+    # Locale + Danke-Seite je nach Sprache
+    if lang == "en":
+        success_url = f"{SITE_URL}/en/danke?session_id={{CHECKOUT_SESSION_ID}}"
+        cancel_url = f"{SITE_URL}/en/#pricing"
+        locale = "en"
+    else:
+        success_url = f"{SITE_URL}/danke?session_id={{CHECKOUT_SESSION_ID}}"
+        cancel_url = f"{SITE_URL}/#pricing"
+        locale = "de"
 
     try:
         session = stripe.checkout.Session.create(
@@ -431,8 +442,9 @@ async def create_checkout_session(
                 "quantity": seats,
             }],
             mode="subscription",
-            success_url=f"{SITE_URL}/danke?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{SITE_URL}/#pricing",
+            locale=locale,
+            success_url=success_url,
+            cancel_url=cancel_url,
             metadata={
                 "seats": str(seats),
             },

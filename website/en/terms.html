@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions — CE365 Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="/en/" class="logo">CE365 <span class="logo-agent">Agent</span></a>
+            <div class="nav-links">
+                <a href="/en/">Home</a>
+                <a href="/agb.html" class="lang-switch">DE</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="legal">
+        <div class="container">
+            <div class="legal-content">
+                <h1>Terms and Conditions</h1>
+                <p style="color: var(--text-tertiary); font-size: 0.88rem;">Last updated: February 2026</p>
+
+                <h2>1. Scope</h2>
+                <p>These Terms and Conditions apply to all contracts between</p>
+                <p>
+                    Carsten Eckhardt<br>
+                    Eckhardt-Marketing<br>
+                    Eurode-Park 1-94<br>
+                    52134 Herzogenrath, Germany<br>
+                    (hereinafter &ldquo;Provider&rdquo;)
+                </p>
+                <p>and the customer regarding the use of the software &ldquo;CE365 Agent&rdquo; in the &ldquo;Pro&rdquo; edition (hereinafter &ldquo;Software&rdquo;).</p>
+                <p>This offer is directed exclusively at businesses (B2B). By placing an order, the customer confirms that the Software is being acquired in the course of their commercial or independent professional activity.</p>
+                <p>Any deviating terms and conditions of the customer shall not apply unless the Provider expressly agrees to them in writing.</p>
+
+                <h2>2. Subject Matter</h2>
+                <p>The Provider grants the customer access to CE365 Agent Pro as a locally installable application. The Software is an AI-powered diagnostic and repair tool for IT technicians.</p>
+                <p>The scope of services is determined by the current product description on the Provider&rsquo;s website.</p>
+                <p>The Software is provided &ldquo;as is&rdquo;. The Provider does not guarantee the availability of external services (e.g., LLM APIs), as the customer uses their own API keys (BYOK &mdash; Bring Your Own Key).</p>
+
+                <h2>3. Contract Formation</h2>
+                <p>The contract is formed upon the customer&rsquo;s order via the website and successful payment processing through Stripe. The presentation of the Software on the website does not constitute a binding offer but an invitation to place an order.</p>
+                <p>Upon successful payment, the customer receives a license key via email and on the confirmation page.</p>
+
+                <h2>4. Prices and Payment</h2>
+                <p>All prices are stated in Euros and are <strong>exclusive of statutory value-added tax</strong> (currently 19%).</p>
+                <p>Payment is processed by credit card via the payment service provider Stripe. Billing occurs monthly in advance.</p>
+                <p>The price per seat is &euro;99.00 net / month (plus VAT). The customer may specify the number of seats at the time of ordering.</p>
+                <p>In the event of late payment, statutory provisions apply. The Provider reserves the right to suspend access to the Software in case of payment arrears.</p>
+
+                <h2>5. Term and Termination</h2>
+                <p>The contract is concluded as a monthly subscription. It is automatically renewed for one additional month unless cancelled before the end of the current billing period.</p>
+                <p>Cancellation may be made at any time effective at the end of the current billing period via:</p>
+                <ul>
+                    <li>the Stripe customer portal, or</li>
+                    <li>email to <a href="mailto:info@eckhardt-marketing.de">info@eckhardt-marketing.de</a></li>
+                </ul>
+                <p>After cancellation, the Software remains usable until the end of the paid period. The license key will then be deactivated.</p>
+                <p>The right to extraordinary termination for cause remains unaffected.</p>
+
+                <h2>6. Usage Rights and License Terms</h2>
+                <p>The customer receives a non-exclusive, non-transferable right to use the Software for the duration of the subscription.</p>
+                <p><strong>Seat model:</strong> Each seat entitles one technician to use the Software concurrently on one device. The number of purchased seats determines the maximum number of concurrent sessions.</p>
+                <p>The customer is prohibited from:</p>
+                <ul>
+                    <li>decompiling, disassembling, or otherwise attempting to derive the source code of the Software</li>
+                    <li>sublicensing, renting, or making the Software available to third parties</li>
+                    <li>sharing or publishing license keys</li>
+                    <li>circumventing technical protection measures</li>
+                </ul>
+
+                <h2>7. Warranty</h2>
+                <p>The Provider warrants that the Software substantially conforms to the product description. Minor deviations do not constitute a defect.</p>
+                <p>The warranty period is one year from the date of provision. Statutory warranty provisions for businesses apply (&sect;&sect; 434 ff. BGB).</p>
+                <p>The Provider assumes no warranty for:</p>
+                <ul>
+                    <li>the quality or availability of LLM APIs used by the customer (Anthropic, OpenAI, OpenRouter)</li>
+                    <li>results or recommendations generated by the AI</li>
+                    <li>damage caused by improper use or deployment on unsupported systems</li>
+                </ul>
+
+                <h2>8. Liability</h2>
+                <p>The Provider is liable without limitation for intent, gross negligence, and for damages resulting from injury to life, body, or health.</p>
+                <p>In cases of slight negligence, the Provider is only liable for breach of material contractual obligations (cardinal obligations). In such cases, liability is limited to foreseeable, contract-typical damages.</p>
+                <p>Liability for indirect damages, consequential damages, and lost profits is &mdash; to the extent permitted by law &mdash; excluded.</p>
+                <p>The above limitations of liability also apply in favor of the Provider&rsquo;s vicarious agents.</p>
+
+                <h2>9. Data Protection</h2>
+                <p>The processing of personal data is governed by our <a href="/en/privacy.html">Privacy Policy</a>.</p>
+                <p>The Software itself processes data locally on the customer&rsquo;s device. The only data transmitted to the Provider is:</p>
+                <ul>
+                    <li>License key for validation</li>
+                    <li>Session heartbeat (anonymized)</li>
+                    <li>Optional: shared learning data (only when PostgreSQL connection is enabled)</li>
+                </ul>
+                <p>LLM requests are sent directly from the customer&rsquo;s device to the chosen API provider &mdash; not through the Provider&rsquo;s servers.</p>
+
+                <h2>10. Right of Withdrawal</h2>
+                <p>This offer is primarily directed at businesses (B2B). For businesses, there is <strong>no statutory right of withdrawal</strong>.</p>
+                <p>Should a consumer as defined by &sect; 13 BGB (German Civil Code) enter into this contract, they are entitled to a statutory right of withdrawal of 14 days. The full cancellation policy including a model withdrawal form can be found at: <a href="/en/cancellation.html">Cancellation Policy</a>.</p>
+
+                <h2>11. Changes to these Terms</h2>
+                <p>The Provider reserves the right to amend these Terms with reasonable prior notice (at least 30 days). Changes will be communicated to the customer by email. If the customer does not object within 30 days, the amended Terms are deemed accepted. The Provider will inform the customer of this legal consequence.</p>
+
+                <h2>12. Final Provisions</h2>
+                <p>The laws of the Federal Republic of Germany shall apply, excluding the UN Convention on Contracts for the International Sale of Goods (CISG).</p>
+                <p>The place of jurisdiction for all disputes arising from this contract is Aachen, Germany, provided the customer is a merchant, a legal entity under public law, or a special fund under public law.</p>
+                <p>Should any provision of these Terms be or become invalid, the validity of the remaining provisions shall remain unaffected.</p>
+
+                <p style="margin-top: 40px; color: var(--text-tertiary); font-size: 0.82rem;">Carsten Eckhardt / Eckhardt-Marketing &mdash; Last updated: February 2026</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Carsten Eckhardt / Eckhardt-Marketing. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
