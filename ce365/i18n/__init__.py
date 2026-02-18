@@ -2,7 +2,7 @@
 CE365 Agent - Internationalization (i18n) System
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 """
 
 from .translator import Translator, get_translator, set_language

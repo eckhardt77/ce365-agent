@@ -2,7 +2,7 @@
 CE365 Agent - PII Detection & Anonymization
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Erkennt und anonymisiert:
 - Email-Adressen

@@ -6,6 +6,7 @@ Community: max 5/Monat, Pro: unbegrenzt.
 """
 
 import json
+import os
 from pathlib import Path
 from datetime import datetime
 from typing import Dict
@@ -36,9 +37,10 @@ class UsageTracker:
             return {}
 
     def _save(self):
-        """Speichert Usage-Daten"""
+        """Speichert Usage-Daten (mit restriktiven Berechtigungen)"""
         try:
             self.usage_file.write_text(json.dumps(self._usage, indent=2))
+            os.chmod(self.usage_file, 0o600)
         except Exception:
             pass
 

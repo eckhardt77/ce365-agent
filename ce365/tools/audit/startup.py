@@ -2,7 +2,7 @@
 CE365 Agent - Startup Programs Audit
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Autostart-Programme auflisten (Windows/macOS)
 """

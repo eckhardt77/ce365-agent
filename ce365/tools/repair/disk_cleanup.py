@@ -2,7 +2,7 @@
 CE365 Agent - Disk Cleanup Tools
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Disk-Speicher freigeben:
 - Windows: Temp-Dateien, Downloads, Recycle Bin

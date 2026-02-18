@@ -2,7 +2,7 @@
 CE365 Agent - License Validation Module
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Validiert Lizenzschlüssel mit zentralem License Server
 """
@@ -146,9 +146,16 @@ class LicenseValidator:
 
     def _cache_license(self, license_key: str, result: Dict):
         """Speichert Lizenz-Validierung im Cache mit HMAC-Signatur"""
+        # Sensible Daten entfernen — nur das Minimum cachen
+        safe_result = {
+            "valid": result.get("valid"),
+            "edition": result.get("edition"),
+            "expires_at": result.get("expires_at"),
+        }
+
         cache_data = {
-            "license_key": license_key,
-            "result": result,
+            "license_key_hash": hashlib.sha256(license_key.encode()).hexdigest(),
+            "result": safe_result,
             "cached_at": datetime.now().isoformat()
         }
 
@@ -159,6 +166,8 @@ class LicenseValidator:
                 "signature": self._compute_hmac(payload)
             }
             self.cache_file.write_text(json.dumps(signed_data, indent=2))
+            import os
+            os.chmod(self.cache_file, 0o600)
         except Exception:
             pass  # Cache-Fehler ignorieren
 
@@ -185,8 +194,10 @@ class LicenseValidator:
 
             cache_data = json.loads(payload)
 
-            # Prüfe ob gecachte Lizenz zum aktuellen Key passt
-            if cache_data["license_key"] != license_key:
+            # Prüfe ob gecachte Lizenz zum aktuellen Key passt (Hash-Vergleich)
+            key_hash = hashlib.sha256(license_key.encode()).hexdigest()
+            cached_key = cache_data.get("license_key_hash") or cache_data.get("license_key", "")
+            if cached_key != key_hash and cached_key != license_key:
                 return None
 
             # Prüfe ob Cache zu alt ist (max 24 Stunden)

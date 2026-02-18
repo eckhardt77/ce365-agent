@@ -128,10 +128,20 @@ class Settings(BaseModel):
             session_timeout=int(os.getenv("SESSION_TIMEOUT", "3600"))
         )
 
-        settings.data_dir.mkdir(exist_ok=True)
-        settings.sessions_dir.mkdir(exist_ok=True)
-        settings.changelogs_dir.mkdir(exist_ok=True)
-        settings.config_file.parent.mkdir(exist_ok=True)
+        # Verzeichnisse mit restriktiven Berechtigungen erstellen
+        for d in [settings.data_dir, settings.sessions_dir, settings.changelogs_dir]:
+            d.mkdir(parents=True, exist_ok=True)
+            try:
+                os.chmod(d, 0o700)
+            except OSError:
+                pass
+
+        ce365_home = settings.config_file.parent
+        ce365_home.mkdir(parents=True, exist_ok=True)
+        try:
+            os.chmod(ce365_home, 0o700)
+        except OSError:
+            pass
 
         return settings
 
@@ -153,14 +163,23 @@ class Settings(BaseModel):
         """Speichert User-Settings in ~/.ce365/config.json"""
         config = {
             "language": self.language,
-            "claude_model": self.claude_model,
+            "llm_model": self.llm_model,
             "log_level": self.log_level
         }
 
         self.config_file.parent.mkdir(exist_ok=True)
+        try:
+            os.chmod(self.config_file.parent, 0o700)
+        except OSError:
+            pass
 
         with open(self.config_file, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2)
+
+        try:
+            os.chmod(self.config_file, 0o600)
+        except OSError:
+            pass
 
 
 # Globale Settings-Instanz

@@ -2,7 +2,7 @@
 CE365 Agent - Root Cause Analysis Tool
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 AI-gesteuerte Ursachenanalyse:
 - Korreliert Event Logs, Services, System Metrics

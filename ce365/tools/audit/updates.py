@@ -2,7 +2,7 @@
 CE365 Agent - Update Check Tools
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Update-Status prüfen:
 - Windows: Windows Update (PSWindowsUpdate oder WUAPI)

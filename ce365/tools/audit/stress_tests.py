@@ -2,7 +2,7 @@
 CE365 Agent - Stress Test & Diagnostic Tools
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Hardware-Tests:
 - CPU Stress Test

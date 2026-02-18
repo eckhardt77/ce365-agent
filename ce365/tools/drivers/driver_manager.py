@@ -2,7 +2,7 @@
 CE365 Agent - Driver Manager
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Prüft Treiber-Status und empfiehlt Updates aus mehreren Quellen:
 - Windows Update API (Windows)

@@ -2,7 +2,7 @@
 CE365 Agent - AI-powered IT Maintenance Assistant
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 """
 
 import asyncio
@@ -253,6 +253,11 @@ class CE365Bot:
                 if user_input.lower() == "stats":
                     stats = self.case_library.get_statistics()
                     self.console.display_learning_stats(stats)
+                    continue
+
+                # Special Command: privacy / datenschutz
+                if user_input.lower() in ["privacy", "datenschutz", "daten"]:
+                    await self._handle_privacy_command()
                     continue
 
                 # GO REPAIR Command
@@ -919,3 +924,63 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
             self.console.display_error(
                 f"❌ Fehler beim Speichern für Learning: {str(e)}"
             )
+
+    async def _handle_privacy_command(self):
+        """Datenschutz-Menü: Daten anzeigen, exportieren, löschen"""
+        from ce365.privacy.data_deletion import DataDeletionManager
+
+        manager = DataDeletionManager()
+        summary = manager.get_data_summary()
+
+        self.console.display_separator()
+        self.console.console.print("[bold]🔒 Datenschutz — Gespeicherte Daten[/bold]\n")
+        self.console.console.print(f"  Changelogs: {summary['changelogs']} Dateien")
+        self.console.console.print(f"  Sessions:   {summary['sessions']} Dateien")
+        self.console.console.print(f"  Datenbanken: {len(summary['databases'])}")
+        self.console.console.print(f"  Cache:      {len(summary['cache_files'])} Dateien")
+        self.console.console.print()
+        self.console.console.print("  Speicherorte:")
+        for loc in summary['storage_locations']:
+            self.console.console.print(f"    - {loc}")
+        self.console.console.print()
+
+        self.console.console.print("[bold]Optionen:[/bold]")
+        self.console.console.print("  1) Daten exportieren (JSON)")
+        self.console.console.print("  2) Alle lokalen Daten löschen")
+        self.console.console.print("  3) Alte Daten aufräumen (Retention Policy)")
+        self.console.console.print("  4) Abbrechen")
+        self.console.console.print()
+
+        choice = self.console.get_input("Auswahl (1-4)").strip()
+
+        if choice == "1":
+            export = manager.export_all_data()
+            export_path = Path("data") / "ce365_data_export.json"
+            import json
+            with open(export_path, "w", encoding="utf-8") as f:
+                json.dump(export, f, indent=2, ensure_ascii=False, default=str)
+            self.console.display_success(f"Daten exportiert nach: {export_path}")
+
+        elif choice == "2":
+            confirm = self.console.get_input(
+                "Alle lokalen Daten unwiderruflich löschen? (ja/nein)"
+            ).strip().lower()
+            if confirm in ["ja", "j", "yes", "y"]:
+                result = manager.delete_all_local_data()
+                for item in result["deleted"]:
+                    self.console.display_success(f"  Gelöscht: {item}")
+                for err in result["errors"]:
+                    self.console.display_error(f"  Fehler: {err}")
+                self.console.display_success("Alle lokalen Daten gelöscht.")
+            else:
+                self.console.display_info("Abgebrochen.")
+
+        elif choice == "3":
+            result = manager.cleanup_old_data()
+            self.console.display_success(
+                f"Aufgeräumt: {result['deleted_changelogs']} alte Changelogs gelöscht "
+                f"(älter als {result['changelog_cutoff_days']} Tage)"
+            )
+
+        else:
+            self.console.display_info("Abgebrochen.")

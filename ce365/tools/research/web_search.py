@@ -97,6 +97,21 @@ class WebSearchTool(AuditTool):
         if not query:
             return "❌ Fehler: Suchbegriff fehlt"
 
+        # PII im Suchbegriff anonymisieren bevor er an DuckDuckGo geht
+        try:
+            from ce365.security.pii_detector import get_pii_detector
+            detector = get_pii_detector()
+            if detector and detector.enabled:
+                query, pii_found = detector.anonymize(query)
+                if pii_found:
+                    # Anonymisierte Platzhalter aus dem Query entfernen
+                    # (DuckDuckGo kann mit <EMAIL_ADDRESS> nichts anfangen)
+                    import re
+                    query = re.sub(r'<[A-Z_]+>', '', query).strip()
+                    query = re.sub(r'\s+', ' ', query)
+        except (ImportError, Exception):
+            pass
+
         try:
             # DuckDuckGo Search
             with DDGS() as ddgs:
@@ -203,6 +218,19 @@ class WebSearchInstantAnswerTool(AuditTool):
 
         if not query:
             return "❌ Fehler: Suchbegriff fehlt"
+
+        # PII anonymisieren
+        try:
+            from ce365.security.pii_detector import get_pii_detector
+            detector = get_pii_detector()
+            if detector and detector.enabled:
+                query, pii_found = detector.anonymize(query)
+                if pii_found:
+                    import re
+                    query = re.sub(r'<[A-Z_]+>', '', query).strip()
+                    query = re.sub(r'\s+', ' ', query)
+        except (ImportError, Exception):
+            pass
 
         try:
             # DuckDuckGo Instant Answers

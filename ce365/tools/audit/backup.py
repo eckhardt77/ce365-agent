@@ -2,7 +2,7 @@
 CE365 Agent - Backup Status Check Tools
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 Backup-Status prüfen:
 - Windows: Windows Backup, System Restore Points

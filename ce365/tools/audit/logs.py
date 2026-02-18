@@ -2,7 +2,7 @@
 CE365 Agent - Log Analysis Tools
 
 Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-Licensed under MIT License
+Licensed under Source Available License
 
 System-Logs analysieren:
 - Windows: Event Viewer (System + Application)

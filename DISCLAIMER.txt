@@ -47,16 +47,23 @@ WICHTIG: BITTE AUFMERKSAM LESEN!
    - Bei Produktiv-Systemen: Auf eigene Gefahr
 
 8. RECHTLICHE GRUNDLAGE
-   - Verwendung unterliegt der MIT License (siehe LICENSE Datei)
+   - Verwendung unterliegt der Source Available License (siehe LICENSE Datei)
    - Community Edition: Nur nicht-kommerzielle Nutzung
    - Kommerzielle Nutzung erfordert Pro Lizenz
 
 9. DRITTANBIETER-DIENSTE
-   - CE365 nutzt Anthropic Claude API
-   - Anthropic hat eigene Nutzungsbedingungen
+   - CE365 nutzt LLM-APIs (Anthropic, OpenAI, OpenRouter — je nach Konfiguration)
+   - Diese Anbieter haben eigene Nutzungsbedingungen und Datenschutzrichtlinien
    - Keine Haftung für API-Ausfälle oder -Fehler
 
-10. ÄNDERUNGSVORBEHALT
+10. DATENSCHUTZ
+   - CE365 speichert Daten lokal (Changelogs, Learning Cases, Konfiguration)
+   - Personenbezogene Daten werden automatisch anonymisiert (PII Detection)
+   - Anonymisierte Daten werden an den konfigurierten LLM-Provider übertragen
+   - Details siehe PRIVACY.md
+   - Tippe "datenschutz" im Chat für Datenübersicht, Export und Löschung
+
+11. ÄNDERUNGSVORBEHALT
     - Dieser Haftungsausschluss kann jederzeit geändert werden
     - Nutzung der aktuellen Version = Akzeptanz der aktuellen Bedingungen
 
