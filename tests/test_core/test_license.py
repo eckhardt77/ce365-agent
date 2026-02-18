@@ -16,7 +16,7 @@ from ce365.core.license import LicenseValidator, check_edition_features
 def license_validator(tmp_ce365_dir):
     """LicenseValidator mit temporärem Cache"""
     return LicenseValidator(
-        backend_url="http://test-backend:8000",
+        license_server_url="http://test-server:9000",
         cache_dir=tmp_ce365_dir / "cache"
     )
 
@@ -165,19 +165,18 @@ class TestOnlineValidation:
 
 
 class TestEditionFeatures:
-    """Tests für Edition Feature Checks (Free / Pro / Business)"""
+    """Tests für Edition Feature Checks (Community / Pro)"""
 
-    def test_free_has_basic_features(self):
-        assert check_edition_features("free", "local_learning") is True
-        assert check_edition_features("free", "pii_detection") is True
-        assert check_edition_features("free", "unlimited_repairs") is False
-        assert check_edition_features("free", "advanced_audit") is False
-        assert check_edition_features("free", "advanced_repair") is False
-        assert check_edition_features("free", "web_search") is False
-        assert check_edition_features("free", "root_cause_analysis") is False
-        assert check_edition_features("free", "commercial_use") is False
-        assert check_edition_features("free", "monitoring") is False
-        assert check_edition_features("free", "shared_learning") is False
+    def test_community_has_basic_features(self):
+        assert check_edition_features("community", "local_learning") is True
+        assert check_edition_features("community", "pii_detection") is True
+        assert check_edition_features("community", "unlimited_repairs") is False
+        assert check_edition_features("community", "advanced_audit") is False
+        assert check_edition_features("community", "advanced_repair") is False
+        assert check_edition_features("community", "web_search") is False
+        assert check_edition_features("community", "root_cause_analysis") is False
+        assert check_edition_features("community", "commercial_use") is False
+        assert check_edition_features("community", "shared_learning") is False
 
     def test_pro_features(self):
         assert check_edition_features("pro", "local_learning") is True
@@ -190,28 +189,10 @@ class TestEditionFeatures:
         assert check_edition_features("pro", "system_report") is True
         assert check_edition_features("pro", "driver_management") is True
         assert check_edition_features("pro", "commercial_use") is True
-        assert check_edition_features("pro", "unlimited_systems") is False
-        assert check_edition_features("pro", "monitoring") is False
-        assert check_edition_features("pro", "shared_learning") is False
-
-    def test_business_all_features(self):
-        assert check_edition_features("business", "local_learning") is True
-        assert check_edition_features("business", "pii_detection") is True
-        assert check_edition_features("business", "unlimited_repairs") is True
-        assert check_edition_features("business", "advanced_audit") is True
-        assert check_edition_features("business", "advanced_repair") is True
-        assert check_edition_features("business", "web_search") is True
-        assert check_edition_features("business", "root_cause_analysis") is True
-        assert check_edition_features("business", "system_report") is True
-        assert check_edition_features("business", "driver_management") is True
-        assert check_edition_features("business", "commercial_use") is True
-        assert check_edition_features("business", "unlimited_systems") is True
-        assert check_edition_features("business", "monitoring") is True
-        assert check_edition_features("business", "shared_learning") is True
-        assert check_edition_features("business", "team_features") is True
+        assert check_edition_features("pro", "shared_learning") is True
 
     def test_unknown_edition(self):
-        assert check_edition_features("unknown", "monitoring") is False
+        assert check_edition_features("unknown", "local_learning") is False
 
     def test_unknown_feature(self):
-        assert check_edition_features("business", "nonexistent_feature") is False
+        assert check_edition_features("pro", "nonexistent_feature") is False

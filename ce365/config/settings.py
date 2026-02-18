@@ -19,9 +19,14 @@ except ImportError:
 class Settings(BaseModel):
     """Globale Einstellungen für CE365 Agent"""
 
-    # API
-    anthropic_api_key: str
-    claude_model: str = "claude-sonnet-4-5-20250929"
+    # LLM Provider
+    llm_provider: str = "anthropic"  # "anthropic", "openai", "openrouter"
+    llm_model: str = "claude-sonnet-4-5-20250929"  # Provider-abhängig
+
+    # API Keys
+    anthropic_api_key: str = ""
+    openai_api_key: str = ""
+    openrouter_api_key: str = ""
 
     # Logging
     log_level: str = "INFO"
@@ -48,12 +53,11 @@ class Settings(BaseModel):
     pii_detection_level: str = "high"  # "high", "medium" oder "low"
     pii_show_warnings: bool = True  # User-Warnings anzeigen
 
-    # Network Connection (für Remote Services)
-    backend_url: str = ""  # URL zum Backend (via VPN/Cloudflare/Tailscale)
-    network_method: str = "direct"  # "cloudflare", "tailscale", "vpn", "direct"
+    # License Server
+    license_server_url: str = ""  # URL zum Lizenzserver
 
     # License
-    edition: str = "free"  # "free", "pro", "business"
+    edition: str = "community"  # "community", "pro"
     license_key: str = ""  # Lizenzschlüssel
 
     # Technician Security
@@ -67,34 +71,41 @@ class Settings(BaseModel):
         # Config-Datei laden (falls vorhanden)
         user_config = cls._load_user_config()
 
+        # Provider bestimmen
+        llm_provider = os.getenv("LLM_PROVIDER", "anthropic").lower()
+
         # API Key laden: Priorität Keychain > .env
-        api_key = None
+        anthropic_key = ""
+        openai_key = os.getenv("OPENAI_API_KEY", "")
+        openrouter_key = os.getenv("OPENROUTER_API_KEY", "")
 
         if SECRETS_MANAGER_AVAILABLE:
             secrets = get_secrets_manager()
-            api_key = secrets.get_api_key()
+            anthropic_key = secrets.get_api_key() or ""
 
-            # Info wo Key herkommt
-            storage_method = secrets.get_storage_method()
-            if storage_method == "env_plaintext" and secrets.keyring_available:
-                # Migration anbieten
-                print("ℹ️  API Key liegt unverschlüsselt in .env")
-                print("   Führe 'ce365 --migrate-key' aus um zu OS Keychain zu migrieren")
+        if not anthropic_key:
+            anthropic_key = os.getenv("ANTHROPIC_API_KEY", "")
 
-        # Fallback: Direkt aus os.getenv (wenn secrets nicht verfügbar)
-        if not api_key:
-            api_key = os.getenv("ANTHROPIC_API_KEY")
-
-        if not api_key:
+        # Prüfe ob der gewählte Provider einen Key hat
+        provider_keys = {
+            "anthropic": anthropic_key,
+            "openai": openai_key,
+            "openrouter": openrouter_key,
+        }
+        active_key = provider_keys.get(llm_provider, "")
+        if not active_key:
             raise ValueError(
-                "ANTHROPIC_API_KEY nicht gefunden. "
+                f"Kein API Key für Provider '{llm_provider}' gefunden. "
                 "Bitte beim ersten Start konfigurieren oder .env Datei erstellen."
             )
 
         # Verzeichnisse erstellen
         settings = cls(
-            anthropic_api_key=api_key,
-            claude_model=os.getenv("CLAUDE_MODEL", "claude-sonnet-4-5-20250929"),
+            llm_provider=llm_provider,
+            llm_model=os.getenv("LLM_MODEL", os.getenv("CLAUDE_MODEL", "claude-sonnet-4-5-20250929")),
+            anthropic_api_key=anthropic_key,
+            openai_api_key=openai_key,
+            openrouter_api_key=openrouter_key,
             log_level=os.getenv("LOG_LEVEL", "INFO"),
             language=user_config.get("language", "de"),  # Aus User Config
             # Learning DB Settings
@@ -107,11 +118,10 @@ class Settings(BaseModel):
             pii_detection_enabled=os.getenv("PII_DETECTION_ENABLED", "true").lower() == "true",
             pii_detection_level=os.getenv("PII_DETECTION_LEVEL", "high"),
             pii_show_warnings=os.getenv("PII_SHOW_WARNINGS", "true").lower() == "true",
-            # Network Settings
-            backend_url=os.getenv("BACKEND_URL", ""),
-            network_method=os.getenv("NETWORK_METHOD", "direct"),
+            # License Server
+            license_server_url=os.getenv("LICENSE_SERVER_URL", ""),
             # License Settings
-            edition=os.getenv("EDITION", "free"),
+            edition=os.getenv("EDITION", "community"),
             license_key=os.getenv("LICENSE_KEY", ""),
             # Security Settings
             technician_password_hash=os.getenv("TECHNICIAN_PASSWORD_HASH", ""),
