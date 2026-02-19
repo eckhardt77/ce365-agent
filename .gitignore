@@ -41,6 +41,22 @@ releases/
 # Private / nicht open-source
 website/
 license-server/
+docs/
+scripts/
+tools/
+docker-compose.learning-db.yml
+generate_docs.py
+setup.py
+requirements-build.txt
+requirements-dev.txt
+SECURITY_AUDIT.md
+EDITION_FEATURES.md
+CHANGELOG_HYBRID.md
+CHANGELOG_v0.2.md
+TEST_RESULTS.md
+TOOL_STATUS.md
+INSTALL.html
+README_DE.md
 
 # OS
 .DS_Store
