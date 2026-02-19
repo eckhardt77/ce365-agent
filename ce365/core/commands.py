@@ -264,15 +264,14 @@ async def _cmd_model(bot, args: str):
         bot.console.console.print(f"  Provider: {settings.llm_provider}")
         bot.console.console.print(f"  Modell:   {settings.llm_model}")
         bot.console.console.print()
-        bot.console.console.print("[bold]Vorschlaege:[/bold]")
-        suggestions = {
-            "anthropic": ["claude-opus-4-6", "claude-sonnet-4-6", "claude-haiku-4-5-20251001"],
-            "openai": ["gpt-4.1", "o3", "o4-mini"],
-            "openrouter": ["anthropic/claude-opus-4-6", "openai/gpt-4.1", "google/gemini-2.0-flash"],
-        }
-        for model in suggestions.get(settings.llm_provider, []):
-            active = " [bold cyan]<< aktiv[/bold cyan]" if model == settings.llm_model else ""
-            bot.console.console.print(f"  {model}{active}")
+        bot.console.console.print("[bold]Verfuegbare Modelle:[/bold]")
+        try:
+            available = bot.client.list_models()
+            for model in available[:3]:
+                active = " [bold cyan]<< aktiv[/bold cyan]" if model == settings.llm_model else ""
+                bot.console.console.print(f"  {model}{active}")
+        except Exception:
+            bot.console.display_warning("Modell-Liste konnte nicht abgerufen werden.")
         bot.console.console.print(f"\n  Wechseln: /model <name>")
         bot.console.console.print()
         return

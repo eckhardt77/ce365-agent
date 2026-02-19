@@ -55,6 +55,11 @@ class LLMProvider(ABC):
         self.input_tokens = 0
         self.output_tokens = 0
 
+    @abstractmethod
+    def list_models(self) -> List[str]:
+        """Verfuegbare Modelle vom Provider abrufen"""
+        ...
+
 
 class AnthropicProvider(LLMProvider):
     """Anthropic Claude Provider"""
@@ -94,11 +99,16 @@ class AnthropicProvider(LLMProvider):
         except Exception as e:
             raise Exception(f"Anthropic API Error: {str(e)}")
 
+    def list_models(self) -> List[str]:
+        models = self.client.models.list(limit=20)
+        items = sorted(models.data, key=lambda m: getattr(m, "created_at", ""), reverse=True)
+        return [m.id for m in items]
+
 
 class OpenAIProvider(LLMProvider):
     """OpenAI GPT Provider"""
 
-    def __init__(self, api_key: str, model: str = "gpt-4.1", base_url: str = None):
+    def __init__(self, api_key: str, model: str = "gpt-5.2", base_url: str = None):
         super().__init__()
         from openai import OpenAI
         kwargs = {"api_key": api_key}
@@ -140,6 +150,12 @@ class OpenAIProvider(LLMProvider):
 
         except Exception as e:
             raise Exception(f"OpenAI API Error: {str(e)}")
+
+    def list_models(self) -> List[str]:
+        models = self.client.models.list()
+        items = [m for m in models.data if m.id.startswith(("gpt-", "o3", "o4"))]
+        items.sort(key=lambda m: getattr(m, "created", 0), reverse=True)
+        return [m.id for m in items]
 
     def _convert_messages(self, messages: List[Dict[str, Any]]) -> List[Dict]:
         """Konvertiert Anthropic Messages → OpenAI Format"""
@@ -248,12 +264,19 @@ class OpenAIProvider(LLMProvider):
 class OpenRouterProvider(OpenAIProvider):
     """OpenRouter Provider (OpenAI-kompatible API)"""
 
-    def __init__(self, api_key: str, model: str = "anthropic/claude-sonnet-4-6"):
+    def __init__(self, api_key: str, model: str = "google/gemini-3-flash-preview"):
         super().__init__(
             api_key=api_key,
             model=model,
             base_url="https://openrouter.ai/api/v1",
         )
+
+    def list_models(self) -> List[str]:
+        models = self.client.models.list()
+        items = [m for m in models.data
+                 if m.id.startswith(("x-ai/", "google/gemini", "mistralai/"))]
+        items.sort(key=lambda m: getattr(m, "created", 0), reverse=True)
+        return [m.id for m in items]
 
 
 # Interne Hilfsklassen für normalisierte Responses
@@ -280,8 +303,8 @@ class _NormalizedResponse:
 # Provider Factory
 DEFAULT_MODELS = {
     "anthropic": "claude-sonnet-4-6",
-    "openai": "gpt-4.1",
-    "openrouter": "anthropic/claude-sonnet-4-6",
+    "openai": "gpt-5.2",
+    "openrouter": "google/gemini-3-flash-preview",
 }
 
 
