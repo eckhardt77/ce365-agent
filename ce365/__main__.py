@@ -22,15 +22,16 @@ from ce365.core.health import run_health_check
 console = Console()
 
 
-def _show_embedded_banner(config: dict):
-    """Zeigt Techniker-Info beim Start eines Kunden-Pakets"""
+def _show_portable_banner():
+    """Zeigt Techniker-Info beim Start einer portablen Kunden-Binary"""
     from ce365.__version__ import __version__
     from rich.panel import Panel
     from rich.text import Text
 
-    tech_name = config.get("_TECHNICIAN_NAME", "Techniker")
-    company = config.get("_COMPANY", "")
-    edition = config.get("EDITION", "community").title()
+    settings = get_settings()
+    tech_name = settings.technician_name or "Techniker"
+    company = settings.company or ""
+    edition = settings.edition.title()
 
     banner = Text()
     banner.append(f"CE365 Agent v{__version__} — {edition} Edition\n", style="bold cyan")
@@ -177,6 +178,54 @@ def set_password():
         return
 
 
+def _check_and_offer_update():
+    """
+    Prüft ob ein Update verfügbar ist und bietet es dem Techniker an.
+    Nur für portable Binaries — zeigt Hinweis, Techniker entscheidet.
+    """
+    if not getattr(sys, "frozen", False):
+        return  # Nur für Binaries
+
+    try:
+        from ce365.__version__ import __version__
+        from ce365.core.updater import check_for_update
+
+        update_info = check_for_update(__version__)
+        if not update_info or not update_info.get("update_available"):
+            return
+
+        latest = update_info.get("latest_version", "?")
+        console.print(
+            f"[bold yellow]Update verfügbar: v{__version__} → v{latest}[/bold yellow]"
+        )
+
+        if Confirm.ask("Jetzt updaten?", default=False):
+            from ce365.core.updater import _download_binary, _replace_binary
+            settings = get_settings()
+
+            console.print("[dim]Lade Update herunter...[/dim]")
+            download_url = update_info.get("download_url", "")
+            tmp_path = _download_binary(settings.license_key, download_url)
+
+            if tmp_path:
+                console.print("[dim]Installiere Update...[/dim]")
+                if _replace_binary(tmp_path):
+                    console.print(
+                        f"\n[green]Update auf v{latest} erfolgreich![/green]"
+                    )
+                    console.print("[dim]Bitte CE365 neu starten.[/dim]\n")
+                    sys.exit(0)
+                else:
+                    console.print("[red]Update fehlgeschlagen. Weiter mit aktueller Version.[/red]\n")
+            else:
+                console.print("[red]Download fehlgeschlagen. Weiter mit aktueller Version.[/red]\n")
+        else:
+            console.print("[dim]Update übersprungen — weiter mit aktueller Version.[/dim]\n")
+
+    except Exception:
+        pass  # Update-Check soll nie den Start blockieren
+
+
 async def _run_with_license_session(bot):
     """
     Führt den Bot mit Lizenz-Session-Management aus
@@ -313,11 +362,13 @@ def main():
 
     # Normaler Start
     try:
-        # Embedded Config prüfen (Kunden-Paket)
-        from ce365.setup.embedded_config import is_embedded, get_config
-        if is_embedded():
+        # Portable Binary prüfen (Kunden-Paket)
+        settings = get_settings()
+        if settings.is_portable():
             # Kunden-Paket: Techniker-Info anzeigen, kein Wizard
-            _show_embedded_banner(get_config())
+            _show_portable_banner()
+            # Update-Check anbieten
+            _check_and_offer_update()
         else:
             # 1. Setup-Wizard (falls .env nicht existiert)
             if not run_setup_if_needed():

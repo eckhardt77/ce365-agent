@@ -1,27 +1,130 @@
 import os
+import sys
 import json
 from pathlib import Path
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
 
-# Embedded Config prüfen (Kunden-Paket)
-_EMBEDDED_CONFIG = {}
-try:
-    from ce365.setup.embedded_config import is_embedded, get_config
-    if is_embedded():
-        _EMBEDDED_CONFIG = get_config()
-except ImportError:
-    pass
 
-# .env laden (nur wenn nicht embedded)
-if not _EMBEDDED_CONFIG:
-    load_dotenv()
-else:
-    # Embedded Config als Environment-Variablen setzen
-    for key, value in _EMBEDDED_CONFIG.items():
+def _get_binary_dir() -> Optional[Path]:
+    """Gibt das Verzeichnis der Binary zurück (bei PyInstaller)"""
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent
+    return None
+
+
+def _get_external_config_path() -> Optional[Path]:
+    """Pfad zur externen Config-Datei neben der Binary"""
+    binary_dir = _get_binary_dir()
+    if binary_dir:
+        return binary_dir / "ce365.cfg"
+    return None
+
+
+def _load_external_config() -> dict:
+    """
+    Lädt Config aus ce365.cfg neben der Binary (portable Kunden-Paket).
+    Format: KEY=VALUE (wie .env)
+    """
+    cfg_path = _get_external_config_path()
+    if not cfg_path or not cfg_path.exists():
+        return {}
+
+    config = {}
+    try:
+        with open(cfg_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    key, _, value = line.partition("=")
+                    config[key.strip()] = value.strip()
+    except Exception:
+        pass
+    return config
+
+
+def _extract_embedded_to_external():
+    """
+    Extrahiert embedded Config in eine externe ce365.cfg-Datei.
+    Wird beim ersten Start einer Kunden-Binary aufgerufen.
+    """
+    cfg_path = _get_external_config_path()
+    if not cfg_path:
+        return
+
+    try:
+        from ce365.setup.embedded_config import is_embedded, get_config
+        if not is_embedded():
+            return
+
+        config = get_config()
+        if not config:
+            return
+
+        lines = [
+            "# CE365 Agent — Kunden-Konfiguration",
+            "# Automatisch extrahiert aus eingebetteter Config",
+            "# Diese Datei NICHT löschen — wird für Updates benötigt",
+            "",
+        ]
+
+        # Techniker-Metadaten
+        tech_name = config.pop("_TECHNICIAN_NAME", "Techniker")
+        company = config.pop("_COMPANY", "")
+        config.pop("_SENSITIVE_KEYS", None)
+
+        lines.append(f"# Techniker: {tech_name}")
+        if company:
+            lines.append(f"# Firma: {company}")
+        lines.append("")
+
+        # Metadaten als Config-Werte speichern
+        lines.append(f"_TECHNICIAN_NAME={tech_name}")
+        if company:
+            lines.append(f"_COMPANY={company}")
+        lines.append("")
+
+        # Alle Config-Werte
+        for key, value in config.items():
+            if not key.startswith("_") and value:
+                lines.append(f"{key}={value}")
+
+        cfg_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        os.chmod(cfg_path, 0o600)
+
+    except Exception:
+        pass  # Fehler beim Extrahieren sind nicht fatal
+
+
+# === Config laden (Priorität: externe cfg > embedded > .env) ===
+
+_PORTABLE_CONFIG = {}
+
+# 1. Externe Config neben Binary (höchste Priorität für portable Binary)
+_PORTABLE_CONFIG = _load_external_config()
+
+if not _PORTABLE_CONFIG:
+    # 2. Embedded Config prüfen (Kunden-Paket, erster Start)
+    try:
+        from ce365.setup.embedded_config import is_embedded, get_config
+        if is_embedded():
+            _PORTABLE_CONFIG = get_config()
+            # Beim ersten Start: Config extrahieren für zukünftige Updates
+            _extract_embedded_to_external()
+    except ImportError:
+        pass
+
+if _PORTABLE_CONFIG:
+    # Portable Config als Environment-Variablen setzen
+    for key, value in _PORTABLE_CONFIG.items():
         if not key.startswith("_") and value:
             os.environ[key] = str(value)
+else:
+    # 3. Standard .env laden (Techniker-PC / pip-Installation)
+    load_dotenv()
 
 # Secrets Manager importieren
 try:
@@ -79,6 +182,10 @@ class Settings(BaseModel):
     technician_password_hash: str = ""  # bcrypt hash des Techniker-Passworts
     session_timeout: int = 3600  # Session-Timeout in Sekunden (1 Stunde)
 
+    # Portable Binary Metadata
+    technician_name: str = ""
+    company: str = ""
+
     @classmethod
     def load(cls) -> "Settings":
         """Settings aus Environment-Variablen und Config-Datei laden"""
@@ -114,6 +221,10 @@ class Settings(BaseModel):
                 "Bitte beim ersten Start konfigurieren oder .env Datei erstellen."
             )
 
+        # Techniker-Metadaten aus Portable Config
+        tech_name = _PORTABLE_CONFIG.get("_TECHNICIAN_NAME", "")
+        company = _PORTABLE_CONFIG.get("_COMPANY", "")
+
         # Verzeichnisse erstellen
         settings = cls(
             llm_provider=llm_provider,
@@ -140,7 +251,10 @@ class Settings(BaseModel):
             license_key=os.getenv("LICENSE_KEY", ""),
             # Security Settings
             technician_password_hash=os.getenv("TECHNICIAN_PASSWORD_HASH", ""),
-            session_timeout=int(os.getenv("SESSION_TIMEOUT", "3600"))
+            session_timeout=int(os.getenv("SESSION_TIMEOUT", "3600")),
+            # Portable Metadata
+            technician_name=tech_name,
+            company=company,
         )
 
         # Verzeichnisse mit restriktiven Berechtigungen erstellen
@@ -196,6 +310,10 @@ class Settings(BaseModel):
             os.chmod(self.config_file, 0o600)
         except OSError:
             pass
+
+    def is_portable(self) -> bool:
+        """Prüft ob wir als portable Kunden-Binary laufen"""
+        return bool(_PORTABLE_CONFIG)
 
 
 # Globale Settings-Instanz
