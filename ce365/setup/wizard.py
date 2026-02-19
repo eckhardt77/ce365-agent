@@ -118,8 +118,9 @@ class SetupWizard:
         # 6. Success!
         self._show_success(user_name)
 
-        # 7. Kunden-Paket generieren?
-        self._offer_package_generation()
+        # 7. Kunden-Paket generieren? (nur Pro)
+        if self._edition == "pro":
+            self._offer_package_generation()
 
         return True
 

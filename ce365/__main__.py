@@ -347,6 +347,11 @@ def main():
         return
 
     if args.generate_package:
+        settings = get_settings()
+        if settings.edition != "pro":
+            console.print("\n[red]❌ Kunden-Paket-Generator ist nur in der Pro Edition verfügbar.[/red]")
+            console.print("[dim]Upgrade auf Pro: https://agent.ce365.de/#preise[/dim]\n")
+            sys.exit(1)
         from ce365.setup.package_generator import run_generate_package
         success = run_generate_package()
         sys.exit(0 if success else 1)
