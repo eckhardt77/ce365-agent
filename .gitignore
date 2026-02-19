@@ -38,6 +38,10 @@ dist/
 checksums.txt
 releases/
 
+# Private / nicht open-source
+website/
+license-server/
+
 # OS
 .DS_Store
 Thumbs.db
