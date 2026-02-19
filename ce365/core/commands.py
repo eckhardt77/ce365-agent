@@ -266,9 +266,9 @@ async def _cmd_model(bot, args: str):
         bot.console.console.print()
         bot.console.console.print("[bold]Vorschlaege:[/bold]")
         suggestions = {
-            "anthropic": ["claude-sonnet-4-5-20250929", "claude-haiku-4-5-20251001", "claude-opus-4-5-20250918"],
-            "openai": ["gpt-4o", "gpt-4o-mini", "o1-mini"],
-            "openrouter": ["anthropic/claude-sonnet-4-5-20250929", "openai/gpt-4o", "google/gemini-pro"],
+            "anthropic": ["claude-opus-4-6", "claude-sonnet-4-6", "claude-haiku-4-5-20251001"],
+            "openai": ["gpt-4.1", "o3", "o4-mini"],
+            "openrouter": ["anthropic/claude-opus-4-6", "openai/gpt-4.1", "google/gemini-2.0-flash"],
         }
         for model in suggestions.get(settings.llm_provider, []):
             active = " [bold cyan]<< aktiv[/bold cyan]" if model == settings.llm_model else ""
