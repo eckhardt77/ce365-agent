@@ -1,12 +1,14 @@
 # CE365 Agent
 
-**AI-powered IT maintenance assistant for Windows and macOS**
+**KI-gestuetzter IT-Service-Assistent mit Multi-Agent System**
 
 [![License: BSL-1.1](https://img.shields.io/badge/License-BSL--1.1-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://agent.ce365.de)
 
-CE365 Agent is your AI sidekick in the terminal. It diagnoses IT problems, suggests repairs and documents everything automatically. Powered by Claude, GPT-4o or any OpenRouter model (BYOK).
+CE365 Agent ist dein KI-Sidekick im Terminal. Er diagnostiziert IT-Probleme, schlaegt Reparaturen vor und dokumentiert alles automatisch. Powered by Claude, GPT-4o oder beliebige OpenRouter-Modelle (BYOK).
+
+**[Website](https://agent.ce365.de)** | **[English Version](https://agent.ce365.de/en/)**
 
 ---
 
@@ -14,155 +16,197 @@ CE365 Agent is your AI sidekick in the terminal. It diagnoses IT problems, sugge
 
 ```bash
 pip install ce365-agent
-python -m ce365 --setup
+ce365
 ```
 
-The setup wizard will guide you through provider selection and API key configuration.
-
-```bash
-python -m ce365
-```
+Der Setup-Wizard fuehrt dich durch Provider-Auswahl und API-Key-Konfiguration.
 
 ---
 
 ## Features
 
-### Community (Free)
-- 7 diagnostic tools (System Info, Logs, Processes, Updates, Backup, Security, Startup)
-- 3 basic repair tools (Service Manager, Disk Cleanup, DNS Flush)
-- 5 repairs per month
-- PII detection (Microsoft Presidio)
-- Local learning system (SQLite)
-- Multi-provider: Claude, GPT-4o, OpenRouter (BYOK)
-- Multi-language: English + Deutsch
-- Password protection
+### Community (Kostenlos)
 
-### Pro (Paid)
-- **Everything in Community, plus:**
-- 30+ tools (advanced audit, repair, stress tests, drivers, malware scan)
-- Unlimited repairs
-- Web search + AI root cause analysis
-- Multi-Agent system (5 specialist agents)
-- System report (HTML)
-- Shared learning database (PostgreSQL)
-- Commercial use license
-- Auto-updates
+- 7 Diagnose-Tools (System Info, Logs, Prozesse, Updates, Backup, Security, Startup)
+- 3 Basis-Repair-Tools (Service Manager, Disk Cleanup, DNS Flush)
+- 5 Repairs / Monat
+- PII-Erkennung (Microsoft Presidio) — DSGVO-konform
+- Lokales Learning System (SQLite)
+- Multi-Provider: Claude, GPT-4o, OpenRouter (BYOK)
+- Multi-Language: Deutsch + English
+- Passwort-Schutz
 
-[Get Pro](https://agent.ce365.de)
+### Pro
+
+- **Alles aus Community, plus:**
+- Unbegrenzte Repairs
+- **Multi-Agent System** — Steve + 3 spezialisierte Agenten
+- **Live-Modell-Auswahl** — KI-Modelle on-the-fly wechseln per `/model`
+- **SOAP Incident Reports** — Professionelle Einsatzberichte per `/report`
+- **Slash-Commands** — `/help`, `/stats`, `/provider`, `/model`, `/report`, `/privacy`
+- **Provider Hot-Swap** — Provider mitten in der Session wechseln per `/provider`
+- 30+ Tools (Advanced Audit, Repair, Stress Tests, Drivers, Malware Scan)
+- Web-Recherche + KI Root-Cause-Analyse
+- Shared Learning (PostgreSQL)
+- Kommerzielle Nutzung
+- Auto-Updates + Priority Support
+
+**[Pro holen](https://agent.ce365.de/#pricing)**
 
 ---
 
-## How It Works
+## So funktioniert's
 
 ```
 $ ce365
 
-Hey, I'm Steve — your IT sidekick. What's going on?
+Hey, ich bin Steve — dein IT-Sidekick. Was liegt an?
 
-> Client reports: Laptop extremely slow for 2 weeks
+> Kunde meldet: Laptop extrem langsam seit 2 Wochen
 
-Got it. Running a full diagnostic...
+Verstanden. Ich starte eine Komplett-Diagnose...
 
- Diagnostic complete (7 tools, 12 sec)
+█ Diagnose abgeschlossen (7 Tools, 12 Sek.)
 
-  Disk: 97% full (only 4 GB free)
-  14 startup programs (boot time: 3m 20s)
-  RAM: 7.2/8 GB used (Chrome: 4.1 GB)
-  CPU temp: 62C (OK)
+  ❌ Festplatte: 97% voll (nur 4 GB frei)
+  ❌ 14 Autostart-Programme (Boot: 3 Min 20 Sek)
+  ⚠️  RAM: 7.2/8 GB belegt (Chrome: 4.1 GB)
+  ✔ CPU-Temperatur: 62°C (OK)
 
-My suggestion:
-  1. Clean temp files (~18 GB recoverable)
-  2. Disable 9 unnecessary startup programs
-  3. Optimize Chrome profile
+Mein Vorschlag:
+  1. Temp-Dateien bereinigen (~18 GB freigeben)
+  2. 9 unnoetige Autostart-Programme deaktivieren
+  3. Chrome-Profil optimieren
 
-Shall I proceed? Type GO REPAIR: 1,2,3
+Soll ich loslegen? Tippe GO REPAIR: 1,2,3
 ```
 
-No repairs run without your explicit approval via `GO REPAIR`.
+Keine Reparatur wird ohne deine explizite Freigabe per `GO REPAIR` ausgefuehrt.
 
 ---
 
-## Multi-Agent System
+## Multi-Agent System (Pro)
 
-Steve is the orchestrator. For complex problems, he consults specialist agents:
+Steve koordiniert 3 spezialisierte KI-Agenten, die parallel arbeiten:
 
-| Agent | Focus |
-|-------|-------|
-| **WindowsDoc** | Event Logs, Registry, BSOD, Services, Energy |
-| **MacDoc** | system_profiler, Unified Logging, APFS, LaunchAgents |
-| **NetDoc** | DNS, WLAN, Firewall, VPN, Latency, Routing |
-| **SecurityDoc** | Malware, Autostart, Certificates, Suspicious Processes |
-| **PerfDoc** | CPU, RAM, Disk I/O, Thermal Throttling, Bottleneck |
+| Agent | Aufgabe |
+|-------|---------|
+| **Diagnostics Agent** | Analysiert System, Event-Logs, Prozesse, Netzwerk |
+| **Repair Agent** | Fuehrt freigegebene Reparaturen aus |
+| **Documentation Agent** | Protokolliert alles automatisch (Changelog + SOAP) |
 
-Each specialist runs their own diagnosis and reports back to Steve with structured findings.
+Wie ein eingespieltes Team — nur schneller.
 
 ---
 
-## Requirements
+## Slash-Commands (Pro)
 
-- Python 3.11 or 3.12
-- API key for one of: Anthropic (Claude), OpenAI (GPT-4o), or OpenRouter
-- Windows, macOS, or Linux
-
----
-
-## Security
-
-- **GO REPAIR lock** — No system changes without explicit approval
-- **PII detection** — Personal data automatically anonymized before API calls
-- **Password protection** — Optional bcrypt-secured access
-- **Audit trail** — Every action logged to changelog
-- **Privacy** — All data stays local, GDPR compliant
+| Command | Funktion |
+|---------|----------|
+| `/help` | Hilfe und verfuegbare Befehle |
+| `/stats` | Session-Statistiken (Tokens, Kosten, Tools) |
+| `/provider` | KI-Provider wechseln |
+| `/model` | KI-Modell wechseln (Live-Liste von Provider-API) |
+| `/report` | SOAP Incident Report generieren |
+| `/privacy` | PII-Erkennungsstatus anzeigen |
 
 ---
 
-## Development
+## Voraussetzungen
+
+- Python 3.11 oder 3.12
+- API-Key fuer: Anthropic (Claude), OpenAI (GPT-4o) oder OpenRouter
+- Windows, macOS oder Linux
+
+---
+
+## Installation
+
+### Per pip (empfohlen)
 
 ```bash
-git clone https://github.com/carsteneckhardt/ce365-agent.git
+pip install ce365-agent
+ce365
+```
+
+### Aus dem Quellcode
+
+```bash
+git clone https://github.com/eckhardt77/ce365-agent.git
 cd ce365-agent
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -e .
+python -m ce365
 ```
 
 ---
 
-## Project Structure
+## CLI-Optionen
+
+```bash
+ce365                    # Normaler Start
+ce365 --version          # Version anzeigen
+ce365 --health           # Health-Check (Python, Dependencies, API, Config)
+ce365 --set-password     # Techniker-Passwort setzen/aendern
+ce365 --update           # Auf neueste Version aktualisieren
+ce365 --rollback         # Rollback zur letzten Version
+ce365 --uninstall        # Deinstallation
+```
+
+---
+
+## Sicherheit
+
+- **GO REPAIR Lock** — Keine Systemeingriffe ohne explizite Freigabe
+- **PII-Erkennung** — Personenbezogene Daten werden vor API-Calls automatisch anonymisiert (Presidio)
+- **Passwort-Schutz** — Optionaler bcrypt-gesicherter Zugang
+- **Audit Trail** — Jede Aktion wird im Changelog protokolliert
+- **Datenschutz** — Alle Daten bleiben lokal, DSGVO-konform
+- **OS Keychain** — API-Keys im System-Keychain gespeichert (macOS Keychain, Windows Credential Manager)
+
+---
+
+## Projektstruktur
 
 ```
 ce365-agent/
   ce365/
-    core/           Bot, providers, license, session, agents
-    tools/          30+ audit, repair, research, analysis tools
-    config/         Settings, system prompt, i18n
-    workflow/       State machine, execution lock
-    learning/       Case library, similarity matching
-    security/       PII detection (Presidio)
-    ui/             Rich terminal UI
-  license-server/   FastAPI license server
-  website/          Landing page (DE + EN)
-  scripts/          Build and deployment tools
+    core/           Bot, Providers, License, Session, Agents, Commands
+    tools/          30+ Audit-, Repair-, Research-, Analyse-Tools
+    config/         Settings, System-Prompt, Secrets
+    workflow/       State Machine, Execution Lock
+    learning/       Case Library, Similarity Matching
+    privacy/        PII Detection (Presidio)
+    i18n/           Mehrsprachigkeit (DE + EN)
+    ui/             Rich Terminal UI
+    setup/          Setup-Wizard
+  license-server/   FastAPI Lizenzserver (Stripe, Brevo)
+  website/          Landing Page (DE + EN)
+  scripts/          Build- und Deployment-Tools
+  docs/             Dokumentation
+  tests/            Test-Suite
 ```
 
 ---
 
-## License
+## Lizenz
 
-Business Source License 1.1 (BSL-1.1)
+**Business Source License 1.1 (BSL-1.1)**
 
-- Reading, modifying, non-commercial use: **allowed**
-- Commercial use: requires a [Pro license](https://agent.ce365.de)
-- After 2030-02-19: becomes Apache 2.0
+- Lesen, Studieren, Modifizieren: **erlaubt**
+- Nicht-kommerzielle Nutzung: **erlaubt**
+- Kommerzielle Nutzung: erfordert eine [Pro-Lizenz](https://agent.ce365.de)
+- Ab 2030-02-19: wird zu Apache License 2.0
 
-See [LICENSE](LICENSE) for details.
+Siehe [LICENSE](LICENSE) fuer Details.
 
 ---
 
 ## Support
 
-- Issues: [GitHub Issues](https://github.com/carsteneckhardt/ce365-agent/issues)
-- Email: info@eckhardt-marketing.de
+- Issues: [GitHub Issues](https://github.com/eckhardt77/ce365-agent/issues)
+- E-Mail: info@eckhardt-marketing.de
 - Website: [agent.ce365.de](https://agent.ce365.de)
 
 ---
