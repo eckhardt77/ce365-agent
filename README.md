@@ -1,709 +1,170 @@
-# 🔧 CE365 Agent - Community Edition v2.0.0
+# CE365 Agent
 
 **AI-powered IT maintenance assistant for Windows and macOS**
 
-[🇩🇪 Deutsche Version](README_DE.md) | 🇺🇸 English Version
-
-CE365 Agent is an AI-powered IT maintenance assistant that helps you diagnose and repair Windows and macOS systems. With natural language interaction and **30+ integrated tools**, IT maintenance becomes easy!
-
-[![License: Source Available](https://img.shields.io/badge/License-Source%20Available-blue.svg)](LICENSE)
+[![License: BSL-1.1](https://img.shields.io/badge/License-BSL--1.1-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20Sonnet%204.5-blueviolet)](https://anthropic.com)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://agent.ce365.de)
+
+CE365 Agent is your AI sidekick in the terminal. It diagnoses IT problems, suggests repairs and documents everything automatically. Powered by Claude, GPT-4o or any OpenRouter model (BYOK).
 
 ---
 
-## 🆕 What's New in v2.0
+## Quick Start
 
-### ✨ New Features
-
-- 🔐 **Technician Password Protection** - Protect CE365 from unauthorized access
-- 🔧 **Driver Management** - Check for driver updates (Windows Update + Custom DB)
-- 📡 **Monitoring Sensor** - Background service for proactive system monitoring
-- 🗑️ **Easy Uninstall** - Simple uninstallation with `ce365 --uninstall`
-- 🔑 **License System** - Optional licensing for Pro/Enterprise (Community is free!)
-- 🌐 **Network Options** - Remote services via VPN/Cloudflare/Tailscale (optional)
-
-### 🎯 All Community Features (Free)
-
-✅ **15 Basic Tools** - Essential diagnostics and repair
-✅ **AI-Powered Analysis** - Root cause detection
-✅ **Driver Check** - Automatic driver update detection
-✅ **Monitoring** - Background system monitoring
-✅ **Password Protection** - Secure CE365 access
-✅ **Max 10 Repairs/Month** - Perfect for testing
-✅ **Multi-Language** - English + German
-✅ **Cross-Platform** - Windows, macOS, Linux (exp)
-
----
-
-## ⚠️ Disclaimer
-
-**IMPORTANT: Use at your own risk!**
-
-CE365 Agent is provided "AS IS", WITHOUT ANY WARRANTY.
-
-**No liability for:**
-- ❌ Data loss
-- ❌ System damage
-- ❌ Incorrect repairs
-- ❌ Downtime
-- ❌ Security incidents
-
-**Before using:**
-- ✅ **Always create backups**
-- ✅ **Test in non-production environment first**
-- ✅ **Review all commands before approval**
-- ✅ **No autonomous repairs** (GO REPAIR lock required)
-
-By using CE365 Agent, you accept full responsibility.
-
----
-
-## 🚀 Quick Start
-
-### Installation (5 Minutes)
-
-#### 1. Install Python 3.11 or 3.12
-
-**macOS (Homebrew):**
 ```bash
-brew install python@3.12
+pip install ce365-agent
+python -m ce365 --setup
 ```
 
-**Windows:**
-Download from [python.org](https://www.python.org/downloads/)
-
-#### 2. Clone Repository
+The setup wizard will guide you through provider selection and API key configuration.
 
 ```bash
-git clone https://github.com/yourusername/ce365-agent.git
+python -m ce365
+```
+
+---
+
+## Features
+
+### Community (Free)
+- 7 diagnostic tools (System Info, Logs, Processes, Updates, Backup, Security, Startup)
+- 3 basic repair tools (Service Manager, Disk Cleanup, DNS Flush)
+- 5 repairs per month
+- PII detection (Microsoft Presidio)
+- Local learning system (SQLite)
+- Multi-provider: Claude, GPT-4o, OpenRouter (BYOK)
+- Multi-language: English + Deutsch
+- Password protection
+
+### Pro (Paid)
+- **Everything in Community, plus:**
+- 30+ tools (advanced audit, repair, stress tests, drivers, malware scan)
+- Unlimited repairs
+- Web search + AI root cause analysis
+- Multi-Agent system (5 specialist agents)
+- System report (HTML)
+- Shared learning database (PostgreSQL)
+- Commercial use license
+- Auto-updates
+
+[Get Pro](https://agent.ce365.de)
+
+---
+
+## How It Works
+
+```
+$ ce365
+
+Hey, I'm Steve — your IT sidekick. What's going on?
+
+> Client reports: Laptop extremely slow for 2 weeks
+
+Got it. Running a full diagnostic...
+
+ Diagnostic complete (7 tools, 12 sec)
+
+  Disk: 97% full (only 4 GB free)
+  14 startup programs (boot time: 3m 20s)
+  RAM: 7.2/8 GB used (Chrome: 4.1 GB)
+  CPU temp: 62C (OK)
+
+My suggestion:
+  1. Clean temp files (~18 GB recoverable)
+  2. Disable 9 unnecessary startup programs
+  3. Optimize Chrome profile
+
+Shall I proceed? Type GO REPAIR: 1,2,3
+```
+
+No repairs run without your explicit approval via `GO REPAIR`.
+
+---
+
+## Multi-Agent System
+
+Steve is the orchestrator. For complex problems, he consults specialist agents:
+
+| Agent | Focus |
+|-------|-------|
+| **WindowsDoc** | Event Logs, Registry, BSOD, Services, Energy |
+| **MacDoc** | system_profiler, Unified Logging, APFS, LaunchAgents |
+| **NetDoc** | DNS, WLAN, Firewall, VPN, Latency, Routing |
+| **SecurityDoc** | Malware, Autostart, Certificates, Suspicious Processes |
+| **PerfDoc** | CPU, RAM, Disk I/O, Thermal Throttling, Bottleneck |
+
+Each specialist runs their own diagnosis and reports back to Steve with structured findings.
+
+---
+
+## Requirements
+
+- Python 3.11 or 3.12
+- API key for one of: Anthropic (Claude), OpenAI (GPT-4o), or OpenRouter
+- Windows, macOS, or Linux
+
+---
+
+## Security
+
+- **GO REPAIR lock** — No system changes without explicit approval
+- **PII detection** — Personal data automatically anonymized before API calls
+- **Password protection** — Optional bcrypt-secured access
+- **Audit trail** — Every action logged to changelog
+- **Privacy** — All data stays local, GDPR compliant
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/carsteneckhardt/ce365-agent.git
 cd ce365-agent
-```
-
-#### 3. Create Virtual Environment
-
-```bash
-# Create venv
-python3.12 -m venv venv
-
-# Activate
-source venv/bin/activate  # macOS/Linux
-venv\Scripts\activate     # Windows
-```
-
-#### 4. Install CE365
-
-```bash
+python3 -m venv venv
+source venv/bin/activate
 pip install -e .
 ```
 
-#### 5. Start CE365
-
-```bash
-ce365
-```
-
-On first start, the **Setup Wizard** will guide you through:
-- Name & Company
-- Edition (Community / Pro / Enterprise)
-- Anthropic API Key ([Get it free](https://console.anthropic.com))
-- Language (English / Deutsch)
-- **Optional:** Technician Password
-- **Optional:** Network Configuration (for Pro/Enterprise)
-
 ---
 
-## 📋 Requirements
-
-- **Python 3.11 or 3.12** (Python 3.14 not yet supported)
-- **Anthropic API Key** ([Free tier available](https://console.anthropic.com))
-- Internet connection (for Claude API)
-
----
-
-## 🎮 Usage
-
-### Basic Commands
-
-```bash
-# Start CE365
-ce365
-
-# Set/change technician password
-ce365 --set-password
-
-# Show version
-ce365 --version
-
-# Uninstall CE365
-ce365 --uninstall
-
-# Help
-ce365 --help
-```
-
-### Example Session
-
-```
-🔧 CE365 Agent v2.0.0
-Session ID: abc123...
-💡 Learning: 5 cases saved, 2 reuses
-─────────────────────────────────────────────────
-Language: English | Type 'exit' to quit
-─────────────────────────────────────────────────
-
-🔍 Creating system status report...
-
-[System Info]
-🖥️  macOS 14.2, CPU: 8 Cores (12% usage)
-RAM: 16.0 GB (8.2 GB free, 48% used)
-Disk: 500 GB (120 GB free, 76% used)
-Uptime: 3d 2h 15m
-
-✅ System status report complete
-💬 How can I help you?
-─────────────────────────────────────────────────
-
-> Check for driver updates
-
-🔄 Checking drivers...
-
-📊 Statistics:
-   • Installed drivers: 150
-   • Outdated drivers: 3
-   • Critical updates: 1
-   • Recommended updates: 2
-
-🔄 AVAILABLE UPDATES:
-
-🔴 1. NVIDIA GeForce RTX 3080
-   Current: 512.95
-   Available: 528.49
-   Importance: CRITICAL
-   Source: windows_update
-
-🟡 2. Intel Wi-Fi 6 AX200
-   Current: 22.80.0
-   Available: 22.120.0
-   Importance: RECOMMENDED
-   Source: windows_update
-
-⚠️  RECOMMENDATION:
-   Install 1 critical driver update!
-
-> My Windows Update is not working
-
-Let me analyze this...
-
-🎯 ROOT CAUSE FOUND
-╔══════════════════════════════════════════════╗
-║  Cause: BITS service stuck                   ║
-║  Confidence: 87%                             ║
-║                                              ║
-║  Evidence:                                   ║
-║  ✓ Event Log: BITS Error 0x80070057         ║
-║  ✓ Service Status: Running but unresponsive ║
-║  ✓ Temp folder: 47 incomplete downloads     ║
-║                                              ║
-║  Solution:                                   ║
-║  1. Restart BITS service                    ║
-║  2. Clear download queue                    ║
-╚══════════════════════════════════════════════╝
-
-Repair Plan:
-1. Restart BITS service (wuauserv)
-2. Clear Windows Update cache
-
-Please confirm with: GO REPAIR: 1,2
-
-> GO REPAIR: 1,2
-
-✅ Executing repairs...
-[Step 1/2] Restarting BITS service... ✓
-[Step 2/2] Clearing update cache... ✓
-
-🎉 All repairs completed successfully!
-📋 Changelog saved to: data/changelogs/abc123.json
-```
-
----
-
-## 🛠️ Available Tools (30+)
-
-### 📊 Audit Tools (Read-Only)
-
-| Tool | Description |
-|------|-------------|
-| **System Info** | OS, CPU, RAM, Disk, Uptime |
-| **Process Monitor** | Running processes, CPU/RAM usage |
-| **System Logs** | Event Log / Syslog analysis |
-| **Updates Check** | Pending Windows/macOS updates |
-| **Backup Status** | Time Machine / Windows Backup status |
-| **Security Audit** | Firewall, Antivirus, Gatekeeper, SIP |
-| **Startup Programs** | Autostart apps with impact analysis |
-| **Malware Scanner** | Windows Defender / ClamAV integration |
-| **🆕 Driver Check** | Check for driver updates |
-| **Network Diagnostics** | IP, DNS, Connectivity tests |
-| **Stress Tests** | CPU, Memory, Disk speed tests |
-| **System Report** | Comprehensive HTML report |
-| **Web Search** | Online solution lookup |
-
-### 🔧 Repair Tools (Approval Required)
-
-| Tool | Description |
-|------|-------------|
-| **Service Manager** | Start/Stop/Restart Windows/macOS services |
-| **Disk Cleanup** | Delete temp files, cache, logs |
-| **DNS Flush** | Clear DNS cache |
-| **Network Reset** | Reset TCP/IP stack |
-| **SFC Scan** | System File Checker (Windows) |
-| **Disk Repair** | Fix disk permissions (macOS) |
-| **Update Installer** | Install Windows/macOS updates |
-| **Backup Creator** | Create restore point / Time Machine backup |
-| **Startup Manager** | Enable/disable autostart programs |
-| **Update Scheduler** | Schedule automatic updates |
-
-### 🧠 AI Analysis Tools
-
-- 🎯 **Root Cause Analysis** - AI-powered problem diagnosis
-- 📊 **Pattern Recognition** - Detect recurring issues
-
----
-
-## 🆕 New Features in Detail
-
-### 🔐 Technician Password Protection
-
-Protect CE365 from unauthorized access:
-
-```bash
-# Set password during setup
-ce365
-# > Set technician password? [Y/n]: y
-# > Password: ********
-
-# Or set later
-ce365 --set-password
-
-# On every start
-ce365
-# > 🔐 CE365 Access
-# > Password: ********
-# > ✓ Authenticated
-```
-
-**Features:**
-- bcrypt-hashed password (secure)
-- 3 attempts limit
-- Session timeout (configurable)
-- Optional (can be skipped)
-
----
-
-### 🔧 Driver Management
-
-Automatic driver update detection:
-
-```bash
-> Check for driver updates
-
-📊 Driver Status Report:
-   • Total drivers: 150
-   • Outdated: 3
-   • Critical: 1
-   • Recommended: 2
-
-🔄 Available Updates:
-🔴 NVIDIA Graphics Driver (Critical)
-🟡 Intel Network Adapter (Recommended)
-```
-
-**Sources:**
-- Windows Update API (Windows)
-- Apple Software Update (macOS)
-- Custom Driver Database (JSON-based)
-
-**Custom Database:**
-Add your own drivers in `ce365/tools/drivers/driver_database.json`
-
----
-
-### 📡 Monitoring Sensor
-
-Background service for proactive monitoring:
-
-```bash
-# Manual test
-python -m ce365.monitoring.sensor
-
-# Install as service
-python -m ce365.monitoring.service
-
-# Windows: Windows Service
-# macOS: LaunchDaemon
-# Linux: systemd Service
-```
-
-**Collected Metrics:**
-- CPU / RAM / Disk usage
-- Critical service status (Firewall, Antivirus)
-- Pending updates
-- Recent event log errors
-- SMART disk health
-
-**Default Interval:** 5 minutes (configurable)
-
----
-
-### 🗑️ Easy Uninstall
-
-Simple uninstallation:
-
-```bash
-ce365 --uninstall
-
-# Deletes:
-# ✓ .env file (config)
-# ✓ data/ directory (sessions, changelogs, cases)
-# ✓ ~/.ce365/ (cache, user config)
-```
-
----
-
-## 🔐 Security Features
-
-### 1. GO REPAIR Lock
-
-```
-No repairs without your explicit approval:
-- Bot creates repair plan
-- You review each step
-- You approve with: GO REPAIR: 1,2,3
-- Only approved steps execute
-```
-
-### 2. Technician Password (NEW!)
-
-```
-Protect CE365 from unauthorized access:
-- Password required on startup
-- 3 attempts limit
-- bcrypt-hashed (secure)
-- Session timeout
-```
-
-### 3. Encrypted API Key Storage
-
-```
-API keys stored securely in OS Keychain:
-- macOS: Keychain Access
-- Windows: Credential Manager
-- Linux: Secret Service (gnome-keyring)
-- Fallback: .env (with migration prompt)
-```
-
-### 4. PII Detection (Microsoft Presidio)
-
-```
-Automatically detects and anonymizes:
-- Credit card numbers
-- Email addresses
-- Phone numbers
-- Passwords
-- IP addresses
-```
-
-### 5. Audit Trail
-
-```
-Every repair is logged:
-- Timestamp
-- Tool used
-- Input parameters
-- Result
-- Success/Failure status
-
-Saved to: data/changelogs/{session_id}.json
-```
-
----
-
-## 🌍 Multi-Language Support
-
-CE365 Agent supports:
-- 🇺🇸 **English**
-- 🇩🇪 **Deutsch**
-
-### Change Language
-
-**During setup:**
-```
-Choose language / Sprache wählen:
-1. English
-2. Deutsch
-```
-
-**After setup:**
-```bash
-# Via command
-ce365 --language en
-
-# Interactive
-> language de
-Language changed to: Deutsch
-```
-
----
-
-## 🧠 Learning System (Pro+)
-
-**Starting from Pro Edition:** CE365 learns from every repair:
-
-```python
-# Similar problem detected
-💡 Learning: I found a similar case from 3 days ago:
-   Problem: "Windows Update failed"
-   Solution: Restarted BITS service
-   Success: Yes
-
-   Should I apply the same solution? (yes/no)
-```
-
-**Benefits:**
-- ⚡ Faster resolution (reuses proven solutions)
-- 📈 Improves over time
-- 🎯 Higher success rate
-
-**Privacy:**
-- **Pro/Pro Business:** Stored locally in `data/cases.db`
-- **Enterprise:** Optional central team knowledge database (PostgreSQL)
-- PII automatically anonymized
-- Can be cleared with `ce365 --clear-cases`
-
----
-
-## 🏢 Pro & Enterprise Features (Optional)
-
-Community Edition is **100% free** - perfect for testing with max 10 repairs/month.
-
-For professional and commercial use, we offer:
-
-### CE365 Pro (€49/month)
-- ✅ 30+ Tools (instead of 15)
-- ✅ Unlimited repairs (instead of max 10)
-- ✅ Local learning system (SQLite)
-- ✅ Case reuse
-- ✅ 1 system
-- ✅ Email support
-
-### CE365 Pro Business (€99/month)
-- ✅ All Pro features
-- ✅ Unlimited systems
-- ✅ Central dashboards
-- ✅ Fleet management
-- ✅ Priority support
-
-### CE365 Enterprise (from €149/month)
-- ✅ All Pro Business features
-- ✅ Shared team learning database (PostgreSQL)
-- ✅ Team management (LDAP/SSO)
-- ✅ Central monitoring
-- ✅ Custom integrations
-- ✅ Dedicated support
-
-**License System:**
-- Optional (Community works without license)
-- Online + offline validation
-- Flexible licensing models
-- Contact: sales@eckhardt-marketing.de
-
----
-
-## 📦 Project Structure
+## Project Structure
 
 ```
 ce365-agent/
-├── ce365/                          # Main package
-│   ├── core/                         # Core functionality
-│   │   ├── bot.py                   # Main bot orchestration
-│   │   ├── client.py                # Anthropic API client
-│   │   ├── session.py               # Session management
-│   │   └── license.py               # License validation (optional)
-│   ├── tools/                        # Tool system
-│   │   ├── audit/                   # Read-only tools
-│   │   ├── repair/                  # Repair tools
-│   │   ├── drivers/                 # Driver management (NEW!)
-│   │   └── analysis/                # AI analysis tools
-│   ├── workflow/                     # Workflow state machine
-│   ├── learning/                     # Learning system
-│   ├── monitoring/                   # Monitoring sensor (NEW!)
-│   ├── security/                     # PII detection
-│   └── ui/                           # Terminal UI (Rich)
-├── data/                             # Local data (gitignored)
-│   ├── sessions/                    # Chat sessions
-│   ├── changelogs/                  # Repair logs
-│   └── cases.db                     # Learning database
-├── .env.example                      # Environment template
-├── requirements.txt                  # Python dependencies
-└── README.md                         # This file
+  ce365/
+    core/           Bot, providers, license, session, agents
+    tools/          30+ audit, repair, research, analysis tools
+    config/         Settings, system prompt, i18n
+    workflow/       State machine, execution lock
+    learning/       Case library, similarity matching
+    security/       PII detection (Presidio)
+    ui/             Rich terminal UI
+  license-server/   FastAPI license server
+  website/          Landing page (DE + EN)
+  scripts/          Build and deployment tools
 ```
 
 ---
 
-## 🔄 Updates
+## License
 
-```bash
-# Update CE365
-cd ce365-agent
-git pull
-pip install -r requirements.txt --upgrade
+Business Source License 1.1 (BSL-1.1)
 
-# Check version
-ce365 --version
-```
+- Reading, modifying, non-commercial use: **allowed**
+- Commercial use: requires a [Pro license](https://agent.ce365.de)
+- After 2030-02-19: becomes Apache 2.0
+
+See [LICENSE](LICENSE) for details.
 
 ---
 
-## 🐛 Troubleshooting
+## Support
 
-### Import Error: No module named 'rich'
-
-```bash
-pip install -r requirements.txt
-```
-
-### Python 3.14 Compatibility
-
-Python 3.14 is not yet supported. Use Python 3.11 or 3.12:
-
-```bash
-brew install python@3.12
-python3.12 -m venv venv
-source venv/bin/activate
-pip install -e .
-```
-
-### Driver Check doesn't work
-
-- **Windows:** Requires admin rights (PowerShell)
-- **macOS:** Check Terminal permissions
-- **Linux:** Install `smartctl`
-
-### "ce365: command not found"
-
-```bash
-# Use Python directly
-python -m ce365
-
-# Or check PATH
-which ce365
-```
+- Issues: [GitHub Issues](https://github.com/carsteneckhardt/ce365-agent/issues)
+- Email: info@eckhardt-marketing.de
+- Website: [agent.ce365.de](https://agent.ce365.de)
 
 ---
 
-## 🤝 Contributing
-
-Contributions welcome! Please:
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-**Development Setup:**
-```bash
-git clone https://github.com/yourusername/ce365-agent.git
-cd ce365-agent
-python3.12 -m venv venv
-source venv/bin/activate
-pip install -e .
-pip install -r requirements-dev.txt  # Dev dependencies
-```
-
----
-
-## 📄 License
-
-**Source Available License** - Free for non-commercial use.
-
-Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-
-Community Edition is free for personal, educational, and non-commercial use.
-Commercial use (IT service providers, MSPs, enterprise IT) requires a
-[Commercial License](https://ce365.eckhardt-marketing.de).
-
-See [LICENSE](LICENSE) for full details.
-
----
-
-## 🐛 Bug Reports & Security
-
-**Bug Reports:**
-- GitHub Issues: https://github.com/yourusername/ce365-agent/issues
-
-**Security Vulnerabilities:**
-- **DO NOT** create public issues
-- Email: security@eckhardt-marketing.de
-- Subject: [SECURITY] CE365 Agent - [Brief Description]
-
-See [SECURITY.md](SECURITY.md) for responsible disclosure policy.
-
----
-
-## 💬 Support
-
-- 📖 Documentation: [Wiki](https://github.com/yourusername/ce365-agent/wiki)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/ce365-agent/discussions)
-- 🐛 Bug Reports: [GitHub Issues](https://github.com/yourusername/ce365-agent/issues)
-
-**Commercial Support:**
-- Email: support@eckhardt-marketing.de
-- Website: https://ce365.eckhardt-marketing.de
-
----
-
-## 🙏 Acknowledgments
-
-- **Anthropic Claude** - AI engine
-- **Microsoft Presidio** - PII detection
-- **Rich** - Beautiful terminal output
-- **psutil** - System monitoring
-- **spaCy** - NLP processing
-
----
-
-## 📊 Stats
-
-- **30+ Tools** - Comprehensive IT toolset
-- **52 Error Codes** - Built-in knowledge base
-- **2 Languages** - English + German
-- **3 Platforms** - Windows, macOS, Linux (exp)
-- **100% Free** - Community Edition (non-commercial use)
-
----
-
-## 🗺️ Roadmap
-
-### v2.1 (Q2 2026)
-- [ ] Web Dashboard (optional)
-- [ ] Plugin System
-- [ ] More languages (French, Spanish)
-
-### v2.2 (Q3 2026)
-- [ ] Predictive Maintenance
-- [ ] Cloud Backup Integration
-- [ ] Mobile Companion App
-
-### v3.0 (Q4 2026)
-- [ ] Multi-System Management
-- [ ] Scheduled Maintenance
-- [ ] Custom Tool Builder
-
----
-
-Made with ❤️ by Eckhardt-Marketing
-
-**CE365 Agent** - Because IT maintenance should be easy.
-
-**Community Edition v2.0.0** - Free Forever 🎉
+Made by [Eckhardt-Marketing](https://eckhardt-marketing.de)

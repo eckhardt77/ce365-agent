@@ -141,11 +141,21 @@ Beim ersten Start wird ein Techniker-Passwort gesetzt.
 """
     (output / "README.md").write_text(readme)
 
-    print(f"\n✅ Paket erstellt: {output}")
+    # 6. ZIP erstellen
+    zip_name = f"ce365-{company.lower().replace(' ', '-').replace('.', '')}"
+    zip_path = output.parent / zip_name
+    shutil.make_archive(str(zip_path), "zip", str(output.parent), output.name)
+
+    zip_file = output.parent / f"{zip_name}.zip"
+    zip_size = zip_file.stat().st_size / (1024 * 1024)
+
+    print(f"\n✅ Paket erstellt:")
     print(f"   Firma: {company}")
     print(f"   Provider: {provider}")
     print(f"   Lizenz: {license_key[:15]}...")
-    print(f"\n   Verteilen: Verzeichnis als ZIP an Techniker senden.")
+    print(f"   Verzeichnis: {output}")
+    print(f"   ZIP: {zip_file} ({zip_size:.1f} MB)")
+    print(f"\n   Verteilen: ZIP an Techniker senden.")
 
     return True
 

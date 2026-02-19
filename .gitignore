@@ -28,10 +28,15 @@ credentials.*
 *.swp
 *.swo
 
-# Distribution
+# Distribution & Build
 build/
 dist/
 *.egg-info/
+*.spec
+*.whl
+*.tar.gz
+checksums.txt
+releases/
 
 # OS
 .DS_Store

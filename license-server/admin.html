@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CE365 Admin</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0a0a; --bg2: #111; --bg3: #1a1a1a; --bg4: #222;
+            --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.12);
+            --text: #f5f5f7; --text2: #a1a1a6; --text3: #6e6e73;
+            --accent: #2997ff; --green: #30d158; --red: #ff453a; --orange: #ff9f0a;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+
+        /* Login */
+        .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .login-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 400px; }
+        .login-box h1 { font-size: 1.3rem; margin-bottom: 8px; }
+        .login-box p { color: var(--text2); font-size: 0.88rem; margin-bottom: 24px; }
+        .login-box input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border2); border-radius: 10px; color: var(--text); font-size: 0.95rem; outline: none; }
+        .login-box input:focus { border-color: var(--accent); }
+        .login-box button { width: 100%; margin-top: 16px; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+        .login-box button:hover { opacity: 0.9; }
+        .login-error { color: var(--red); font-size: 0.85rem; margin-top: 12px; display: none; }
+
+        /* Layout */
+        .app { display: none; }
+        .topbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+        .topbar h1 { font-size: 1.1rem; font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text); font-size: 0.85rem; cursor: pointer; font-weight: 500; }
+        .btn:hover { background: var(--bg4); }
+        .btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .btn-accent:hover { opacity: 0.9; }
+        .btn-red { background: var(--red); border-color: var(--red); color: #fff; }
+        .btn-green { background: var(--green); border-color: var(--green); color: #000; }
+        .btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+        .main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+        /* Stats */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .stat-value { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+        .stat-value.green { color: var(--green); }
+        .stat-value.accent { color: var(--accent); }
+        .stat-value.orange { color: var(--orange); }
+        .stat-label { font-size: 0.82rem; color: var(--text3); margin-top: 4px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+        .tab { padding: 10px 20px; font-size: 0.9rem; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; font-weight: 500; }
+        .tab:hover { color: var(--text); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Toolbar */
+        .toolbar { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+        .search-input { padding: 10px 16px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px; color: var(--text); font-size: 0.9rem; outline: none; width: 300px; }
+        .search-input:focus { border-color: var(--accent); }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th { text-align: left; padding: 12px 16px; background: var(--bg2); color: var(--text3); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* Status Badge */
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-green { background: rgba(48,209,88,0.15); color: var(--green); }
+        .badge-red { background: rgba(255,69,58,0.15); color: var(--red); }
+        .badge-orange { background: rgba(255,159,10,0.15); color: var(--orange); }
+
+        /* Key display */
+        .key-mono { font-family: 'SF Mono', Monaco, monospace; font-size: 0.82rem; color: var(--accent); }
+
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 16px; padding: 32px; width: 100%; max-width: 480px; }
+        .modal h2 { font-size: 1.15rem; margin-bottom: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.82rem; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-size: 0.9rem; outline: none; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+        .form-group textarea { resize: vertical; min-height: 60px; font-family: inherit; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 24px; right: 24px; padding: 14px 24px; background: var(--green); color: #000; border-radius: 10px; font-size: 0.88rem; font-weight: 600; z-index: 200; display: none; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .toast.error { background: var(--red); color: #fff; }
+        .toast.show { display: block; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Sessions */
+        .session-info { font-size: 0.82rem; color: var(--text2); }
+        .pulse { display: inline-block; width: 8px; height: 8px; background: var(--green); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* Stripe link */
+        .stripe-link { color: var(--accent); text-decoration: none; font-size: 0.82rem; }
+        .stripe-link:hover { text-decoration: underline; }
+
+        /* Empty State */
+        .empty { text-align: center; padding: 60px 20px; color: var(--text3); }
+        .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .toolbar { flex-direction: column; }
+            .search-input { width: 100%; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login -->
+    <div class="login-wrap" id="login-screen">
+        <div class="login-box">
+            <h1>CE365 Admin</h1>
+            <p>Lizenzserver-Verwaltung</p>
+            <input type="password" id="api-key-input" placeholder="Admin-API-Key eingeben" onkeydown="if(event.key==='Enter')doLogin()">
+            <button onclick="doLogin()">Anmelden</button>
+            <div class="login-error" id="login-error">Ung&uuml;ltiger API-Key</div>
+        </div>
+    </div>
+
+    <!-- App -->
+    <div class="app" id="app">
+        <div class="topbar">
+            <h1>CE365 Admin</h1>
+            <div class="topbar-right">
+                <span style="color:var(--text3);font-size:0.82rem" id="server-version"></span>
+                <button class="btn" onclick="doLogout()">Abmelden</button>
+            </div>
+        </div>
+
+        <div class="main">
+            <!-- Stats -->
+            <div class="stats" id="stats-grid"></div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('licenses')">Lizenzen</button>
+                <button class="tab" onclick="switchTab('sessions')">Aktive Sessions</button>
+                <button class="tab" onclick="switchTab('releases')">Releases</button>
+            </div>
+
+            <!-- Licenses Tab -->
+            <div class="tab-content active" id="tab-licenses">
+                <div class="toolbar">
+                    <input class="search-input" type="text" placeholder="Suche (Name, E-Mail, Key)..." id="search-input" oninput="debounceSearch()">
+                    <button class="btn btn-accent" onclick="openCreateModal()">+ Neue Lizenz</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Lizenzschl&uuml;ssel</th>
+                                <th>Kunde</th>
+                                <th>Seats</th>
+                                <th>Sessions</th>
+                                <th>Abl&auml;uft</th>
+                                <th>Erstellt</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="license-table"></tbody>
+                    </table>
+                </div>
+                <div class="empty" id="license-empty" style="display:none">
+                    <div class="empty-icon">&#128274;</div>
+                    <p>Keine Lizenzen gefunden</p>
+                </div>
+            </div>
+
+            <!-- Sessions Tab -->
+            <div class="tab-content" id="tab-sessions">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Kunde</th>
+                                <th>Lizenz</th>
+                                <th>Gestartet</th>
+                                <th>Letzter Heartbeat</th>
+                                <th>System</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="session-table"></tbody>
+                    </table>
+                </div>
+                <div class="empty" id="session-empty" style="display:none">
+                    <div class="empty-icon">&#128564;</div>
+                    <p>Keine aktiven Sessions</p>
+                </div>
+            </div>
+
+            <!-- Releases Tab -->
+            <div class="tab-content" id="tab-releases">
+                <div class="toolbar">
+                    <span style="color:var(--text2);font-size:0.9rem;">Aktuelle Version: <strong id="latest-version" style="color:var(--green)"></strong></span>
+                    <button class="btn btn-accent" onclick="openUploadModal()">+ Release hochladen</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Version</th>
+                                <th>Plattform</th>
+                                <th>Datei</th>
+                                <th>Gr&ouml;&szlig;e</th>
+                                <th>Downloads</th>
+                            </tr>
+                        </thead>
+                        <tbody id="release-table"></tbody>
+                    </table>
+                </div>
+                <div class="empty" id="release-empty" style="display:none">
+                    <div class="empty-icon">&#128230;</div>
+                    <p>Noch keine Releases hochgeladen</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal-overlay" id="upload-modal">
+        <div class="modal">
+            <h2>Release hochladen</h2>
+            <form id="upload-form" onsubmit="submitUpload(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Version</label>
+                        <input type="text" id="upload-version" placeholder="2.0.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Plattform</label>
+                        <select id="upload-platform" required>
+                            <option value="win-amd64">Windows (amd64)</option>
+                            <option value="macos-arm64">macOS (Apple Silicon)</option>
+                            <option value="macos-amd64">macOS (Intel)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Binary-Datei</label>
+                    <input type="file" id="upload-file" required style="padding:8px;">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="closeUploadModal()">Abbrechen</button>
+                    <button type="submit" class="btn btn-accent">Hochladen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Modal -->
+    <div class="modal-overlay" id="create-modal">
+        <div class="modal">
+            <h2 id="modal-title">Neue Lizenz erstellen</h2>
+            <input type="hidden" id="edit-key">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Kundenname *</label>
+                    <input type="text" id="f-name" placeholder="Firma / Name">
+                </div>
+                <div class="form-group">
+                    <label>E-Mail</label>
+                    <input type="email" id="f-email" placeholder="kunde@firma.de">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Seats</label>
+                    <input type="number" id="f-seats" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>G&uuml;ltig (Tage)</label>
+                    <input type="number" id="f-days" value="365" min="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Notizen</label>
+                <textarea id="f-notes" placeholder="Optional..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeModal()">Abbrechen</button>
+                <button class="btn btn-accent" id="modal-submit" onclick="submitLicense()">Erstellen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+    const API = window.location.origin;
+    let apiKey = "";
+    let searchTimeout = null;
+
+    /* === Auth === */
+    function doLogin() {
+        apiKey = document.getElementById("api-key-input").value.trim();
+        if (!apiKey) return;
+        apiFetch("/api/admin/stats").then(function(data) {
+            if (data.error) {
+                document.getElementById("login-error").style.display = "block";
+                apiKey = "";
+            } else {
+                sessionStorage.setItem("ce365_admin_key", apiKey);
+                showApp();
+            }
+        });
+    }
+
+    function doLogout() {
+        sessionStorage.removeItem("ce365_admin_key");
+        apiKey = "";
+        document.getElementById("app").style.display = "none";
+        document.getElementById("login-screen").style.display = "flex";
+        document.getElementById("api-key-input").value = "";
+        document.getElementById("login-error").style.display = "none";
+    }
+
+    function showApp() {
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        loadStats();
+        loadLicenses();
+        loadSessions();
+        // Server-Version anzeigen
+        apiFetch("/health").then(function(d) {
+            document.getElementById("server-version").textContent = "v" + (d.version || "?");
+        });
+    }
+
+    /* === API === */
+    function apiFetch(path, opts) {
+        opts = opts || {};
+        opts.headers = opts.headers || {};
+        opts.headers["X-Admin-Key"] = apiKey;
+        if (opts.body && typeof opts.body === "object") {
+            opts.headers["Content-Type"] = "application/json";
+            opts.body = JSON.stringify(opts.body);
+        }
+        return fetch(API + path, opts)
+            .then(function(r) {
+                if (r.status === 403) return { error: "forbidden" };
+                return r.json();
+            })
+            .catch(function() { return { error: "network" }; });
+    }
+
+    /* === Stats === */
+    function loadStats() {
+        apiFetch("/api/admin/stats").then(function(d) {
+            if (d.error) return;
+            document.getElementById("stats-grid").innerHTML =
+                statCard(d.active_licenses, "Aktive Lizenzen", "green") +
+                statCard(d.total_seats, "Seats gesamt", "accent") +
+                statCard(d.active_sessions, "Aktive Sessions", "accent") +
+                statCard(formatMRR(d.mrr), "MRR (netto)", "green") +
+                statCard(d.inactive_licenses, "Inaktiv", "") +
+                statCard(d.expired_licenses, "Abgelaufen", d.expired_licenses > 0 ? "orange" : "");
+        });
+    }
+
+    function statCard(value, label, colorClass) {
+        return '<div class="stat-card"><div class="stat-value ' + colorClass + '">' + value + '</div><div class="stat-label">' + label + '</div></div>';
+    }
+
+    function formatMRR(v) { return v.toLocaleString("de-DE", { minimumFractionDigits: 0 }) + " \u20ac"; }
+
+    /* === Licenses === */
+    function loadLicenses(search) {
+        var path = "/api/admin/license/list";
+        if (search) path += "?search=" + encodeURIComponent(search);
+        apiFetch(path).then(function(data) {
+            if (data.error) return;
+            var tbody = document.getElementById("license-table");
+            var empty = document.getElementById("license-empty");
+            if (!data.length) {
+                tbody.innerHTML = "";
+                empty.style.display = "block";
+                return;
+            }
+            empty.style.display = "none";
+            tbody.innerHTML = data.map(function(lic) {
+                var now = new Date();
+                var expired = lic.expires_at && new Date(lic.expires_at) < now;
+                var status = !lic.active ? '<span class="badge badge-red">Inaktiv</span>'
+                    : expired ? '<span class="badge badge-orange">Abgelaufen</span>'
+                    : '<span class="badge badge-green">Aktiv</span>';
+                var sessions = lic.active_sessions > 0
+                    ? '<span class="pulse"></span>' + lic.active_sessions + " / " + lic.max_seats
+                    : '<span style="color:var(--text3)">0 / ' + lic.max_seats + '</span>';
+                var exp = lic.expires_at ? formatDate(lic.expires_at) : "Unbegrenzt";
+                var stripe = lic.notes && lic.notes.indexOf("Stripe:") === 0
+                    ? ' <a class="stripe-link" href="https://dashboard.stripe.com/customers/' + lic.notes.split(" ")[1] + '" target="_blank">Stripe</a>'
+                    : "";
+                var actions = lic.active
+                    ? '<button class="btn btn-sm" onclick="editLicense(\'' + lic.key + '\')">Bearbeiten</button> <button class="btn btn-sm btn-red" onclick="toggleLicense(\'' + lic.key + '\', false)">Deaktivieren</button>'
+                    : '<button class="btn btn-sm btn-green" onclick="toggleLicense(\'' + lic.key + '\', true)">Aktivieren</button>';
+                return "<tr>" +
+                    "<td>" + status + "</td>" +
+                    '<td><span class="key-mono">' + lic.key + "</span>" + stripe + "</td>" +
+                    "<td><strong>" + esc(lic.customer_name) + "</strong><br><span style='color:var(--text3);font-size:0.82rem'>" + esc(lic.customer_email) + "</span></td>" +
+                    "<td>" + lic.max_seats + "</td>" +
+                    "<td>" + sessions + "</td>" +
+                    "<td>" + exp + "</td>" +
+                    "<td>" + formatDate(lic.created_at) + "</td>" +
+                    "<td>" + actions + "</td>" +
+                    "</tr>";
+            }).join("");
+        });
+    }
+
+    function debounceSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            loadLicenses(document.getElementById("search-input").value.trim());
+        }, 300);
+    }
+
+    function toggleLicense(key, activate) {
+        var endpoint = activate ? "/reactivate" : "/deactivate";
+        apiFetch("/api/admin/license/" + key + endpoint, { method: "PATCH" }).then(function(d) {
+            if (d.success) {
+                toast(activate ? "Lizenz aktiviert" : "Lizenz deaktiviert");
+                loadLicenses(document.getElementById("search-input").value.trim());
+                loadStats();
+            }
+        });
+    }
+
+    function editLicense(key) {
+        apiFetch("/api/admin/license/list?search=" + encodeURIComponent(key)).then(function(data) {
+            if (!data.length) return;
+            var lic = data[0];
+            document.getElementById("modal-title").textContent = "Lizenz bearbeiten";
+            document.getElementById("modal-submit").textContent = "Speichern";
+            document.getElementById("modal-submit").onclick = submitEdit;
+            document.getElementById("edit-key").value = key;
+            document.getElementById("f-name").value = lic.customer_name;
+            document.getElementById("f-email").value = lic.customer_email;
+            document.getElementById("f-seats").value = lic.max_seats;
+            document.getElementById("f-days").value = "";
+            document.getElementById("f-notes").value = lic.notes || "";
+            document.getElementById("create-modal").classList.add("open");
+        });
+    }
+
+    function submitEdit() {
+        var key = document.getElementById("edit-key").value;
+        var body = {
+            customer_name: document.getElementById("f-name").value,
+            customer_email: document.getElementById("f-email").value,
+            max_seats: parseInt(document.getElementById("f-seats").value) || 1,
+            notes: document.getElementById("f-notes").value,
+        };
+        var days = document.getElementById("f-days").value;
+        if (days) body.expires_in_days = parseInt(days);
+        apiFetch("/api/admin/license/" + key + "/edit", { method: "PATCH", body: body }).then(function(d) {
+            if (d.success) {
+                toast("Lizenz aktualisiert");
+                closeModal();
+                loadLicenses(document.getElementById("search-input").value.trim());
+                loadStats();
+            } else {
+                toast("Fehler: " + (d.detail || "Unbekannt"), true);
+            }
+        });
+    }
+
+    /* === Sessions === */
+    function loadSessions() {
+        apiFetch("/api/admin/sessions").then(function(data) {
+            if (data.error) return;
+            var tbody = document.getElementById("session-table");
+            var empty = document.getElementById("session-empty");
+            if (!data.length) {
+                tbody.innerHTML = "";
+                empty.style.display = "block";
+                return;
+            }
+            empty.style.display = "none";
+            tbody.innerHTML = data.map(function(s) {
+                var ago = timeAgo(s.last_heartbeat);
+                return "<tr>" +
+                    '<td><span class="pulse"></span></td>' +
+                    "<td><strong>" + esc(s.customer_name) + "</strong><br><span style='color:var(--text3);font-size:0.82rem'>" + esc(s.customer_email) + "</span></td>" +
+                    '<td><span class="key-mono">' + s.license_key + "</span></td>" +
+                    "<td>" + formatDateTime(s.started_at) + "</td>" +
+                    "<td>" + ago + "</td>" +
+                    "<td><span style='color:var(--text3);font-size:0.82rem'>" + esc(s.system_fingerprint || "\u2014") + "</span></td>" +
+                    '<td><button class="btn btn-sm btn-red" onclick="killSession(\'' + s.license_key + '\')">Beenden</button></td>' +
+                    "</tr>";
+            }).join("");
+        });
+    }
+
+    function killSession(licenseKey) {
+        if (!confirm("Alle Sessions dieser Lizenz beenden?")) return;
+        apiFetch("/api/admin/sessions/" + licenseKey, { method: "DELETE" }).then(function(d) {
+            if (d.success) {
+                toast(d.killed + " Session(s) beendet");
+                loadSessions();
+                loadLicenses(document.getElementById("search-input").value.trim());
+                loadStats();
+            }
+        });
+    }
+
+    /* === Tabs === */
+    function switchTab(name) {
+        document.querySelectorAll(".tab").forEach(function(t) { t.classList.remove("active"); });
+        document.querySelectorAll(".tab-content").forEach(function(t) { t.classList.remove("active"); });
+        event.target.classList.add("active");
+        document.getElementById("tab-" + name).classList.add("active");
+        if (name === "sessions") loadSessions();
+        if (name === "releases") loadReleases();
+    }
+
+    /* === Releases === */
+    function loadReleases() {
+        apiFetch("/api/admin/releases").then(function(d) {
+            document.getElementById("latest-version").textContent = "v" + d.latest_version;
+            var table = document.getElementById("release-table");
+            var empty = document.getElementById("release-empty");
+            var rows = [];
+            if (!d.releases || d.releases.length === 0) {
+                table.innerHTML = "";
+                empty.style.display = "block";
+                return;
+            }
+            empty.style.display = "none";
+            d.releases.forEach(function(r) {
+                r.files.forEach(function(f) {
+                    var plat = f.filename.includes("win") ? "Windows" : f.filename.includes("macos-arm") ? "macOS (Apple Silicon)" : "macOS (Intel)";
+                    var sizeStr = (f.size_bytes / 1024 / 1024).toFixed(1) + " MB";
+                    var statsKey = r.version + "/" + (f.filename.includes("win") ? "win-amd64" : f.filename.includes("arm") ? "macos-arm64" : "macos-amd64");
+                    var downloads = (d.download_stats && d.download_stats[statsKey]) || 0;
+                    rows.push(
+                        "<tr>" +
+                        "<td><strong>" + r.version + "</strong>" + (r.version === d.latest_version ? ' <span class="badge badge-green">aktuell</span>' : '') + "</td>" +
+                        "<td>" + plat + "</td>" +
+                        "<td style='font-family:monospace;font-size:0.82rem;color:var(--text2)'>" + esc(f.filename) + "</td>" +
+                        "<td>" + sizeStr + "</td>" +
+                        "<td>" + downloads + "</td>" +
+                        "</tr>"
+                    );
+                });
+            });
+            table.innerHTML = rows.join("");
+        });
+    }
+
+    function openUploadModal() {
+        document.getElementById("upload-version").value = "";
+        document.getElementById("upload-file").value = "";
+        document.getElementById("upload-modal").classList.add("open");
+    }
+
+    function closeUploadModal() {
+        document.getElementById("upload-modal").classList.remove("open");
+    }
+
+    document.getElementById("upload-modal").addEventListener("click", function(e) {
+        if (e.target === this) closeUploadModal();
+    });
+
+    function submitUpload(e) {
+        e.preventDefault();
+        var form = new FormData();
+        form.append("version", document.getElementById("upload-version").value.trim());
+        form.append("platform", document.getElementById("upload-platform").value);
+        form.append("file", document.getElementById("upload-file").files[0]);
+
+        fetch("/api/admin/release/upload", {
+            method: "POST",
+            headers: { "X-Admin-Key": apiKey },
+            body: form,
+        }).then(function(r) { return r.json(); }).then(function(d) {
+            if (d.success) {
+                toast("Release hochgeladen: " + d.filename + " (" + (d.size_bytes / 1024 / 1024).toFixed(1) + " MB)");
+                closeUploadModal();
+                loadReleases();
+            } else {
+                toast("Fehler: " + (d.detail || "Unbekannt"), true);
+            }
+        }).catch(function(err) { toast("Upload-Fehler: " + err, true); });
+    }
+
+    /* === Create Modal === */
+    function openCreateModal() {
+        document.getElementById("modal-title").textContent = "Neue Lizenz erstellen";
+        document.getElementById("modal-submit").textContent = "Erstellen";
+        document.getElementById("modal-submit").onclick = submitLicense;
+        document.getElementById("edit-key").value = "";
+        document.getElementById("f-name").value = "";
+        document.getElementById("f-email").value = "";
+        document.getElementById("f-seats").value = "1";
+        document.getElementById("f-days").value = "365";
+        document.getElementById("f-notes").value = "";
+        document.getElementById("create-modal").classList.add("open");
+    }
+
+    function closeModal() {
+        document.getElementById("create-modal").classList.remove("open");
+    }
+
+    function submitLicense() {
+        var name = document.getElementById("f-name").value.trim();
+        if (!name) { alert("Kundenname ist Pflicht"); return; }
+        var body = {
+            customer_name: name,
+            customer_email: document.getElementById("f-email").value.trim(),
+            max_seats: parseInt(document.getElementById("f-seats").value) || 1,
+            expires_in_days: parseInt(document.getElementById("f-days").value) || 365,
+            notes: document.getElementById("f-notes").value.trim(),
+        };
+        apiFetch("/api/admin/license/create", { method: "POST", body: body }).then(function(d) {
+            if (d.key) {
+                toast("Lizenz erstellt: " + d.key);
+                closeModal();
+                loadLicenses();
+                loadStats();
+            } else {
+                toast("Fehler: " + (d.detail || "Unbekannt"), true);
+            }
+        });
+    }
+
+    // Close modal on overlay click
+    document.getElementById("create-modal").addEventListener("click", function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    /* === Toast === */
+    function toast(msg, isError) {
+        var el = document.getElementById("toast");
+        el.textContent = msg;
+        el.className = "toast show" + (isError ? " error" : "");
+        setTimeout(function() { el.className = "toast"; }, 3000);
+    }
+
+    /* === Helpers === */
+    function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+    function formatDate(iso) {
+        if (!iso) return "\u2014";
+        var d = new Date(iso);
+        return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+    }
+
+    function formatDateTime(iso) {
+        if (!iso) return "\u2014";
+        var d = new Date(iso);
+        return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }) + " " +
+               d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function timeAgo(iso) {
+        var diff = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (diff < 60) return "vor " + Math.floor(diff) + "s";
+        if (diff < 3600) return "vor " + Math.floor(diff / 60) + " Min";
+        if (diff < 86400) return "vor " + Math.floor(diff / 3600) + " Std";
+        return "vor " + Math.floor(diff / 86400) + " Tagen";
+    }
+
+    /* === Init === */
+    (function() {
+        var saved = sessionStorage.getItem("ce365_admin_key");
+        if (saved) {
+            apiKey = saved;
+            apiFetch("/api/admin/stats").then(function(d) {
+                if (d.error) doLogout();
+                else showApp();
+            });
+        }
+    })();
+
+    // Auto-refresh alle 30 Sekunden
+    setInterval(function() {
+        if (apiKey) { loadStats(); loadSessions(); }
+    }, 30000);
+    </script>
+</body>
+</html>

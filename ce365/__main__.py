@@ -205,8 +205,9 @@ def main():
         return
 
     if args.version:
-        from ce365.__version__ import __version__
-        print(f"CE365 Agent v{__version__}")
+        from ce365.__version__ import __version__, __edition__
+        mode = "Binary" if getattr(sys, "frozen", False) else "pip"
+        print(f"CE365 Agent v{__version__} ({__edition__} Edition, {mode})")
         return
 
     if args.health:

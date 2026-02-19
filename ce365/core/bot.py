@@ -54,6 +54,8 @@ from ce365.tools.repair.startup import DisableStartupProgramTool, EnableStartupP
 from ce365.tools.repair.update_scheduler import ScheduleSystemUpdatesTool
 from ce365.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 from ce365.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
+from ce365.tools.analysis.consult_specialist import ConsultSpecialistTool  # Multi-Agent
+from ce365.core.agents import SpecialistAgent, SPECIALISTS  # Multi-Agent System
 
 # License & Usage
 from ce365.core.license import validate_license, check_edition_features
@@ -193,6 +195,9 @@ class CE365Bot:
         if check_edition_features(edition, "root_cause_analysis"):
             self.tool_registry.register(RootCauseAnalyzer())
 
+        # === Multi-Agent: Spezialist konsultieren (alle Editionen) ===
+        self.tool_registry.register(ConsultSpecialistTool())
+
         self.console.display_info(
             f"🔧 Tools registriert: {len(self.tool_registry)} "
             f"(Audit: {len(self.tool_registry.get_audit_tools())}, "
@@ -205,6 +210,9 @@ class CE365Bot:
 
         # Lizenz-Check (wenn License Key gesetzt ist)
         await self._check_license()
+
+        # Update-Check (passiv, 1x pro Tag)
+        self._check_for_updates()
 
         # Pro: Session starten + Heartbeat
         settings = get_settings()
@@ -585,9 +593,17 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
                 tool_name = tool_name.split('"')[0].split('<')[0].strip()
                 self.console.display_warning(f"Tool-Name korrigiert zu: {tool_name}")
 
-            # Tool ausführen mit Spinner
-            with self.console.show_spinner(f"🔧 Executing {tool_name}"):
-                success, result = await self.executor.execute_tool(tool_name, tool_input)
+            # Multi-Agent: consult_specialist direkt hier abfangen
+            if tool_name == "consult_specialist":
+                specialist_id = tool_input.get("specialist", "")
+                task = tool_input.get("task", "")
+                context = tool_input.get("context", "")
+                result = await self._run_specialist(specialist_id, task, context)
+                success = True
+            else:
+                # Normales Tool ausführen mit Spinner
+                with self.console.show_spinner(f"🔧 Executing {tool_name}"):
+                    success, result = await self.executor.execute_tool(tool_name, tool_input)
 
             # Ergebnis anzeigen
             self.console.display_tool_result(tool_name, result, success)
@@ -689,6 +705,84 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
             elif isinstance(block, str):
                 text_parts.append(block)
         return "\n".join(text_parts)
+
+    # ==========================================
+    # UPDATE CHECK (passiv beim Start)
+    # ==========================================
+
+    def _check_for_updates(self):
+        """Passiver Update-Check beim Start (1x pro Tag, nicht-blockierend)"""
+        try:
+            from ce365.__version__ import __version__
+            from ce365.core.updater import check_for_update, _is_binary
+
+            update_info = check_for_update(__version__)
+            if update_info and update_info.get("update_available"):
+                latest = update_info.get("latest_version", "?")
+                if _is_binary():
+                    self.console.display_info(
+                        f"Neue Version v{latest} verfuegbar! "
+                        f"Update mit: ce365 --update"
+                    )
+                else:
+                    self.console.display_info(
+                        f"Neue Version v{latest} verfuegbar! "
+                        f"Update mit: pip install --upgrade ce365-agent"
+                    )
+        except Exception:
+            pass  # Update-Check darf niemals den Start blockieren
+
+    # ==========================================
+    # MULTI-AGENT: SPEZIALIST KONSULTIEREN
+    # ==========================================
+
+    async def _run_specialist(self, specialist_id: str, task: str, context: str = "") -> str:
+        """
+        Spezialist-Agent spawnen und Diagnose durchführen lassen.
+
+        Args:
+            specialist_id: "windows", "macos", "network", "security", "performance"
+            task: Aufgabe für den Spezialisten
+            context: Zusätzlicher Kontext
+
+        Returns:
+            Strukturierter Diagnosebericht
+        """
+        if specialist_id not in SPECIALISTS:
+            return (
+                f"Unbekannter Spezialist: '{specialist_id}'. "
+                f"Verfügbar: {', '.join(SPECIALISTS.keys())}"
+            )
+
+        spec_info = SPECIALISTS[specialist_id]
+        spec_name = f"{spec_info['emoji']} {spec_info['name']}"
+
+        self.console.display_separator()
+        self.console.display_info(f"{spec_name} wird konsultiert...")
+        self.console.display_info(f"Aufgabe: {task}")
+        if context:
+            self.console.display_info(f"Kontext: {context[:100]}...")
+        self.console.display_separator()
+
+        try:
+            agent = SpecialistAgent(
+                specialist_id=specialist_id,
+                llm_client=self.client,
+                full_tool_registry=self.tool_registry,
+                max_rounds=5,
+            )
+
+            # Agent ausführen
+            report = await agent.run(task=task, context=context)
+
+            self.console.display_separator()
+            self.console.display_info(f"{spec_name} — Bericht:")
+            self.console.display_separator()
+
+            return f"[Bericht von {spec_info['name']}]\n\n{report}"
+
+        except Exception as e:
+            return f"Fehler bei {spec_info['name']}: {str(e)}"
 
     # ==========================================
     # SESSION MANAGEMENT (Pro)

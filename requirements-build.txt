@@ -1,0 +1,2 @@
+# Build dependencies for CE365 Pro binary
+pyinstaller>=6.0

@@ -27,6 +27,7 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
@@ -38,6 +39,7 @@ from config import (
     DATABASE_URL, SESSION_SECRET, SESSION_TIMEOUT_MINUTES,
     ADMIN_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET,
     STRIPE_PRICE_ID_PRO, SITE_URL, BREVO_API_KEY, BREVO_LIST_ID,
+    RELEASES_DIR, LATEST_VERSION,
 )
 
 
@@ -313,6 +315,14 @@ class AdminCreateLicenseRequest(BaseModel):
     notes: str = ""
 
 
+class AdminEditLicenseRequest(BaseModel):
+    customer_name: Optional[str] = None
+    customer_email: Optional[str] = None
+    max_seats: Optional[int] = None
+    expires_in_days: Optional[int] = None
+    notes: Optional[str] = None
+
+
 class AdminLicenseResponse(BaseModel):
     key: str
     edition: str
@@ -322,6 +332,8 @@ class AdminLicenseResponse(BaseModel):
     expires_at: Optional[str]
     active: bool
     created_at: str
+    notes: str = ""
+    active_sessions: int = 0
 
 
 # === Admin Endpoints ===
@@ -366,16 +378,29 @@ async def admin_create_license(
 @app.get("/api/admin/license/list")
 async def admin_list_licenses(
     x_admin_key: str = Header(default=""),
+    search: str = "",
 ):
-    """Alle Lizenzen auflisten (Admin)"""
+    """Alle Lizenzen auflisten (Admin), optional mit Suche"""
     verify_admin_key(x_admin_key)
 
     async with async_session() as db:
-        result = await db.execute(select(License).order_by(License.created_at.desc()))
+        query = select(License).order_by(License.created_at.desc())
+
+        if search:
+            search_term = f"%{search}%"
+            query = select(License).where(
+                License.key.ilike(search_term)
+                | License.customer_name.ilike(search_term)
+                | License.customer_email.ilike(search_term)
+            ).order_by(License.created_at.desc())
+
+        result = await db.execute(query)
         licenses = result.scalars().all()
 
-        return [
-            AdminLicenseResponse(
+        response = []
+        for lic in licenses:
+            active_count = await count_active_sessions(db, lic.key)
+            response.append(AdminLicenseResponse(
                 key=lic.key,
                 edition=lic.edition,
                 customer_name=lic.customer_name,
@@ -384,9 +409,10 @@ async def admin_list_licenses(
                 expires_at=lic.expires_at.isoformat() if lic.expires_at else None,
                 active=lic.active,
                 created_at=lic.created_at.isoformat(),
-            )
-            for lic in licenses
-        ]
+                notes=lic.notes or "",
+                active_sessions=active_count,
+            ))
+        return response
 
 
 @app.patch("/api/admin/license/{key}/deactivate")
@@ -408,6 +434,192 @@ async def admin_deactivate_license(
         await db.commit()
 
         return {"success": True, "key": key, "active": False}
+
+
+@app.patch("/api/admin/license/{key}/reactivate")
+async def admin_reactivate_license(
+    key: str,
+    x_admin_key: str = Header(default=""),
+):
+    """Lizenz reaktivieren (Admin)"""
+    verify_admin_key(x_admin_key)
+
+    async with async_session() as db:
+        result = await db.execute(select(License).where(License.key == key))
+        license = result.scalar_one_or_none()
+
+        if not license:
+            raise HTTPException(status_code=404, detail="Lizenz nicht gefunden")
+
+        license.active = True
+        await db.commit()
+
+        return {"success": True, "key": key, "active": True}
+
+
+@app.patch("/api/admin/license/{key}/edit")
+async def admin_edit_license(
+    key: str,
+    request: AdminEditLicenseRequest,
+    x_admin_key: str = Header(default=""),
+):
+    """Lizenz bearbeiten (Admin)"""
+    verify_admin_key(x_admin_key)
+
+    async with async_session() as db:
+        result = await db.execute(select(License).where(License.key == key))
+        license = result.scalar_one_or_none()
+
+        if not license:
+            raise HTTPException(status_code=404, detail="Lizenz nicht gefunden")
+
+        if request.customer_name is not None:
+            license.customer_name = request.customer_name
+        if request.customer_email is not None:
+            license.customer_email = request.customer_email
+        if request.max_seats is not None:
+            license.max_seats = request.max_seats
+        if request.expires_in_days is not None:
+            license.expires_at = datetime.utcnow() + timedelta(days=request.expires_in_days)
+        if request.notes is not None:
+            license.notes = request.notes
+
+        await db.commit()
+
+        return {
+            "success": True,
+            "key": key,
+            "customer_name": license.customer_name,
+            "customer_email": license.customer_email,
+            "max_seats": license.max_seats,
+            "expires_at": license.expires_at.isoformat() if license.expires_at else None,
+            "notes": license.notes,
+        }
+
+
+@app.get("/api/admin/sessions")
+async def admin_list_sessions(
+    x_admin_key: str = Header(default=""),
+):
+    """Alle aktiven Sessions auflisten (Admin)"""
+    verify_admin_key(x_admin_key)
+
+    cutoff = datetime.utcnow() - timedelta(minutes=SESSION_TIMEOUT_MINUTES)
+
+    async with async_session() as db:
+        result = await db.execute(
+            select(SessionModel).where(
+                and_(
+                    SessionModel.released_at.is_(None),
+                    SessionModel.last_heartbeat >= cutoff,
+                )
+            ).order_by(SessionModel.last_heartbeat.desc())
+        )
+        sessions = result.scalars().all()
+
+        response = []
+        for s in sessions:
+            # Kundennamen zur Session holen
+            lic_result = await db.execute(
+                select(License).where(License.key == s.license_key)
+            )
+            lic = lic_result.scalar_one_or_none()
+
+            response.append({
+                "license_key": s.license_key,
+                "customer_name": lic.customer_name if lic else "—",
+                "customer_email": lic.customer_email if lic else "",
+                "started_at": s.started_at.isoformat(),
+                "last_heartbeat": s.last_heartbeat.isoformat(),
+                "system_fingerprint": s.system_fingerprint or "",
+            })
+
+        return response
+
+
+@app.delete("/api/admin/sessions/{license_key}")
+async def admin_kill_sessions(
+    license_key: str,
+    x_admin_key: str = Header(default=""),
+):
+    """Alle Sessions einer Lizenz beenden (Admin)"""
+    verify_admin_key(x_admin_key)
+
+    async with async_session() as db:
+        result = await db.execute(
+            select(SessionModel).where(
+                and_(
+                    SessionModel.license_key == license_key,
+                    SessionModel.released_at.is_(None),
+                )
+            )
+        )
+        sessions = result.scalars().all()
+        count = len(sessions)
+
+        for s in sessions:
+            s.released_at = datetime.utcnow()
+
+        await db.commit()
+
+        return {"success": True, "killed": count}
+
+
+@app.get("/api/admin/stats")
+async def admin_stats(
+    x_admin_key: str = Header(default=""),
+):
+    """Dashboard-Statistiken (Admin)"""
+    verify_admin_key(x_admin_key)
+
+    cutoff = datetime.utcnow() - timedelta(minutes=SESSION_TIMEOUT_MINUTES)
+
+    async with async_session() as db:
+        # Aktive Lizenzen
+        result = await db.execute(select(License).where(License.active == True))
+        active_licenses = result.scalars().all()
+
+        # Inaktive Lizenzen
+        result = await db.execute(select(License).where(License.active == False))
+        inactive_count = len(result.scalars().all())
+
+        # Seats gesamt
+        total_seats = sum(lic.max_seats for lic in active_licenses)
+
+        # MRR (Monthly Recurring Revenue)
+        mrr = sum(lic.max_seats * 99.0 for lic in active_licenses)
+
+        # Abgelaufene Lizenzen
+        now = datetime.utcnow()
+        expired_count = sum(
+            1 for lic in active_licenses
+            if lic.expires_at and now > lic.expires_at
+        )
+
+        # Aktive Sessions
+        result = await db.execute(
+            select(SessionModel).where(
+                and_(
+                    SessionModel.released_at.is_(None),
+                    SessionModel.last_heartbeat >= cutoff,
+                )
+            )
+        )
+        active_sessions = len(result.scalars().all())
+
+        # Alle Lizenzen gesamt
+        result = await db.execute(select(License))
+        total_count = len(result.scalars().all())
+
+        return {
+            "total_licenses": total_count,
+            "active_licenses": len(active_licenses),
+            "inactive_licenses": inactive_count,
+            "expired_licenses": expired_count,
+            "total_seats": total_seats,
+            "active_sessions": active_sessions,
+            "mrr": mrr,
+        }
 
 
 # === Stripe Integration ===
@@ -591,6 +803,194 @@ async def newsletter_subscribe(request: NewsletterRequest):
 
     await add_to_brevo(request.email, request.name, "newsletter")
     return {"success": True}
+
+
+# ============================================================
+# UPDATE / DOWNLOAD / RELEASE ENDPOINTS
+# ============================================================
+
+from fastapi import UploadFile, File, Form
+from fastapi.responses import StreamingResponse
+from pathlib import Path
+import json as json_module
+import shutil
+
+
+@app.get("/api/update/check")
+async def update_check(version: str = "0.0.0", platform: str = ""):
+    """
+    Update-Check: Gibt zurück ob eine neue Version verfügbar ist.
+
+    GET /api/update/check?version=1.9.0&platform=macos-arm64
+    """
+    from packaging.version import Version
+
+    try:
+        current = Version(version)
+        latest = Version(LATEST_VERSION)
+        update_available = latest > current
+    except Exception:
+        update_available = version != LATEST_VERSION
+
+    # Download-URL zusammenbauen
+    download_url = ""
+    if update_available and platform:
+        ext = ".exe" if platform.startswith("win") else ""
+        filename = f"ce365-pro-{LATEST_VERSION}-{platform}{ext}"
+        download_url = f"/api/update/download/{platform}"
+
+    return {
+        "latest_version": LATEST_VERSION,
+        "current_version": version,
+        "update_available": update_available,
+        "download_url": download_url,
+        "platform": platform,
+    }
+
+
+@app.get("/api/update/download/{platform}")
+async def update_download(platform: str, license_key: str = ""):
+    """
+    Binary-Download für Pro-User.
+
+    GET /api/update/download/macos-arm64?license_key=CE365-PRO-XXXX
+    """
+    # Lizenz prüfen
+    if not license_key:
+        raise HTTPException(status_code=401, detail="License key required")
+
+    async with async_session() as session:
+        result = await session.execute(
+            select(License).where(
+                and_(License.key == license_key, License.is_active == True)
+            )
+        )
+        license_obj = result.scalar_one_or_none()
+
+    if not license_obj:
+        raise HTTPException(status_code=403, detail="Invalid or inactive license")
+
+    # Binary finden
+    ext = ".exe" if platform.startswith("win") else ""
+    filename = f"ce365-pro-{LATEST_VERSION}-{platform}{ext}"
+    filepath = RELEASES_DIR / LATEST_VERSION / filename
+
+    if not filepath.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Release not found: {filename}"
+        )
+
+    # Download-Counter (optional, nicht-blockierend)
+    try:
+        stats_file = RELEASES_DIR / "download_stats.json"
+        stats = {}
+        if stats_file.exists():
+            stats = json_module.loads(stats_file.read_text())
+        key = f"{LATEST_VERSION}/{platform}"
+        stats[key] = stats.get(key, 0) + 1
+        stats_file.write_text(json_module.dumps(stats, indent=2))
+    except Exception:
+        pass
+
+    return FileResponse(
+        path=str(filepath),
+        filename=filename,
+        media_type="application/octet-stream",
+    )
+
+
+@app.post("/api/admin/release/upload")
+async def release_upload(
+    file: UploadFile = File(...),
+    version: str = Form(...),
+    platform: str = Form(...),
+    x_admin_key: str = Header(None),
+):
+    """
+    Release-Binary hochladen (Admin).
+
+    POST /api/admin/release/upload
+    Headers: X-Admin-Key: {admin_key}
+    Body: multipart/form-data (file, version, platform)
+    """
+    if not ADMIN_API_KEY or x_admin_key != ADMIN_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid admin key")
+
+    # Dateiname bestimmen
+    ext = ".exe" if platform.startswith("win") else ""
+    filename = f"ce365-pro-{version}-{platform}{ext}"
+
+    # Verzeichnis erstellen
+    release_dir = RELEASES_DIR / version
+    release_dir.mkdir(parents=True, exist_ok=True)
+
+    # Datei speichern
+    filepath = release_dir / filename
+    with open(filepath, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    file_size = filepath.stat().st_size
+
+    print(f"[RELEASE] Uploaded: {filename} ({file_size / 1024 / 1024:.1f} MB)")
+
+    return {
+        "success": True,
+        "filename": filename,
+        "version": version,
+        "platform": platform,
+        "size_bytes": file_size,
+        "path": str(filepath),
+    }
+
+
+@app.get("/api/admin/releases")
+async def list_releases(x_admin_key: str = Header(None)):
+    """Alle Releases auflisten (Admin)"""
+    if not ADMIN_API_KEY or x_admin_key != ADMIN_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid admin key")
+
+    releases = []
+
+    if RELEASES_DIR.exists():
+        for version_dir in sorted(RELEASES_DIR.iterdir(), reverse=True):
+            if version_dir.is_dir() and not version_dir.name.startswith("."):
+                files = []
+                for f in version_dir.iterdir():
+                    if f.is_file():
+                        files.append({
+                            "filename": f.name,
+                            "size_bytes": f.stat().st_size,
+                            "modified": f.stat().st_mtime,
+                        })
+                releases.append({
+                    "version": version_dir.name,
+                    "files": files,
+                })
+
+    # Download-Statistiken laden
+    stats = {}
+    stats_file = RELEASES_DIR / "download_stats.json"
+    if stats_file.exists():
+        try:
+            stats = json_module.loads(stats_file.read_text())
+        except Exception:
+            pass
+
+    return {
+        "latest_version": LATEST_VERSION,
+        "releases": releases,
+        "download_stats": stats,
+    }
+
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_dashboard():
+    """Admin-Dashboard UI"""
+    import os
+    dashboard_path = os.path.join(os.path.dirname(__file__), "admin.html")
+    with open(dashboard_path, "r") as f:
+        return HTMLResponse(content=f.read())
 
 
 if __name__ == "__main__":

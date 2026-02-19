@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vielen Dank! — CE365 Agent</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -34,14 +31,16 @@
                     <div class="license-key" id="license-key">&mdash;</div>
                     <button onclick="copyKey()" class="btn btn-primary" id="copy-btn" style="margin-top: 8px;">Kopieren</button>
                 </div>
-                <div style="max-width: 480px; margin: 40px auto; text-align: left;">
-                    <h3 style="margin-bottom: 12px;">N&auml;chste Schritte</h3>
-                    <ol style="color: var(--text-secondary); font-size: 0.9rem; line-height: 2.2; padding-left: 20px;">
-                        <li>CE365 installieren: <code>pip install ce365</code></li>
-                        <li>Setup starten: <code>python -m ce365 --setup</code></li>
-                        <li>Edition &ldquo;Pro&rdquo; w&auml;hlen und Lizenzschl&uuml;ssel einf&uuml;gen</li>
-                        <li>Loslegen!</li>
-                    </ol>
+                <div style="max-width: 520px; margin: 40px auto;">
+                    <h3 style="margin-bottom: 16px; text-align: center;">Pro Binary herunterladen</h3>
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;" id="download-buttons">
+                        <a class="btn btn-primary" style="min-width: 180px; text-align: center;" id="dl-win" onclick="downloadBinary('win-amd64')">Windows (.exe)</a>
+                        <a class="btn btn-primary" style="min-width: 180px; text-align: center;" id="dl-mac-arm" onclick="downloadBinary('macos-arm64')">macOS (Apple Silicon)</a>
+                        <a class="btn btn-secondary" style="min-width: 180px; text-align: center;" id="dl-mac-intel" onclick="downloadBinary('macos-amd64')">macOS (Intel)</a>
+                    </div>
+                    <p style="text-align: center; margin-top: 16px; color: var(--text-tertiary); font-size: 0.82rem;">
+                        Oder per pip: <code>pip install ce365-agent</code> &rarr; <code>python -m ce365 --setup</code> &rarr; Pro w&auml;hlen &amp; Key einf&uuml;gen
+                    </p>
                 </div>
                 <p style="color: var(--text-tertiary); font-size: 0.82rem; margin-top: 32px;">
                     Best&auml;tigung wurde an <strong id="customer-email" style="color: var(--text-secondary);"></strong> gesendet.<br>
@@ -67,6 +66,11 @@
 
     <script>
         const API_URL = "https://license.ce365.de";
+        function downloadBinary(platform) {
+            var key = document.getElementById("license-key").textContent;
+            if (!key || key === "\u2014") { alert("Lizenzschluessel wird noch geladen..."); return; }
+            window.location.href = API_URL + "/api/update/download/" + platform + "?license_key=" + encodeURIComponent(key);
+        }
         function copyKey() {
             navigator.clipboard.writeText(document.getElementById("license-key").textContent).then(function() {
                 var btn = document.getElementById("copy-btn");

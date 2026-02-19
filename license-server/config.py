@@ -30,6 +30,10 @@ SITE_URL = os.getenv("SITE_URL", "https://agent.ce365.de")
 BREVO_API_KEY = os.getenv("BREVO_API_KEY", "")
 BREVO_LIST_ID = int(os.getenv("BREVO_LIST_ID", "2"))  # Kontaktliste-ID
 
+# Releases / Updates
+RELEASES_DIR = Path(os.getenv("RELEASES_DIR", "/app/data/releases"))
+LATEST_VERSION = os.getenv("LATEST_VERSION", "2.0.0")
+
 # Server
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "9000"))
