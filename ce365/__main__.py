@@ -22,6 +22,27 @@ from ce365.core.health import run_health_check
 console = Console()
 
 
+def _show_embedded_banner(config: dict):
+    """Zeigt Techniker-Info beim Start eines Kunden-Pakets"""
+    from ce365.__version__ import __version__
+    from rich.panel import Panel
+    from rich.text import Text
+
+    tech_name = config.get("_TECHNICIAN_NAME", "Techniker")
+    company = config.get("_COMPANY", "")
+    edition = config.get("EDITION", "community").title()
+
+    banner = Text()
+    banner.append(f"CE365 Agent v{__version__} — {edition} Edition\n", style="bold cyan")
+    banner.append(f"Techniker: {tech_name}\n", style="bold")
+    if company:
+        banner.append(f"Lizenziert für: {company}", style="bold")
+
+    console.print()
+    console.print(Panel(banner, border_style="cyan", padding=(1, 1)))
+    console.print()
+
+
 def verify_technician_password() -> bool:
     """
     Prüft Techniker-Passwort beim Start
@@ -192,6 +213,16 @@ def main():
         action="store_true",
         help="Rollback zur letzten Backup-Version"
     )
+    parser.add_argument(
+        "--generate-package",
+        action="store_true",
+        help="Generiert ein portables Kunden-Paket (.exe/.app)"
+    )
+    parser.add_argument(
+        "--setup",
+        action="store_true",
+        help="Setup-Wizard erneut ausführen"
+    )
 
     args = parser.parse_args()
 
@@ -224,12 +255,32 @@ def main():
         run_rollback()
         return
 
+    if args.generate_package:
+        from ce365.setup.package_generator import run_generate_package
+        success = run_generate_package()
+        sys.exit(0 if success else 1)
+
+    if args.setup:
+        from ce365.setup.wizard import SetupWizard
+        wizard = SetupWizard()
+        if wizard.run():
+            console.print("[green]Setup abgeschlossen![/green]")
+        else:
+            console.print("[yellow]Setup abgebrochen.[/yellow]")
+        return
+
     # Normaler Start
     try:
-        # 1. Setup-Wizard (falls .env nicht existiert)
-        if not run_setup_if_needed():
-            print("\n👋 Setup abgebrochen. Auf Wiedersehen!")
-            sys.exit(0)
+        # Embedded Config prüfen (Kunden-Paket)
+        from ce365.setup.embedded_config import is_embedded, get_config
+        if is_embedded():
+            # Kunden-Paket: Techniker-Info anzeigen, kein Wizard
+            _show_embedded_banner(get_config())
+        else:
+            # 1. Setup-Wizard (falls .env nicht existiert)
+            if not run_setup_if_needed():
+                print("\n👋 Setup abgebrochen. Auf Wiedersehen!")
+                sys.exit(0)
 
         # 2. Techniker-Passwort prüfen
         if not verify_technician_password():

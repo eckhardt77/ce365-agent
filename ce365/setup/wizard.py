@@ -114,6 +114,9 @@ class SetupWizard:
         # 6. Success!
         self._show_success(user_name)
 
+        # 7. Kunden-Paket generieren?
+        self._offer_package_generation()
+
         return True
 
     def _show_welcome(self):
@@ -532,6 +535,39 @@ class SetupWizard:
         self.console.print(panel)
         self.console.print()
 
+    def _offer_package_generation(self):
+        """Bietet an, ein Kunden-Paket zu generieren"""
+        self.console.print("\n[bold]Kunden-Paket generieren?[/bold]")
+        self.console.print(
+            "   [dim]Erstelle eine portable .exe/.app die du auf Kunden-PCs "
+            "kopieren kannst.[/dim]"
+        )
+        self.console.print(
+            "   [dim]Kunden brauchen kein Python und keinen Setup-Wizard.[/dim]\n"
+        )
+
+        if Confirm.ask("   Jetzt Kunden-Paket generieren?", default=False):
+            try:
+                from ce365.setup.package_generator import run_generate_package
+                run_generate_package()
+            except ImportError:
+                self.console.print(
+                    "\n   [yellow]⚠ Package-Generator nicht verfügbar.[/yellow]"
+                )
+                self.console.print(
+                    "   [dim]Installiere Build-Tools: "
+                    "pip install -r requirements-build.txt[/dim]"
+                )
+            except Exception as e:
+                self.console.print(
+                    f"\n   [red]Fehler: {e}[/red]"
+                )
+        else:
+            self.console.print(
+                "\n   [dim]Du kannst später jederzeit 'ce365 --generate-package' "
+                "ausführen.[/dim]\n"
+            )
+
     def _get_timestamp(self) -> str:
         """Gibt aktuellen Timestamp zurück"""
         from datetime import datetime
@@ -539,14 +575,32 @@ class SetupWizard:
 
     def _get_default_template(self) -> str:
         """Gibt Default .env Template zurück falls .env.example fehlt"""
-        return """# Anthropic API Key (erforderlich)
+        return """# LLM Provider (anthropic, openai, openrouter)
+LLM_PROVIDER=anthropic
+
+# Anthropic API Key (erforderlich)
 ANTHROPIC_API_KEY=your_api_key_here
+
+# OpenAI API Key (falls OpenAI als Provider)
+OPENAI_API_KEY=
+
+# OpenRouter API Key (falls OpenRouter als Provider)
+OPENROUTER_API_KEY=
+
+# Edition (community, pro)
+EDITION=community
+
+# Lizenzschlüssel (erforderlich für Pro)
+LICENSE_KEY=
+
+# Techniker-Passwort (bcrypt hash)
+TECHNICIAN_PASSWORD_HASH=
 
 # Optional: Log Level (DEBUG, INFO, WARNING, ERROR)
 LOG_LEVEL=INFO
 
 # Optional: Claude Model
-CLAUDE_MODEL=claude-sonnet-4-5-20250929
+CLAUDE_MODEL=claude-sonnet-4-6
 
 # ============================================================================
 # LEARNING SYSTEM - DATABASE KONFIGURATION

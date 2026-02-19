@@ -5,8 +5,23 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
 
-# .env laden (Fallback)
-load_dotenv()
+# Embedded Config prüfen (Kunden-Paket)
+_EMBEDDED_CONFIG = {}
+try:
+    from ce365.setup.embedded_config import is_embedded, get_config
+    if is_embedded():
+        _EMBEDDED_CONFIG = get_config()
+except ImportError:
+    pass
+
+# .env laden (nur wenn nicht embedded)
+if not _EMBEDDED_CONFIG:
+    load_dotenv()
+else:
+    # Embedded Config als Environment-Variablen setzen
+    for key, value in _EMBEDDED_CONFIG.items():
+        if not key.startswith("_") and value:
+            os.environ[key] = str(value)
 
 # Secrets Manager importieren
 try:

@@ -1,16 +1,16 @@
 @echo off
 REM
-REM TechCare Bot - One-Command Installation Script (Windows)
+REM CE365 Agent - One-Command Installation Script (Windows)
 REM
 REM Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
-REM Licensed under MIT License
+REM Licensed under Source Available License
 REM
 REM Usage: install.bat
 
 echo.
 echo ================================================================
 echo.
-echo    TechCare Bot - Installation
+echo    CE365 Agent - Installation
 echo.
 echo    AI-powered IT-Wartungsassistent
 echo.
@@ -62,14 +62,14 @@ echo.
 
 REM Install Spacy German model
 echo Installiere deutsches Sprachmodell (fuer PII Detection)...
-python -m spacy download de_core_news_md -q
+python -m spacy download de_core_news_sm -q
 echo [OK] Sprachmodell installiert
 echo.
 
-REM Install TechCare Bot
-echo Installiere TechCare Bot...
+REM Install CE365 Agent
+echo Installiere CE365 Agent...
 pip install -e . -q
-echo [OK] TechCare Bot installiert
+echo [OK] CE365 Agent installiert
 echo.
 
 REM Success
@@ -82,12 +82,14 @@ echo.
 echo Starten mit:
 echo.
 echo    venv\Scripts\activate.bat  (falls nicht bereits aktiviert)
-echo    techcare
+echo    ce365
 echo.
 echo Beim ersten Start fuehrt dich ein Setup-Assistent durch die
-echo Konfiguration (API Key, etc.).
+echo Konfiguration (API Key, Lizenz, etc.).
 echo.
-echo Dokumentation: docs\INSTALLATION.md
-echo Hilfe: https://github.com/your-repo/techcare-bot/issues
+echo Kunden-Paket erstellen:
+echo    ce365 --generate-package
+echo.
+echo Hilfe: https://github.com/eckhardt77/ce365-agent/issues
 echo.
 pause

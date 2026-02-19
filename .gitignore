@@ -35,6 +35,7 @@ build/
 dist/
 *.egg-info/
 *.spec
+!ce365.spec
 *.whl
 *.tar.gz
 checksums.txt
@@ -49,7 +50,7 @@ tools/
 docker-compose.learning-db.yml
 generate_docs.py
 setup.py
-requirements-build.txt
+# requirements-build.txt — erlaubt (Open-Core Build-System)
 requirements-dev.txt
 SECURITY_AUDIT.md
 EDITION_FEATURES.md
