@@ -1,5 +1,7 @@
-# Environment
+# Environment — ALLE .env Dateien blockieren
 .env
+.env.*
+!.env.example
 venv/
 __pycache__/
 *.pyc
