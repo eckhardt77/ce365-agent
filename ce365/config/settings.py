@@ -21,7 +21,7 @@ class Settings(BaseModel):
 
     # LLM Provider
     llm_provider: str = "anthropic"  # "anthropic", "openai", "openrouter"
-    llm_model: str = "claude-sonnet-4-5-20250929"  # Provider-abhängig
+    llm_model: str = "claude-sonnet-4-6"  # Provider-abhängig
 
     # API Keys
     anthropic_api_key: str = ""
@@ -102,7 +102,7 @@ class Settings(BaseModel):
         # Verzeichnisse erstellen
         settings = cls(
             llm_provider=llm_provider,
-            llm_model=os.getenv("LLM_MODEL", os.getenv("CLAUDE_MODEL", "claude-sonnet-4-5-20250929")),
+            llm_model=os.getenv("LLM_MODEL", os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")),
             anthropic_api_key=anthropic_key,
             openai_api_key=openai_key,
             openrouter_api_key=openrouter_key,

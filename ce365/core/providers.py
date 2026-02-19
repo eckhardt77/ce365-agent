@@ -59,7 +59,7 @@ class LLMProvider(ABC):
 class AnthropicProvider(LLMProvider):
     """Anthropic Claude Provider"""
 
-    def __init__(self, api_key: str, model: str = "claude-sonnet-4-5-20250929"):
+    def __init__(self, api_key: str, model: str = "claude-sonnet-4-6"):
         super().__init__()
         from anthropic import Anthropic
         self.client = Anthropic(api_key=api_key)
@@ -98,7 +98,7 @@ class AnthropicProvider(LLMProvider):
 class OpenAIProvider(LLMProvider):
     """OpenAI GPT Provider"""
 
-    def __init__(self, api_key: str, model: str = "gpt-4o", base_url: str = None):
+    def __init__(self, api_key: str, model: str = "gpt-4.1", base_url: str = None):
         super().__init__()
         from openai import OpenAI
         kwargs = {"api_key": api_key}
@@ -248,7 +248,7 @@ class OpenAIProvider(LLMProvider):
 class OpenRouterProvider(OpenAIProvider):
     """OpenRouter Provider (OpenAI-kompatible API)"""
 
-    def __init__(self, api_key: str, model: str = "anthropic/claude-sonnet-4-5-20250929"):
+    def __init__(self, api_key: str, model: str = "anthropic/claude-sonnet-4-6"):
         super().__init__(
             api_key=api_key,
             model=model,
@@ -279,9 +279,9 @@ class _NormalizedResponse:
 
 # Provider Factory
 DEFAULT_MODELS = {
-    "anthropic": "claude-sonnet-4-5-20250929",
-    "openai": "gpt-4o",
-    "openrouter": "anthropic/claude-sonnet-4-5-20250929",
+    "anthropic": "claude-sonnet-4-6",
+    "openai": "gpt-4.1",
+    "openrouter": "anthropic/claude-sonnet-4-6",
 }
 
 
