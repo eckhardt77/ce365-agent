@@ -163,6 +163,7 @@ class Settings(BaseModel):
         """Speichert User-Settings in ~/.ce365/config.json"""
         config = {
             "language": self.language,
+            "llm_provider": self.llm_provider,
             "llm_model": self.llm_model,
             "log_level": self.log_level
         }

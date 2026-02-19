@@ -9,6 +9,7 @@ import asyncio
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 from ce365.core.providers import create_provider
+from ce365.core.commands import SlashCommandHandler
 from ce365.core.session import Session
 from ce365.tools.registry import ToolRegistry
 from ce365.tools.executor import CommandExecutor
@@ -130,6 +131,9 @@ class CE365Bot:
         self._session_token: Optional[str] = None
         self._heartbeat_task: Optional[asyncio.Task] = None
 
+        # Slash Commands
+        self.command_handler = SlashCommandHandler()
+
         # Tool System
         self.tool_registry = ToolRegistry()
         self._register_tools()
@@ -233,7 +237,7 @@ class CE365Bot:
             return
 
         self.console.display_info(f"Session ID: {self.session.session_id}")
-        self.console.display_info("Tippe 'exit' oder 'quit' zum Beenden")
+        self.console.display_info("Tippe /help fuer Commands, 'exit' zum Beenden")
 
         # Learning Stats anzeigen
         try:
@@ -266,15 +270,9 @@ class CE365Bot:
                     self.console.display_success("Session beendet. Auf Wiedersehen!")
                     break
 
-                # Special Command: stats
-                if user_input.lower() == "stats":
-                    stats = self.case_library.get_statistics()
-                    self.console.display_learning_stats(stats)
-                    continue
-
-                # Special Command: privacy / datenschutz
-                if user_input.lower() in ["privacy", "datenschutz", "daten"]:
-                    await self._handle_privacy_command()
+                # Slash Commands + Aliases
+                if self.command_handler.is_command(user_input):
+                    await self.command_handler.execute(user_input, self)
                     continue
 
                 # GO REPAIR Command
