@@ -2,7 +2,6 @@ from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.syntax import Syntax
-from rich.prompt import Prompt
 from rich.spinner import Spinner
 from rich.live import Live
 from rich import box
@@ -128,9 +127,8 @@ class RichConsole:
         self.console.print()
         self.console.rule(style="dim")  # Trennlinie
         self.console.print()
-        if prompt:
-            return Prompt.ask(f"[bold green]>[/bold green] {prompt}").strip()
-        return Prompt.ask("[bold green]>[/bold green]", default="").strip()
+        display = f"[bold green]> Steve:[/bold green] {prompt}" if prompt else "[bold green]> Steve:[/bold green] "
+        return self.console.input(display).strip()
 
     @contextmanager
     def show_spinner(self, message: str):

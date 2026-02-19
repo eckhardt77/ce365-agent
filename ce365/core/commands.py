@@ -59,6 +59,14 @@ class SlashCommandHandler:
         if raw_cmd.startswith("/"):
             raw_cmd = raw_cmd[1:]
 
+        # Bare "/" zeigt Command-Liste
+        if not raw_cmd:
+            bot.console.console.print("[bold]Commands:[/bold]")
+            for cmd in self._commands.values():
+                bot.console.console.print(f"  [cyan]/{cmd.name}[/cyan]  {cmd.description}")
+            bot.console.console.print()
+            return True
+
         # Alias aufloesen
         cmd_name = self._alias_map.get(raw_cmd, raw_cmd)
 

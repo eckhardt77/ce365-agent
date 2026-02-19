@@ -359,64 +359,42 @@ class CE365Bot:
         if tos_file.exists():
             return True
 
-        # Disclaimer anzeigen
-        self.console.display_separator()
-        self.console.console.print("[bold red]⚠️  WICHTIG: HAFTUNGSAUSSCHLUSS[/bold red]\n")
+        # Kompakter Disclaimer
+        from rich.panel import Panel
 
-        disclaimer_path = Path(__file__).parent.parent.parent / "DISCLAIMER.txt"
-
-        if disclaimer_path.exists():
-            with open(disclaimer_path, 'r', encoding='utf-8') as f:
-                disclaimer = f.read()
-            self.console.console.print(disclaimer)
-        else:
-            # Fallback wenn Datei nicht gefunden
-            self.console.console.print("""
-CE365 Agent wird "AS IS" bereitgestellt, OHNE JEGLICHE GARANTIE.
-
-⚠️  KEINE HAFTUNG für:
-   - Datenverlust
-   - System-Schäden
-   - Fehlgeschlagene Reparaturen
-
-✅ Nutzung auf EIGENE VERANTWORTUNG
-✅ BACKUP-PFLICHT vor Reparaturen
-✅ Technisches Verständnis erforderlich
-
-Durch Nutzung akzeptieren Sie diese Bedingungen.
-            """)
-
-        self.console.display_separator()
+        disclaimer_text = (
+            "CE365 Agent wird [bold]AS IS[/bold] bereitgestellt, ohne jegliche Garantie.\n"
+            "Keine Haftung fuer Datenverlust, System-Schaeden oder fehlgeschlagene Reparaturen.\n"
+            "Nutzung auf eigene Verantwortung — Backups vor Reparaturen sind Pflicht.\n\n"
+            "[dim]Vollstaendiger Text: DISCLAIMER.txt[/dim]"
+        )
+        self.console.console.print()
+        self.console.console.print(Panel(disclaimer_text, title="⚠️  Haftungsausschluss", border_style="red"))
         self.console.console.print()
 
         # User-Eingabe
         while True:
-            response = self.console.get_input(
-                "Ich habe den Haftungsausschluss gelesen und akzeptiere die Bedingungen (ja/nein)"
-            ).strip().lower()
+            response = self.console.get_input("Akzeptieren? (ja/nein)").strip().lower()
 
             if response in ["ja", "yes", "y", "j"]:
-                # Akzeptanz speichern
                 try:
                     tos_file.touch()
-                    self.console.display_success("✅ Bedingungen akzeptiert. Viel Erfolg!")
+                    self.console.display_success("Bedingungen akzeptiert. Viel Erfolg!")
                     self.console.console.print()
                     return True
                 except Exception as e:
                     self.console.display_warning(f"Konnte Akzeptanz nicht speichern: {e}")
-                    return True  # Trotzdem weitermachen
+                    return True
 
             elif response in ["nein", "no", "n"]:
                 self.console.console.print()
-                self.console.console.print("[yellow]ℹ️  Du hast die Bedingungen nicht akzeptiert.[/yellow]")
-                self.console.console.print("[yellow]   CE365 Agent wird beendet.[/yellow]")
-                self.console.console.print()
-                self.console.console.print("[dim]Bei Fragen: https://github.com/yourusername/ce365-agent/issues[/dim]")
+                self.console.console.print("[yellow]Bedingungen nicht akzeptiert — CE365 wird beendet.[/yellow]")
+                self.console.console.print("[dim]Bei Fragen: https://github.com/eckhardt77/ce365-agent/issues[/dim]")
                 self.console.console.print()
                 return False
 
             else:
-                self.console.console.print("[red]❌ Bitte antworte mit 'ja' oder 'nein'[/red]\n")
+                self.console.console.print("[red]Bitte antworte mit 'ja' oder 'nein'[/red]\n")
 
     async def _check_license(self):
         """
@@ -493,44 +471,20 @@ Durch Nutzung akzeptieren Sie diese Bedingungen.
             sys.exit(1)
 
     async def _display_initial_system_status(self):
-        """
-        Zeigt automatischen System-Statusbericht beim Start
-
-        Ruft auf:
-        - get_system_info (OS, Hardware, Disk)
-        - check_backup_status (Backup-Zustand)
-        - check_security_status (Firewall, Antivirus)
-        """
+        """Zeigt kompakte einzeilige System-Zusammenfassung beim Start"""
         try:
-            self.console.display_info("🔍 Erstelle System-Statusbericht...")
-            self.console.display_info("")
-
-            # 1. System Info
-            system_info_tool = self.tool_registry.get_tool("get_system_info")
-            if system_info_tool:
-                result = await system_info_tool.execute()
-                self.console.display_tool_result("get_system_info", result)
-                self.console.display_info("")
-
-            # 2. Backup Status
-            backup_tool = self.tool_registry.get_tool("check_backup_status")
-            if backup_tool:
-                result = await backup_tool.execute()
-                self.console.display_tool_result("check_backup_status", result)
-                self.console.display_info("")
-
-            # 3. Security Status
-            security_tool = self.tool_registry.get_tool("check_security_status")
-            if security_tool:
-                result = await security_tool.execute()
-                self.console.display_tool_result("check_security_status", result)
-                self.console.display_info("")
-
-            self.console.display_success("✅ System-Statusbericht abgeschlossen")
+            import platform
+            import psutil
+            os_name = f"{platform.system()} {platform.release()}"
+            cpu_cores = psutil.cpu_count(logical=True)
+            ram_percent = psutil.virtual_memory().percent
+            disk_free_gb = psutil.disk_usage("/").free / (1024**3)
+            self.console.console.print(
+                f"[dim]💻 {os_name} | CPU: {cpu_cores} Kerne | RAM: {ram_percent}% | Disk frei: {disk_free_gb:.1f} GB[/dim]"
+            )
             self.console.display_info("💬 Wie kann ich dir helfen?")
-
         except Exception as e:
-            self.console.display_warning(f"⚠️  Statusbericht konnte nicht vollständig erstellt werden: {str(e)}")
+            self.console.display_warning(f"⚠️  System-Info nicht verfügbar: {str(e)}")
 
     async def process_message(self, user_input: str):
         """
