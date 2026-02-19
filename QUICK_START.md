@@ -1,160 +1,115 @@
-# 🚀 CE365 Agent - Quick Start
+# CE365 Agent — Quick Start
 
-## 5-Minuten Start-Anleitung
-
-### Windows (PowerShell)
-
-```powershell
-# 1. In Projektverzeichnis wechseln
-cd C:\Users\<DeinName>\Documents\CE365-Bot
-
-# 2. Virtual Environment aktivieren
-.\venv\Scripts\activate
-
-# 3. Bot starten
-ce365
-
-# Bei Problemen:
-python -m ce365
-```
-
-### macOS (Terminal)
+## Installation
 
 ```bash
-# 1. In Projektverzeichnis wechseln
-cd ~/Documents/CE365-Bot
-
-# 2. Virtual Environment aktivieren
-source venv/bin/activate
-
-# 3. Bot starten
+pip install ce365-agent
 ce365
+```
 
-# Bei Problemen:
+Alternative (aus Quellcode):
+
+```bash
+git clone https://github.com/eckhardt77/ce365-agent.git
+cd ce365-agent
+python3 -m venv venv
+source venv/bin/activate    # Windows: venv\Scripts\activate
+pip install -e .
 python -m ce365
 ```
 
 ---
 
-## ⚡ Erster Test-Fall
+## Erster Start: Setup-Wizard
+
+Beim ersten Start fuehrt dich der Wizard durch die Konfiguration:
 
 ```
-1. Bot startet und zeigt Logo
+1. Name eingeben          → Wird fuer Reports und Changelog verwendet
+2. Edition waehlen        → Community (kostenlos) oder Pro
+3. LLM-Provider waehlen   → Anthropic (empfohlen), OpenAI oder OpenRouter
+4. API-Key eingeben       → Von deinem Provider (BYOK)
+5. Passwort setzen        → Optional, schuetzt den Zugang
+```
 
-2. Du schreibst: Neuer Fall
+Danach startet Steve automatisch.
 
-3. CE365 fragt:
-   - Backup vorhanden? → Antworte: Ja
-   - Betriebssystem? → Antworte: Windows 11 (oder dein OS)
-   - Problem? → Antworte: Windows Update Fehler
-   - Bereits versucht? → Antworte: Neustart
+---
 
-4. CE365 startet Audit:
-   Kommando 1: systeminfo | findstr /C:"OS Name"
+## Erster Test-Fall
 
-5. Du führst Kommando aus und kopierst Output zurück
+```
+💻 Darwin 25.2.0 | CPU: 11 Kerne | RAM: 76% | Disk frei: 92 GB
+💬 Wie kann ich dir helfen?
 
-6. CE365 analysiert und gibt weitere Kommandos
+> Steve: Mein Laptop ist seit Tagen extrem langsam.
 
-7. Nach Audit: CE365 erstellt Reparatur-Plan
+Steve fragt: Backup vorhanden? Betriebssystem?
 
-8. Du gibst Freigabe: GO REPAIR: 1
+> Steve: Ja, Time Machine. macOS Sequoia.
 
-9. CE365 führt Schritt 1 aus (nur dieser!)
+Steve fuehrt Diagnose aus (Read-Only, keine Aenderungen)...
 
-10. Fertig! ✓
+█ Diagnose abgeschlossen
+  ❌ Festplatte: 97% voll
+  ❌ 14 Autostart-Programme
+
+Steve schlaegt vor:
+  1. Temp-Dateien bereinigen
+  2. Autostart-Programme deaktivieren
+
+> Steve: GO REPAIR: 1
+
+Steve fuehrt nur Schritt 1 aus, zeigt Ergebnis.
+Fertig!
 ```
 
 ---
 
-## 📖 Vollständige Anleitungen
+## Die wichtigsten Befehle
 
-- **Installation**: `docs/INSTALLATION.md`
-  - Windows & macOS Schritt-für-Schritt
-  - Python Installation
-  - API Key Setup
-  - Troubleshooting
-
-- **Nutzung**: `docs/NUTZUNGSANLEITUNG.md`
-  - 3 vollständige Beispiele
-  - Workflow-Erklärung
-  - Alle Befehle
-  - Best Practices
-  - Tipps & Tricks
-
-- **Vorlagen**: `docs/VORLAGEN.md`
-  - Audit-Kits (Windows + macOS)
-  - Plan-Vorlagen
-  - Ausführungs-Vorlagen
-  - Beispiel-Fälle
+| Eingabe | Was passiert |
+|---------|-------------|
+| `/` | Alle Commands anzeigen |
+| `/help` | Ausfuehrliche Hilfe |
+| `/stats` | Learning-Statistiken |
+| `/provider` | LLM-Provider wechseln |
+| `/model` | LLM-Modell wechseln |
+| `/report` | Incident Report erstellen |
+| `/privacy` | Datenschutz-Einstellungen |
+| `GO REPAIR: 1,2` | Reparatur-Schritte freigeben |
+| `exit` | Session beenden |
 
 ---
 
-## 🔑 API Key Setup
+## Wichtigste Regeln
 
-Falls noch nicht gemacht:
+**Steve aendert nie etwas ohne deine Freigabe.**
 
-1. Gehe zu: https://console.anthropic.com/
-2. Erstelle Account / Login
-3. "API Keys" → "Create Key"
-4. Kopiere Key (beginnt mit `sk-ant-api03-...`)
-5. Öffne `.env` Datei im Projektverzeichnis
-6. Trage ein: `ANTHROPIC_API_KEY=sk-ant-api03-xxx...`
-7. Speichern
+- Diagnose = Read-Only (automatisch)
+- Reparatur = nur nach `GO REPAIR`
+- Schritte laufen einzeln, nie parallel
+- Alles wird protokolliert
 
 ---
 
-## 💡 Wichtigste Regeln
+## CLI-Optionen
 
-### ✅ DO
-
-- **Backup haben** bevor du startest
-- **Output komplett kopieren** (nicht nur Teile)
-- **Schritte einzeln freigeben** (GO REPAIR: 1)
-- **Plan lesen** bevor du GO REPAIR gibst
-
-### ❌ DON'T
-
-- **Keine Freigabe ohne Plan** zu verstehen
-- **Nicht alle Schritte blind freigeben**
-- **Keine Admin-Rechte** wenn nicht nötig
-- **Session nicht unterbrechen**
+```bash
+ce365                    # Normaler Start
+ce365 --version          # Version anzeigen
+ce365 --health           # Health-Check
+ce365 --set-password     # Passwort setzen/aendern
+ce365 --update           # Update
+ce365 --rollback         # Rollback
+ce365 --uninstall        # Deinstallation
+```
 
 ---
 
-## 🆘 Hilfe
+## Hilfe
 
-**Bot startet nicht?**
-→ Siehe `docs/INSTALLATION.md` Troubleshooting
-
-**API Key fehlt?**
-→ `.env` Datei prüfen: `cat .env` (macOS) / `type .env` (Windows)
-
-**Bot macht nichts?**
-→ Schreibe "Neuer Fall" um zu starten
-
-**Weitere Fragen?**
-→ Siehe `docs/NUTZUNGSANLEITUNG.md` FAQ
-
----
-
-## 📞 Support
-
+- Ausfuehrliche Anleitung: `docs/NUTZUNGSANLEITUNG.md`
 - Installation: `docs/INSTALLATION.md`
-- Nutzung: `docs/NUTZUNGSANLEITUNG.md`
-- Vorlagen: `docs/VORLAGEN.md`
-- Tests: `TEST_RESULTS.md`
-
----
-
-**Los geht's!** 🚀
-
-```bash
-# Windows
-.\venv\Scripts\activate
-ce365
-
-# macOS
-source venv/bin/activate
-ce365
-```
+- GitHub: [github.com/eckhardt77/ce365-agent/issues](https://github.com/eckhardt77/ce365-agent/issues)
+- Website: [agent.ce365.de](https://agent.ce365.de)
