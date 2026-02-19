@@ -55,6 +55,7 @@ from ce365.tools.repair.update_scheduler import ScheduleSystemUpdatesTool
 from ce365.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 from ce365.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
 from ce365.tools.analysis.consult_specialist import ConsultSpecialistTool  # Multi-Agent
+from ce365.tools.audit.incident_report import IncidentReportTool  # SOAP Incident Report
 from ce365.core.agents import SpecialistAgent, SPECIALISTS  # Multi-Agent System
 
 # License & Usage
@@ -198,6 +199,14 @@ class CE365Bot:
         # === Multi-Agent: Spezialist konsultieren (alle Editionen) ===
         self.tool_registry.register(ConsultSpecialistTool())
 
+        # === Incident Report (alle Editionen) ===
+        self.tool_registry.register(IncidentReportTool(
+            session=self.session,
+            changelog=self.changelog,
+            state_machine=self.state_machine,
+            bot=self,
+        ))
+
         self.console.display_info(
             f"🔧 Tools registriert: {len(self.tool_registry)} "
             f"(Audit: {len(self.tool_registry.get_audit_tools())}, "
@@ -294,6 +303,10 @@ class CE365Bot:
             except Exception as e:
                 self.console.display_error(f"Unerwarteter Fehler: {str(e)}")
 
+        # Incident Report anbieten (wenn Changelog-Eintraege vorhanden)
+        if self.changelog.entries:
+            await self._offer_incident_report()
+
         # Session freigeben (Pro)
         await self._release_session()
 
@@ -305,6 +318,31 @@ class CE365Bot:
             # Learning: Session speichern wenn erfolgreich
             if self.state_machine.current_state.value == "completed":
                 await self._save_session_as_case(success=True)
+
+    async def _offer_incident_report(self):
+        """Bietet am Session-Ende einen Incident Report an"""
+        try:
+            self.console.display_separator()
+            choice = self.console.get_input(
+                "Incident Report erstellen? [M]arkdown / [S]OAP / [N]ein"
+            ).strip().lower()
+
+            if choice in ("m", "markdown"):
+                report_tool = self.tool_registry.get_tool("generate_incident_report")
+                if report_tool:
+                    report = await report_tool.execute(format="markdown", include_audit_log=True)
+                    self.console.display_separator()
+                    self.console.console.print(report)
+            elif choice in ("s", "soap"):
+                report_tool = self.tool_registry.get_tool("generate_incident_report")
+                if report_tool:
+                    report = await report_tool.execute(format="soap", include_audit_log=True)
+                    self.console.display_separator()
+                    self.console.console.print(report)
+            else:
+                pass  # Kein Report gewuenscht
+        except (KeyboardInterrupt, EOFError):
+            pass  # User hat abgebrochen
 
     def _check_tos_acceptance(self) -> bool:
         """
