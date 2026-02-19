@@ -12,7 +12,7 @@ import shutil
 from pathlib import Path
 from rich.console import Console
 from rich.prompt import Prompt, Confirm
-from passlib.context import CryptContext
+import bcrypt
 from ce365.core.bot import CE365Bot
 from ce365.setup.wizard import run_setup_if_needed
 from ce365.config.settings import get_settings
@@ -62,13 +62,11 @@ def verify_technician_password() -> bool:
         console.print("\n[bold cyan]🔐 CE365 Zugriff[/bold cyan]")
         console.print("[dim]Techniker-Passwort erforderlich[/dim]\n")
 
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
         # 3 Versuche
         for attempt in range(3):
             password = Prompt.ask("Passwort", password=True)
 
-            if pwd_context.verify(password, settings.technician_password_hash):
+            if bcrypt.checkpw(password.encode("utf-8"), settings.technician_password_hash.encode("utf-8")):
                 console.print("[green]✓ Authentifiziert[/green]\n")
                 return True
 
@@ -131,8 +129,6 @@ def set_password():
     """Setzt oder ändert das Techniker-Passwort"""
     console.print("\n[bold cyan]🔐 Techniker-Passwort setzen[/bold cyan]\n")
 
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
     while True:
         password = Prompt.ask("Neues Passwort", password=True)
 
@@ -151,7 +147,9 @@ def set_password():
             continue
 
         # Hash erstellen
-        password_hash = pwd_context.hash(password)
+        password_hash = bcrypt.hashpw(
+            password.encode("utf-8"), bcrypt.gensalt()
+        ).decode("utf-8")
 
         # In .env schreiben
         env_file = Path(".env")
@@ -327,9 +325,13 @@ def main():
         return
 
     if args.version:
-        from ce365.__version__ import __version__, __edition__
+        from ce365.__version__ import __version__
         mode = "Binary" if getattr(sys, "frozen", False) else "pip"
-        print(f"CE365 Agent v{__version__} ({__edition__} Edition, {mode})")
+        try:
+            edition = get_settings().edition.title()
+        except Exception:
+            edition = "Community"
+        print(f"CE365 Agent v{__version__} ({edition} Edition, {mode})")
         return
 
     if args.health:
@@ -347,6 +349,10 @@ def main():
         return
 
     if args.generate_package:
+        if getattr(sys, "frozen", False):
+            console.print("\n[yellow]⚠ Kunden-Paket-Generator ist nur über die pip-Installation verfügbar.[/yellow]")
+            console.print("[dim]Auf dem Techniker-PC: pip3 install ce365-agent && ce365 --generate-package[/dim]\n")
+            sys.exit(1)
         settings = get_settings()
         if settings.edition != "pro":
             console.print("\n[red]❌ Kunden-Paket-Generator ist nur in der Pro Edition verfügbar.[/red]")
@@ -368,8 +374,14 @@ def main():
     # Normaler Start
     try:
         # Portable Binary prüfen (Kunden-Paket)
-        settings = get_settings()
-        if settings.is_portable():
+        is_portable = False
+        try:
+            settings = get_settings()
+            is_portable = settings.is_portable()
+        except (ValueError, Exception):
+            pass  # Keine gültige Config → Wizard wird gestartet
+
+        if is_portable:
             # Kunden-Paket: Techniker-Info anzeigen, kein Wizard
             _show_portable_banner()
             # Update-Check anbieten
@@ -379,6 +391,10 @@ def main():
             if not run_setup_if_needed():
                 print("\n👋 Setup abgebrochen. Auf Wiedersehen!")
                 sys.exit(0)
+
+            # Settings-Singleton zurücksetzen (Wizard hat .env erstellt/geändert)
+            from ce365.config import settings as settings_module
+            settings_module._settings = None
 
         # 2. Techniker-Passwort prüfen
         if not verify_technician_password():

@@ -20,7 +20,7 @@ from rich.panel import Panel
 from rich.prompt import Prompt, Confirm
 from rich.text import Text
 from anthropic import Anthropic
-from passlib.context import CryptContext
+import bcrypt
 
 
 class SetupWizard:
@@ -61,6 +61,7 @@ class SetupWizard:
 
         # 2. Edition
         edition = self._ask_edition()
+        self._edition = edition
 
         # 3. Provider + API Key
         provider, api_key = self._ask_provider()
@@ -109,7 +110,7 @@ class SetupWizard:
         # 5. API Key testen (optional)
         self.console.print()
         if Confirm.ask("API Key jetzt testen?", default=True):
-            if not self._test_api_key(api_key):
+            if not self._test_api_key(api_key, provider):
                 self.console.print("\n[yellow]⚠️  API Key konnte nicht getestet werden.[/yellow]")
                 self.console.print("[yellow]   Du kannst CE365 trotzdem nutzen.[/yellow]")
                 if not Confirm.ask("\nTrotzdem fortfahren?", default=True):
@@ -118,8 +119,8 @@ class SetupWizard:
         # 6. Success!
         self._show_success(user_name)
 
-        # 7. Kunden-Paket generieren? (nur Pro)
-        if self._edition == "pro":
+        # 7. Kunden-Paket generieren? (nur Pro, nur pip-Installation)
+        if self._edition == "pro" and not getattr(sys, "frozen", False):
             self._offer_package_generation()
 
         return True
@@ -325,8 +326,6 @@ class SetupWizard:
         if not Confirm.ask("   Passwort jetzt setzen?", default=True):
             return None
 
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
         while True:
             password = Prompt.ask("   Passwort", password=True)
 
@@ -346,7 +345,9 @@ class SetupWizard:
                 continue
 
             # Hash erstellen
-            password_hash = pwd_context.hash(password)
+            password_hash = bcrypt.hashpw(
+                password.encode("utf-8"), bcrypt.gensalt()
+            ).decode("utf-8")
 
             self.console.print("\n   [green]✓ Passwort gespeichert[/green]")
             return password_hash
@@ -548,29 +549,56 @@ class SetupWizard:
             self.console.print(f"\n[red]Fehler: {str(e)}[/red]")
             return False
 
-    def _test_api_key(self, api_key: str) -> bool:
+    def _test_api_key(self, api_key: str, provider: str = "anthropic") -> bool:
         """
-        Testet API Key mit einfachem Request (Anthropic)
+        Testet API Key mit einfachem Request
 
         Args:
             api_key: API Key zum Testen
+            provider: LLM Provider (anthropic/openai/openrouter)
 
         Returns:
             True wenn Key funktioniert
         """
         try:
             with self.console.status("[bold cyan]Teste API Key..."):
-                client = Anthropic(api_key=api_key)
+                if provider == "anthropic":
+                    client = Anthropic(api_key=api_key)
+                    response = client.messages.create(
+                        model="claude-sonnet-4-5-20250929",
+                        max_tokens=10,
+                        messages=[{"role": "user", "content": "Hi"}]
+                    )
+                    if response.content:
+                        self.console.print("\n[green]✓ API Key funktioniert![/green]")
+                        return True
 
-                response = client.messages.create(
-                    model="claude-sonnet-4-5-20250929",
-                    max_tokens=10,
-                    messages=[{"role": "user", "content": "Hi"}]
-                )
+                elif provider == "openai":
+                    from openai import OpenAI
+                    client = OpenAI(api_key=api_key)
+                    response = client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        max_tokens=10,
+                        messages=[{"role": "user", "content": "Hi"}]
+                    )
+                    if response.choices:
+                        self.console.print("\n[green]✓ API Key funktioniert![/green]")
+                        return True
 
-                if response.content:
-                    self.console.print("\n[green]✓ API Key funktioniert![/green]")
-                    return True
+                elif provider == "openrouter":
+                    from openai import OpenAI
+                    client = OpenAI(
+                        api_key=api_key,
+                        base_url="https://openrouter.ai/api/v1"
+                    )
+                    response = client.chat.completions.create(
+                        model="openai/gpt-4o-mini",
+                        max_tokens=10,
+                        messages=[{"role": "user", "content": "Hi"}]
+                    )
+                    if response.choices:
+                        self.console.print("\n[green]✓ API Key funktioniert![/green]")
+                        return True
 
         except Exception as e:
             self.console.print(f"\n[red]❌ API Key Test fehlgeschlagen: {str(e)}[/red]")
@@ -664,8 +692,8 @@ LICENSE_SERVER_URL=
 # Optional: Log Level (DEBUG, INFO, WARNING, ERROR)
 LOG_LEVEL=INFO
 
-# Optional: Claude Model
-CLAUDE_MODEL=claude-sonnet-4-6
+# Optional: LLM Model (leer = Provider-Default)
+LLM_MODEL=
 
 # ============================================================================
 # LEARNING SYSTEM - DATABASE KONFIGURATION

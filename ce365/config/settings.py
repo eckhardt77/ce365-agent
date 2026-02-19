@@ -190,6 +190,10 @@ class Settings(BaseModel):
     def load(cls) -> "Settings":
         """Settings aus Environment-Variablen und Config-Datei laden"""
 
+        # .env neu laden (wichtig: Wizard erstellt .env nach dem ersten Import)
+        if not _PORTABLE_CONFIG:
+            load_dotenv(override=True)
+
         # Config-Datei laden (falls vorhanden)
         user_config = cls._load_user_config()
 
@@ -228,7 +232,7 @@ class Settings(BaseModel):
         # Verzeichnisse erstellen
         settings = cls(
             llm_provider=llm_provider,
-            llm_model=os.getenv("LLM_MODEL", os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")),
+            llm_model=os.getenv("LLM_MODEL", os.getenv("CLAUDE_MODEL", None)),
             anthropic_api_key=anthropic_key,
             openai_api_key=openai_key,
             openrouter_api_key=openrouter_key,

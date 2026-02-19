@@ -130,7 +130,7 @@ class OpenAIProvider(LLMProvider):
 
         params = {
             "model": self.model,
-            "max_tokens": max_tokens,
+            "max_completion_tokens": max_tokens,
             "messages": oai_messages,
         }
 
@@ -303,7 +303,7 @@ class _NormalizedResponse:
 # Provider Factory
 DEFAULT_MODELS = {
     "anthropic": "claude-sonnet-4-6",
-    "openai": "gpt-5.2",
+    "openai": "gpt-4o",
     "openrouter": "google/gemini-3-flash-preview",
 }
 

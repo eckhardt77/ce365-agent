@@ -8,6 +8,12 @@ from rich import box
 import json
 from contextlib import contextmanager
 
+# readline aktivieren fuer Pfeiltasten-Support (links/rechts, History)
+try:
+    import readline  # noqa: F401
+except ImportError:
+    pass
+
 try:
     from ce365.__version__ import __version__, __edition__
 except ImportError:
@@ -34,11 +40,18 @@ class RichConsole:
         title.append(" ", style="")
         title.append("🔧", style="")
 
-        # Version und Edition Info
+        # Version und Edition Info (dynamisch aus Settings)
+        try:
+            from ce365.config.settings import get_settings
+            _edition = get_settings().edition.title()
+        except Exception:
+            _edition = __edition__
+
         info = Text()
         info.append(f"v{__version__}", style="dim cyan")
         info.append(" • ", style="dim")
-        info.append(f"{__edition__} Edition", style="dim yellow")
+        edition_style = "dim green" if _edition.lower() == "pro" else "dim yellow"
+        info.append(f"{_edition} Edition", style=edition_style)
         info.append(" • ", style="dim")
         info.append("Windows & macOS", style="dim green")
 

@@ -59,6 +59,9 @@ hidden_imports = [
     'aiosqlite',
     'sqlalchemy',
     'sqlalchemy.dialects.sqlite',
+    'sqlalchemy.dialects.mysql',
+    'asyncmy',
+    'pymysql',
     'presidio_analyzer',
     'presidio_anonymizer',
     'spacy',
@@ -82,11 +85,34 @@ hidden_imports = [
     'ce365.__main__',
 ]
 
+# rich._unicode_data Module (dynamisch geladen, Bindestriche im Namen)
+import rich._unicode_data
+rich_unicode_dir = os.path.dirname(rich._unicode_data.__file__)
+rich_unicode_data = [(rich_unicode_dir, 'rich/_unicode_data')]
+
+# i18n Sprachdateien
+i18n_dir = os.path.join(PROJECT_ROOT, 'ce365', 'i18n', 'languages')
+i18n_data = [(i18n_dir, 'ce365/i18n/languages')]
+
+# asyncmy komplett einbinden (Cython-Extensions + Submodule)
+import asyncmy
+asyncmy_dir = os.path.dirname(asyncmy.__file__)
+asyncmy_data = [
+    (asyncmy_dir, 'asyncmy'),
+    (os.path.join(asyncmy_dir, 'constants'), 'asyncmy/constants'),
+]
+# Replication-Submodul falls vorhanden
+if os.path.isdir(os.path.join(asyncmy_dir, 'replication')):
+    asyncmy_data.append((os.path.join(asyncmy_dir, 'replication'), 'asyncmy/replication'))
+
 # Daten-Dateien
 datas = [
     # Embedded Config Template (wird beim Build durch echte Config ersetzt)
 ]
+datas += i18n_data
 datas += spacy_data
+datas += rich_unicode_data
+datas += asyncmy_data
 
 a = Analysis(
     [os.path.join(PROJECT_ROOT, 'ce365', '__main__.py')],

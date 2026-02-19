@@ -61,8 +61,9 @@ class PackageGenerator:
 
         # 0. Edition prüfen — nur Pro darf Kunden-Pakete erstellen
         try:
-            from ce365.config.settings import get_settings
-            settings = get_settings()
+            from ce365.config import settings as settings_module
+            settings_module._settings = None  # Singleton zurücksetzen
+            settings = settings_module.get_settings()
             if settings.edition != "pro":
                 console.print("[red]❌ Kunden-Paket-Generator ist nur in der Pro Edition verfügbar.[/red]")
                 console.print("[dim]Upgrade auf Pro: https://agent.ce365.de/#preise[/dim]\n")

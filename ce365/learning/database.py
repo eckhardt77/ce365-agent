@@ -108,6 +108,11 @@ class DatabaseManager:
 
         while retry_count < max_retries:
             try:
+                # DB-URL: async Treiber durch sync Treiber ersetzen
+                db_url = self.settings.learning_db_url
+                db_url = db_url.replace("mysql+asyncmy://", "mysql+pymysql://")
+                db_url = db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://")
+
                 # Engine erstellen (PostgreSQL oder MySQL)
                 engine_kwargs = {
                     'poolclass': QueuePool,
@@ -119,13 +124,13 @@ class DatabaseManager:
                 }
 
                 # MySQL spezifische Settings
-                if 'mysql' in self.settings.learning_db_url.lower():
+                if 'mysql' in db_url.lower():
                     engine_kwargs['connect_args'] = {
                         'connect_timeout': self.settings.learning_db_timeout
                     }
 
                 self.engine = create_engine(
-                    self.settings.learning_db_url,
+                    db_url,
                     **engine_kwargs
                 )
 
