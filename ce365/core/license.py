@@ -227,6 +227,161 @@ class LicenseValidator:
             return None
 
 
+class SessionManager:
+    """
+    Verwaltet Lizenz-Sessions mit dem License Server
+
+    - Session starten (Seat belegen)
+    - Heartbeats senden (alle 5 Min)
+    - Session freigeben beim Beenden
+    """
+
+    HEARTBEAT_INTERVAL = 300  # 5 Minuten
+
+    def __init__(self, license_server_url: str, license_key: str):
+        self.license_server_url = license_server_url.rstrip("/")
+        self.license_key = license_key
+        self.session_token: Optional[str] = None
+        self._heartbeat_task: Optional[asyncio.Task] = None
+
+    def _get_system_fingerprint(self) -> str:
+        """Erzeugt einen System-Fingerprint"""
+        import uuid
+        import platform
+        machine_data = f"{uuid.getnode()}|{platform.node()}|{platform.machine()}"
+        return hashlib.sha256(machine_data.encode()).hexdigest()[:16]
+
+    async def start_session(self, timeout: int = 10) -> Dict:
+        """
+        Startet eine Session beim Lizenzserver
+
+        Returns:
+            {"success": bool, "session_token": str, "error": str}
+        """
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                response = await client.post(
+                    f"{self.license_server_url}/api/license/session/start",
+                    json={
+                        "license_key": self.license_key,
+                        "system_fingerprint": self._get_system_fingerprint(),
+                    },
+                )
+
+                if response.status_code != 200:
+                    return {"success": False, "error": f"HTTP {response.status_code}"}
+
+                data = response.json()
+                if data.get("success"):
+                    self.session_token = data.get("session_token", "")
+                return data
+
+        except (httpx.TimeoutException, httpx.ConnectError):
+            return {"success": False, "error": "License Server nicht erreichbar"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    async def send_heartbeat(self, timeout: int = 10) -> bool:
+        """Sendet einen einzelnen Heartbeat"""
+        if not self.session_token:
+            return False
+
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                response = await client.post(
+                    f"{self.license_server_url}/api/license/session/heartbeat",
+                    json={"session_token": self.session_token},
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    return data.get("success", False)
+                return False
+        except Exception:
+            return False
+
+    async def _heartbeat_loop(self):
+        """Hintergrund-Loop für periodische Heartbeats"""
+        while True:
+            await asyncio.sleep(self.HEARTBEAT_INTERVAL)
+            await self.send_heartbeat()
+
+    def start_heartbeat_timer(self):
+        """Startet den Heartbeat-Timer als asyncio Task"""
+        if self._heartbeat_task is None or self._heartbeat_task.done():
+            self._heartbeat_task = asyncio.ensure_future(self._heartbeat_loop())
+
+    def stop_heartbeat_timer(self):
+        """Stoppt den Heartbeat-Timer"""
+        if self._heartbeat_task and not self._heartbeat_task.done():
+            self._heartbeat_task.cancel()
+            self._heartbeat_task = None
+
+    async def release_session(self, timeout: int = 5) -> bool:
+        """
+        Gibt die Session beim Lizenzserver frei
+
+        Returns:
+            True wenn erfolgreich
+        """
+        self.stop_heartbeat_timer()
+
+        if not self.session_token:
+            return True
+
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                response = await client.post(
+                    f"{self.license_server_url}/api/license/session/release",
+                    json={"session_token": self.session_token},
+                )
+                self.session_token = None
+                return response.status_code == 200
+        except Exception:
+            self.session_token = None
+            return False
+
+
+def validate_license_sync(
+    license_key: str,
+    license_server_url: str,
+    timeout: int = 10
+) -> Dict:
+    """
+    Synchrone Lizenzvalidierung (für den Wizard)
+
+    Args:
+        license_key: Lizenzschlüssel
+        license_server_url: Lizenzserver URL
+        timeout: Request-Timeout
+
+    Returns:
+        Lizenz-Info Dict
+    """
+    try:
+        import httpx as httpx_sync
+        with httpx_sync.Client(timeout=timeout) as client:
+            response = client.post(
+                f"{license_server_url.rstrip('/')}/api/license/validate",
+                json={"license_key": license_key},
+            )
+
+            if response.status_code != 200:
+                return {
+                    "valid": False,
+                    "error": f"License Server Fehler: HTTP {response.status_code}",
+                }
+
+            return response.json()
+
+    except (httpx_sync.TimeoutException, httpx_sync.ConnectError):
+        return {
+            "valid": False,
+            "error": "License Server nicht erreichbar. Bitte Internetverbindung prüfen.",
+        }
+    except Exception as e:
+        return {"valid": False, "error": f"Fehler: {str(e)}"}
+
+
 async def validate_license(
     license_key: str,
     license_server_url: str,

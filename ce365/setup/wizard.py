@@ -30,10 +30,14 @@ class SetupWizard:
     Führt durch Initial-Setup wenn .env nicht existiert
     """
 
+    # Standard-URL für den Lizenzserver
+    DEFAULT_LICENSE_SERVER_URL = "https://license.ce365.de"
+
     def __init__(self):
         self.console = Console()
         self.env_path = Path(".env")
         self.env_example_path = Path(".env.example")
+        self.license_server_url = self.DEFAULT_LICENSE_SERVER_URL
 
     def needs_setup(self) -> bool:
         """Prüft ob Setup nötig ist (.env existiert nicht)"""
@@ -190,7 +194,7 @@ class SetupWizard:
         return edition_map[choice]
 
     def _ask_license_key(self) -> Optional[str]:
-        """Fragt nach Lizenzschlüssel (erforderlich)"""
+        """Fragt nach Lizenzschlüssel und validiert online"""
         self.console.print("\n[bold]3a. Lizenzschlüssel[/bold] [red](erforderlich)[/red]")
         self.console.print("   [dim]Erhältlich nach Kauf bei: https://ce365.eckhardt-marketing.de[/dim]")
         self.console.print("   [dim]💡 Für kostenloses Testen: Wähle 'Free Edition' beim Setup[/dim]\n")
@@ -213,7 +217,53 @@ class SetupWizard:
                     return None
                 continue
 
-            return license_key.strip()
+            # Online-Validierung gegen Lizenzserver
+            license_key = license_key.strip()
+            validation = self._validate_license_online(license_key)
+
+            if validation is None:
+                # Server nicht erreichbar — User entscheiden lassen
+                self.console.print("\n   [yellow]⚠️  Lizenzserver nicht erreichbar.[/yellow]")
+                self.console.print("   [dim]Die Lizenz wird beim nächsten Start online geprüft.[/dim]")
+                if Confirm.ask("   Trotzdem fortfahren?", default=True):
+                    return license_key
+                if not Confirm.ask("   Nochmal versuchen?", default=True):
+                    return None
+                continue
+
+            if validation.get("valid"):
+                customer = validation.get("customer_name", "")
+                edition = validation.get("edition", "pro")
+                self.console.print(f"\n   [green]✓ Lizenz gültig! ({edition.title()})[/green]")
+                if customer:
+                    self.console.print(f"   [dim]Registriert auf: {customer}[/dim]")
+                return license_key
+            else:
+                error = validation.get("error", "Unbekannter Fehler")
+                self.console.print(f"\n   [red]❌ Lizenz ungültig: {error}[/red]")
+                if not Confirm.ask("   Nochmal versuchen?", default=True):
+                    return None
+                continue
+
+    def _validate_license_online(self, license_key: str) -> Optional[dict]:
+        """
+        Validiert Lizenzschlüssel online gegen den Lizenzserver
+
+        Returns:
+            Dict mit Validierungsergebnis, oder None wenn Server nicht erreichbar
+        """
+        from ce365.core.license import validate_license_sync
+
+        license_server_url = self.license_server_url
+
+        with self.console.status("[bold cyan]   Prüfe Lizenzschlüssel..."):
+            result = validate_license_sync(license_key, license_server_url)
+
+        # Server nicht erreichbar?
+        if not result.get("valid") and "nicht erreichbar" in result.get("error", ""):
+            return None
+
+        return result
 
     def _ask_provider(self) -> tuple:
         """Fragt nach LLM Provider und API Key"""
@@ -376,7 +426,8 @@ class SetupWizard:
         edition: str = "community",
         license_key: str = "",
         db_config: dict = None,
-        technician_password: str = None
+        technician_password: str = None,
+        license_server_url: str = ""
     ) -> bool:
         """
         Erstellt .env Datei aus Template
@@ -443,6 +494,16 @@ class SetupWizard:
                     "TECHNICIAN_PASSWORD_HASH=",
                     f"TECHNICIAN_PASSWORD_HASH={technician_password}"
                 )
+
+            # License Server URL hinzufügen
+            server_url = license_server_url or self.license_server_url
+            if "LICENSE_SERVER_URL=" in config:
+                config = config.replace(
+                    "LICENSE_SERVER_URL=",
+                    f"LICENSE_SERVER_URL={server_url}"
+                )
+            else:
+                config += f"\n# License Server\nLICENSE_SERVER_URL={server_url}\n"
 
             # Datenbank-Config hinzufügen (Enterprise)
             if db_config:
@@ -595,6 +656,9 @@ LICENSE_KEY=
 
 # Techniker-Passwort (bcrypt hash)
 TECHNICIAN_PASSWORD_HASH=
+
+# License Server URL
+LICENSE_SERVER_URL=
 
 # Optional: Log Level (DEBUG, INFO, WARNING, ERROR)
 LOG_LEVEL=INFO

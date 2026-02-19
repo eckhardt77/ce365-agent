@@ -177,6 +177,48 @@ def set_password():
         return
 
 
+async def _run_with_license_session(bot):
+    """
+    Führt den Bot mit Lizenz-Session-Management aus
+
+    - Startet Session beim Lizenzserver (Pro)
+    - Heartbeats alle 5 Minuten
+    - Session-Release beim Beenden
+    """
+    session_manager = None
+
+    try:
+        # Session starten (nur Pro mit Lizenz + Server-URL)
+        settings = get_settings()
+        if settings.edition == "pro" and settings.license_key and settings.license_server_url:
+            from ce365.core.license import SessionManager
+            session_manager = SessionManager(
+                settings.license_server_url, settings.license_key
+            )
+            result = await session_manager.start_session()
+
+            if result.get("success"):
+                session_manager.start_heartbeat_timer()
+            else:
+                error = result.get("error", "")
+                if "Seat" in error or "belegt" in error:
+                    console.print(f"\n[red]❌ {error}[/red]")
+                    console.print("[dim]Bitte beende die andere Session zuerst.[/dim]\n")
+                    return
+                # Server offline → trotzdem starten
+                console.print(f"[yellow]⚠ Lizenz-Session: {error}[/yellow]")
+                session_manager = None
+
+        # Bot starten
+        await bot.run()
+
+    finally:
+        # Session immer freigeben
+        if session_manager:
+            session_manager.stop_heartbeat_timer()
+            await session_manager.release_session()
+
+
 def main():
     """Main Entry Point für CE365 Agent"""
     # CLI-Argumente parsen
@@ -286,9 +328,9 @@ def main():
         if not verify_technician_password():
             sys.exit(1)
 
-        # 3. Bot starten
+        # 3. Bot starten mit Lizenz-Session-Management
         bot = CE365Bot()
-        asyncio.run(bot.run())
+        asyncio.run(_run_with_license_session(bot))
 
     except KeyboardInterrupt:
         print("\n\n👋 Session beendet. Auf Wiedersehen!")
