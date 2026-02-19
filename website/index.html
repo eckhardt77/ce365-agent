@@ -3,14 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CE365 Agent — Dein KI-Sidekick f&uuml;r IT-Reparaturen</title>
-    <meta name="description" content="CE365 Agent macht IT-Techniker 10x produktiver. KI-gest&uuml;tzte Diagnose, gef&uuml;hrte Reparatur und automatische Dokumentation in einem CLI-Tool.">
-    <meta property="og:title" content="CE365 Agent — KI-gest&uuml;tzter IT-Service-Assistent">
-    <meta property="og:description" content="Diagnose, Reparatur und Dokumentation — in einem Tool. Der KI-Sidekick f&uuml;r IT-Profis.">
+    <title>CE365 Agent — KI IT-Support Tool | Diagnose, Reparatur &amp; Dokumentation</title>
+    <meta name="description" content="CE365 Agent: Multi-Agent KI-System f&uuml;r IT-Techniker. Automatische Diagnose, gef&uuml;hrte Reparatur, SOAP Reports &amp; Live-Modell-Auswahl. Community Edition gratis.">
+    <meta name="keywords" content="KI IT-Support, IT-Techniker KI, KI Diagnose Tool, IT-Reparatur KI, CLI IT-Tool, Multi-Agent System, SOAP Report, IT-Dokumentation, DSGVO KI, CE365">
+    <link rel="canonical" href="https://agent.ce365.de/">
+    <link rel="alternate" hreflang="de" href="https://agent.ce365.de/">
+    <link rel="alternate" hreflang="en" href="https://agent.ce365.de/en/">
+    <meta property="og:title" content="CE365 Agent — KI IT-Support Tool mit Multi-Agent System">
+    <meta property="og:description" content="3 spezialisierte KI-Agenten f&uuml;r Diagnose, Reparatur und Dokumentation. Der KI-Sidekick f&uuml;r IT-Profis.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://agent.ce365.de">
+    <meta property="og:url" content="https://agent.ce365.de/">
+    <meta property="og:image" content="https://agent.ce365.de/og-image.png">
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "CE365 Agent",
+        "operatingSystem": "Windows, macOS, Linux",
+        "applicationCategory": "BusinessApplication",
+        "description": "Multi-Agent KI-System f\u00fcr IT-Techniker. Automatische Diagnose, gef\u00fchrte Reparatur und Dokumentation.",
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Community",
+                "price": "0",
+                "priceCurrency": "EUR",
+                "description": "Kostenlose Edition mit 7 Diagnose-Tools und 5 Repairs/Monat"
+            },
+            {
+                "@type": "Offer",
+                "name": "Pro",
+                "price": "99",
+                "priceCurrency": "EUR",
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "billingDuration": "P1M"
+                },
+                "description": "Multi-Agent System, unbegrenzte Repairs, SOAP Reports, Live-Modelle"
+            }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Brauche ich einen eigenen API-Key?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja. CE365 Agent nutzt KI-APIs im BYOK-Modell (Bring Your Own Key). Du zahlst die API-Kosten direkt beim Provider \u2014 typisch 1\u20135 \u20ac pro Monat bei normaler Nutzung. Unterst\u00fctzt werden Anthropic (Claude), OpenAI (GPT) und OpenRouter."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Welche Betriebssysteme werden unterst\u00fctzt?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "CE365 Agent l\u00e4uft auf Windows, macOS und Linux. Die Diagnose- und Repair-Tools nutzen jeweils die nativen System-Tools der Plattform."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Werden Kundendaten in die Cloud geschickt?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nein. Alle Daten bleiben lokal auf dem Techniker-PC. Nur anonymisierte Problembeschreibungen werden an den KI-Provider gesendet. Personenbezogene Daten werden vorher automatisch erkannt und entfernt (PII Detection via Microsoft Presidio)."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann CE365 Schaden am Kunden-PC anrichten?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "CE365 f\u00fchrt keine Aktionen ohne deine explizite Freigabe aus. Reparaturen werden vorgeschlagen und m\u00fcssen mit GO REPAIR best\u00e4tigt werden. Jede Aktion wird protokolliert."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was bedeutet \u201epro Seat\u201c?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ein Seat = ein gleichzeitig aktiver Techniker. Wenn dein Team 3 Techniker hat, die CE365 gleichzeitig nutzen, brauchst du 3 Seats."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich jederzeit k\u00fcndigen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Jederzeit. Das Abo l\u00e4uft monatsweise ohne Mindestlaufzeit. Nach K\u00fcndigung bleibt die Lizenz bis zum Ende des bezahlten Zeitraums aktiv."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Lohnt sich Pro f\u00fcr mich?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Wenn du IT-Dienstleister bist: fast sicher. Ein Techniker kostet 80\u2013150 \u20ac/Std. CE365 dr\u00fcckt eine typische Diagnose von 30 Minuten auf unter 60 Sekunden. Spart der Agent im ganzen Monat nur eine einzige Stunde, hat sich die Lizenz bezahlt."
+                }
+            }
+        ]
+    }
+    </script>
 
     <!-- Google Tag Manager (wird erst nach Cookie-Consent geladen) -->
     <script>
@@ -37,7 +138,49 @@
             </div>
             <div class="cookie-actions">
                 <button onclick="acceptCookies('essential')" class="cookie-btn cookie-btn-outline">Nur notwendige</button>
+                <button onclick="openCookieSettings()" class="cookie-btn cookie-btn-outline">Einstellungen</button>
                 <button onclick="acceptCookies('all')" class="cookie-btn cookie-btn-primary">Alle akzeptieren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Settings Modal -->
+    <div id="cookie-modal" class="cookie-modal" style="display:none;">
+        <div class="cookie-modal-box">
+            <h3>Cookie-Einstellungen</h3>
+            <p class="cookie-modal-desc">W&auml;hle, welche Cookies du zulassen m&ouml;chtest. Notwendige Cookies sind f&uuml;r den Betrieb der Website erforderlich und k&ouml;nnen nicht deaktiviert werden.</p>
+            <div class="cookie-option">
+                <div class="cookie-option-info">
+                    <strong>Notwendig</strong>
+                    <span>Grundfunktionen wie Seitennavigation und Zugriff auf sichere Bereiche.</span>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" checked disabled>
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="cookie-option">
+                <div class="cookie-option-info">
+                    <strong>Analyse</strong>
+                    <span>Hilft uns zu verstehen, wie Besucher die Website nutzen (Google Analytics via GTM).</span>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" id="cookie-analytics">
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="cookie-option">
+                <div class="cookie-option-info">
+                    <strong>Marketing</strong>
+                    <span>Wird verwendet, um relevante Werbung anzuzeigen (derzeit nicht aktiv).</span>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" id="cookie-marketing">
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="cookie-modal-actions">
+                <button onclick="saveCookieSettings()" class="cookie-btn cookie-btn-primary">Einstellungen speichern</button>
             </div>
         </div>
     </div>
@@ -169,6 +312,20 @@
             <h3 class="section-title center">Alles, was ein IT-Profi braucht.</h3>
             <p class="section-text center">Keine &uuml;berladene Software. Kein Cloud-Zwang. Ein fokussiertes CLI-Tool, das genau das tut, was du brauchst.</p>
 
+            <!-- Feature Hero: Multi-Agent System -->
+            <div class="feature-hero">
+                <span class="feature-badge-pro">PRO</span>
+                <h4>Multi-Agent System</h4>
+                <p>Steve koordiniert 3 spezialisierte KI-Agenten, die parallel arbeiten: Diagnostics Agent analysiert das System, Repair Agent f&uuml;hrt Reparaturen aus, Documentation Agent protokolliert alles. Wie ein eingespieltes Team &mdash; nur schneller.</p>
+                <div class="agent-chips">
+                    <span class="agent-chip">Diagnostics Agent</span>
+                    <span class="agent-chip">Repair Agent</span>
+                    <span class="agent-chip">Documentation Agent</span>
+                </div>
+            </div>
+
+            <!-- Community Features -->
+            <div class="feature-section-label"><span class="feature-badge-free">GRATIS</span> Community Features</div>
             <div class="feature-grid">
                 <div class="feature-card feature-large">
                     <div class="feature-icon-wrap"><span class="feature-icon">&#129504;</span></div>
@@ -199,6 +356,36 @@
                     <div class="feature-icon-wrap"><span class="feature-icon">&#128218;</span></div>
                     <h4>Lernendes System</h4>
                     <p>Bew&auml;hrte L&ouml;sungen werden gespeichert und bei &auml;hnlichen Problemen automatisch vorgeschlagen. Dein Team wird mit jeder Reparatur besser.</p>
+                </div>
+            </div>
+
+            <!-- Pro Features -->
+            <div class="feature-section-label"><span class="feature-badge-pro">PRO</span> Pro Features</div>
+            <div class="feature-grid">
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#129302;</span></div>
+                    <h4>Multi-Agent System</h4>
+                    <p>Steve + 3 spezialisierte Agenten (Diagnostics, Repair, Documentation) arbeiten parallel an deinem Problem.</p>
+                </div>
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#9889;</span></div>
+                    <h4>Live-Modell-Auswahl</h4>
+                    <p>Wechsle KI-Modelle on-the-fly per <code>/model</code>. Aktuelle Modell-Listen direkt von den Provider-APIs &mdash; immer auf dem neuesten Stand.</p>
+                </div>
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#128203;</span></div>
+                    <h4>SOAP Incident Reports</h4>
+                    <p>Professionelle Einsatzberichte im SOAP-Format (Subjektiv, Objektiv, Assessment, Plan) per <code>/report</code>. Perfekt f&uuml;r Ticketsysteme und Kunden-Kommunikation.</p>
+                </div>
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#9000;</span></div>
+                    <h4>Slash-Commands</h4>
+                    <p>Schnellzugriff per <code>/help</code>, <code>/stats</code>, <code>/provider</code>, <code>/model</code>, <code>/report</code>, <code>/privacy</code> &mdash; Profi-Workflows ohne Umwege.</p>
+                </div>
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#128260;</span></div>
+                    <h4>Provider Hot-Swap</h4>
+                    <p>Wechsle KI-Provider und Modell mitten in der Session per <code>/provider</code>. Kein Neustart, kein Kontextverlust.</p>
                 </div>
             </div>
         </div>
@@ -257,6 +444,11 @@
                         <li class="yes">PII-Erkennung</li>
                         <li class="yes">Lokales Learning</li>
                         <li class="yes">Multi-Provider (BYOK)</li>
+                        <li class="no">Multi-Agent System</li>
+                        <li class="no">Live-Modell-Auswahl</li>
+                        <li class="no">SOAP Incident Reports</li>
+                        <li class="no">Slash-Commands</li>
+                        <li class="no">Provider Hot-Swap</li>
                         <li class="no">Erweiterte Audit &amp; Repair</li>
                         <li class="no">Web-Recherche</li>
                         <li class="no">Shared Learning</li>
@@ -283,6 +475,11 @@
                     <ul class="price-list">
                         <li class="yes">Alles aus Community</li>
                         <li class="yes"><strong>Unbegrenzte</strong> Repairs</li>
+                        <li class="yes"><strong>Multi-Agent System</strong> (Steve + 3 Agenten)</li>
+                        <li class="yes"><strong>Live-Modell-Auswahl</strong></li>
+                        <li class="yes"><strong>SOAP Incident Reports</strong></li>
+                        <li class="yes"><strong>Slash-Commands</strong></li>
+                        <li class="yes"><strong>Provider Hot-Swap</strong></li>
                         <li class="yes">Erweiterte Audit-Tools</li>
                         <li class="yes">SFC, Network, Updates, Startup, Restore</li>
                         <li class="yes">Web-Recherche &amp; Root-Cause-Analyse</li>
@@ -406,6 +603,7 @@
                     <a href="/datenschutz.html">Datenschutzerkl&auml;rung</a>
                     <a href="/agb.html">AGB</a>
                     <a href="/widerruf.html">Widerrufsbelehrung</a>
+                    <a href="#" onclick="openCookieSettings();return false;">Cookie-Einstellungen</a>
                 </div>
                 <div class="footer-col">
                     <h5>Kontakt</h5>

@@ -4,37 +4,103 @@
 
 const API_URL = "https://license.ce365.de";
 
-/* === Cookie Consent === */
+/* === Cookie Consent (Granular) === */
 
 function getCookieConsent() {
-    return localStorage.getItem("ce365_consent");
-}
+    var raw = localStorage.getItem("ce365_consent");
+    if (!raw) return null;
 
-function acceptCookies(level) {
-    localStorage.setItem("ce365_consent", level);
-    document.getElementById("cookie-banner").style.display = "none";
+    // Migration: old string format ("essential" / "all") -> new JSON format
+    if (raw === "essential") {
+        var migrated = { analytics: false, marketing: false };
+        localStorage.setItem("ce365_consent", JSON.stringify(migrated));
+        return migrated;
+    }
+    if (raw === "all") {
+        var migrated = { analytics: true, marketing: true };
+        localStorage.setItem("ce365_consent", JSON.stringify(migrated));
+        return migrated;
+    }
 
-    if (level === "all") {
-        loadGTM();
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({ event: "cookie_consent", consent_level: "all" });
+    try {
+        return JSON.parse(raw);
+    } catch (e) {
+        localStorage.removeItem("ce365_consent");
+        return null;
     }
 }
 
-// Show banner if no consent yet
+function saveConsent(consent) {
+    localStorage.setItem("ce365_consent", JSON.stringify(consent));
+    document.getElementById("cookie-banner").style.display = "none";
+    closeCookieSettings();
+    applyConsent(consent);
+}
+
+function applyConsent(consent) {
+    if (consent && consent.analytics) {
+        loadGTM();
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: "cookie_consent", consent_level: "analytics" });
+    }
+}
+
+function acceptCookies(level) {
+    if (level === "all") {
+        saveConsent({ analytics: true, marketing: true });
+    } else {
+        saveConsent({ analytics: false, marketing: false });
+    }
+}
+
+function openCookieSettings() {
+    var modal = document.getElementById("cookie-modal");
+    var consent = getCookieConsent();
+    // Pre-fill toggles based on current consent
+    var analyticsEl = document.getElementById("cookie-analytics");
+    var marketingEl = document.getElementById("cookie-marketing");
+    if (consent) {
+        analyticsEl.checked = !!consent.analytics;
+        marketingEl.checked = !!consent.marketing;
+    } else {
+        analyticsEl.checked = false;
+        marketingEl.checked = false;
+    }
+    modal.style.display = "flex";
+}
+
+function closeCookieSettings() {
+    document.getElementById("cookie-modal").style.display = "none";
+}
+
+function saveCookieSettings() {
+    var analytics = document.getElementById("cookie-analytics").checked;
+    var marketing = document.getElementById("cookie-marketing").checked;
+    saveConsent({ analytics: analytics, marketing: marketing });
+}
+
+// Close modal on backdrop click
+document.addEventListener("click", function (e) {
+    var modal = document.getElementById("cookie-modal");
+    if (e.target === modal) {
+        closeCookieSettings();
+    }
+});
+
+// Show banner if no consent yet, otherwise apply existing consent
 document.addEventListener("DOMContentLoaded", function () {
-    const consent = getCookieConsent();
+    var consent = getCookieConsent();
     if (!consent) {
         document.getElementById("cookie-banner").style.display = "block";
-    } else if (consent === "all") {
-        loadGTM();
+    } else {
+        applyConsent(consent);
     }
 });
 
 /* === Mobile Menu === */
 
 function toggleMenu() {
-    const nav = document.querySelector(".nav-links");
+    var nav = document.querySelector(".nav-links");
     nav.classList.toggle("open");
 }
 
@@ -48,21 +114,21 @@ document.addEventListener("click", function (e) {
 /* === Stripe Checkout === */
 
 async function startCheckout(seats) {
-    const btn = event.target;
-    const originalText = btn.textContent;
+    var btn = event.target;
+    var originalText = btn.textContent;
     btn.disabled = true;
 
-    const lang = document.documentElement.lang === "en" ? "en" : "de";
+    var lang = document.documentElement.lang === "en" ? "en" : "de";
     btn.textContent = lang === "en" ? "Loading..." : "Wird geladen...";
 
     try {
-        const response = await fetch(`${API_URL}/api/stripe/create-checkout?seats=${seats}&lang=${lang}`, {
+        var response = await fetch(API_URL + "/api/stripe/create-checkout?seats=" + seats + "&lang=" + lang, {
             method: "POST",
         });
 
         if (!response.ok) throw new Error("Checkout failed");
 
-        const data = await response.json();
+        var data = await response.json();
         if (data.checkout_url) {
             window.location.href = data.checkout_url;
         } else {
@@ -81,12 +147,12 @@ async function startCheckout(seats) {
 
 async function submitNewsletter(e) {
     e.preventDefault();
-    const form = e.target;
-    const email = form.email.value.trim();
-    const name = form.name.value.trim();
-    const btn = form.querySelector("button");
-    const successEl = document.getElementById("newsletter-success");
-    const errorEl = document.getElementById("newsletter-error");
+    var form = e.target;
+    var email = form.email.value.trim();
+    var name = form.name.value.trim();
+    var btn = form.querySelector("button");
+    var successEl = document.getElementById("newsletter-success");
+    var errorEl = document.getElementById("newsletter-error");
 
     successEl.style.display = "none";
     errorEl.style.display = "none";
@@ -94,18 +160,19 @@ async function submitNewsletter(e) {
     btn.disabled = true;
 
     try {
-        const response = await fetch(`${API_URL}/api/newsletter/subscribe`, {
+        var response = await fetch(API_URL + "/api/newsletter/subscribe", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, name }),
+            body: JSON.stringify({ email: email, name: name }),
         });
         if (!response.ok) throw new Error();
         successEl.style.display = "block";
         form.reset();
-    } catch {
+    } catch (err) {
         errorEl.style.display = "block";
     } finally {
-        btn.textContent = "Anmelden";
+        var lang = document.documentElement.lang === "en" ? "en" : "de";
+        btn.textContent = lang === "en" ? "Subscribe" : "Anmelden";
         btn.disabled = false;
     }
 }
@@ -114,8 +181,10 @@ async function submitNewsletter(e) {
 
 document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener("click", function (e) {
+        var href = this.getAttribute("href");
+        if (href === "#") return; // skip cookie-settings link
         e.preventDefault();
-        var target = document.querySelector(this.getAttribute("href"));
+        var target = document.querySelector(href);
         if (target) {
             target.scrollIntoView({ behavior: "smooth", block: "start" });
         }

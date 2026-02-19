@@ -3,14 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CE365 Agent — Your AI Sidekick for IT Repairs</title>
-    <meta name="description" content="CE365 Agent makes IT technicians 10x more productive. AI-powered diagnostics, guided repairs and automatic documentation in one CLI tool.">
-    <meta property="og:title" content="CE365 Agent — AI-Powered IT Service Assistant">
-    <meta property="og:description" content="Diagnostics, repairs and documentation — in one tool. The AI sidekick for IT pros.">
+    <title>CE365 Agent — AI IT Support Tool | Diagnostics, Repair &amp; Documentation</title>
+    <meta name="description" content="CE365 Agent: Multi-agent AI system for IT technicians. Automated diagnostics, guided repairs, SOAP reports &amp; live model selection. Community Edition free forever.">
+    <meta name="keywords" content="AI IT support, IT technician AI, AI diagnostic tool, IT repair AI, CLI IT tool, multi-agent system, SOAP report, IT documentation, GDPR AI, CE365">
+    <link rel="canonical" href="https://agent.ce365.de/en/">
+    <link rel="alternate" hreflang="de" href="https://agent.ce365.de/">
+    <link rel="alternate" hreflang="en" href="https://agent.ce365.de/en/">
+    <meta property="og:title" content="CE365 Agent — AI IT Support Tool with Multi-Agent System">
+    <meta property="og:description" content="3 specialized AI agents for diagnostics, repair and documentation. The AI sidekick for IT pros.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://agent.ce365.de/en/">
+    <meta property="og:image" content="https://agent.ce365.de/og-image.png">
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "CE365 Agent",
+        "operatingSystem": "Windows, macOS, Linux",
+        "applicationCategory": "BusinessApplication",
+        "description": "Multi-agent AI system for IT technicians. Automated diagnostics, guided repairs and documentation.",
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Community",
+                "price": "0",
+                "priceCurrency": "EUR",
+                "description": "Free edition with 7 diagnostic tools and 5 repairs/month"
+            },
+            {
+                "@type": "Offer",
+                "name": "Pro",
+                "price": "99",
+                "priceCurrency": "EUR",
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "billingDuration": "P1M"
+                },
+                "description": "Multi-agent system, unlimited repairs, SOAP reports, live models"
+            }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Do I need my own API key?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. CE365 Agent uses AI APIs in a BYOK model (Bring Your Own Key). You pay API costs directly to the provider \u2014 typically \u20ac1\u20135 per month with normal usage. Supported: Anthropic (Claude), OpenAI (GPT), and OpenRouter."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Which operating systems are supported?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "CE365 Agent runs on Windows, macOS, and Linux. The diagnostic and repair tools use each platform\u2019s native system tools."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is customer data sent to the cloud?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. All data stays local on the technician\u2019s PC. Only anonymized problem descriptions are sent to the AI provider. Personal data is automatically detected and removed before transmission (PII Detection via Microsoft Presidio)."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can CE365 damage a client\u2019s PC?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "CE365 never executes actions without your explicit approval. Repairs are suggested and must be confirmed with GO REPAIR. Every action is logged and traceable."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What does \u201cper seat\u201d mean?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "One seat = one concurrently active technician. If your team has 3 technicians using CE365 simultaneously, you need 3 seats."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I cancel anytime?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. The subscription runs monthly with no minimum term. After cancellation, the license remains active until the end of the paid period."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does Pro pay for itself?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Almost always. If Pro saves you just 1 hour per month, it already pays for itself at a technician hourly rate of \u20ac80\u2013120. At \u20ac99/month, that\u2019s a return of over 500%."
+                }
+            }
+        ]
+    }
+    </script>
+
     <script>
     window.dataLayer = window.dataLayer || [];
     function loadGTM() {
@@ -34,7 +135,49 @@
             </div>
             <div class="cookie-actions">
                 <button onclick="acceptCookies('essential')" class="cookie-btn cookie-btn-outline">Essential only</button>
+                <button onclick="openCookieSettings()" class="cookie-btn cookie-btn-outline">Settings</button>
                 <button onclick="acceptCookies('all')" class="cookie-btn cookie-btn-primary">Accept all</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Settings Modal -->
+    <div id="cookie-modal" class="cookie-modal" style="display:none;">
+        <div class="cookie-modal-box">
+            <h3>Cookie Settings</h3>
+            <p class="cookie-modal-desc">Choose which cookies you want to allow. Essential cookies are required for the website to function and cannot be disabled.</p>
+            <div class="cookie-option">
+                <div class="cookie-option-info">
+                    <strong>Essential</strong>
+                    <span>Basic functions like page navigation and access to secure areas.</span>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" checked disabled>
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="cookie-option">
+                <div class="cookie-option-info">
+                    <strong>Analytics</strong>
+                    <span>Helps us understand how visitors use the website (Google Analytics via GTM).</span>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" id="cookie-analytics">
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="cookie-option">
+                <div class="cookie-option-info">
+                    <strong>Marketing</strong>
+                    <span>Used to display relevant advertising (currently not active).</span>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" id="cookie-marketing">
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="cookie-modal-actions">
+                <button onclick="saveCookieSettings()" class="cookie-btn cookie-btn-primary">Save settings</button>
             </div>
         </div>
     </div>
@@ -159,6 +302,20 @@
             <h3 class="section-title center">Everything an IT pro needs.</h3>
             <p class="section-text center">No bloated software. No cloud dependency. A focused CLI tool that does exactly what you need.</p>
 
+            <!-- Feature Hero: Multi-Agent System -->
+            <div class="feature-hero">
+                <span class="feature-badge-pro">PRO</span>
+                <h4>Multi-Agent System</h4>
+                <p>Steve coordinates 3 specialized AI agents working in parallel: Diagnostics Agent analyzes the system, Repair Agent executes fixes, Documentation Agent logs everything. Like a well-oiled team &mdash; just faster.</p>
+                <div class="agent-chips">
+                    <span class="agent-chip">Diagnostics Agent</span>
+                    <span class="agent-chip">Repair Agent</span>
+                    <span class="agent-chip">Documentation Agent</span>
+                </div>
+            </div>
+
+            <!-- Community Features -->
+            <div class="feature-section-label"><span class="feature-badge-free">FREE</span> Community Features</div>
             <div class="feature-grid">
                 <div class="feature-card feature-large">
                     <div class="feature-icon-wrap"><span class="feature-icon">&#129504;</span></div>
@@ -189,6 +346,36 @@
                     <div class="feature-icon-wrap"><span class="feature-icon">&#128218;</span></div>
                     <h4>Learning System</h4>
                     <p>Proven solutions are saved and automatically suggested for similar problems. Your team gets better with every repair.</p>
+                </div>
+            </div>
+
+            <!-- Pro Features -->
+            <div class="feature-section-label"><span class="feature-badge-pro">PRO</span> Pro Features</div>
+            <div class="feature-grid">
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#129302;</span></div>
+                    <h4>Multi-Agent System</h4>
+                    <p>Steve + 3 specialized agents (Diagnostics, Repair, Documentation) work in parallel on your problem.</p>
+                </div>
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#9889;</span></div>
+                    <h4>Live Model Selection</h4>
+                    <p>Switch AI models on-the-fly via <code>/model</code>. Up-to-date model lists directly from provider APIs &mdash; always current.</p>
+                </div>
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#128203;</span></div>
+                    <h4>SOAP Incident Reports</h4>
+                    <p>Professional incident reports in SOAP format (Subjective, Objective, Assessment, Plan) via <code>/report</code>. Perfect for ticket systems and client communication.</p>
+                </div>
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#9000;</span></div>
+                    <h4>Slash Commands</h4>
+                    <p>Quick access via <code>/help</code>, <code>/stats</code>, <code>/provider</code>, <code>/model</code>, <code>/report</code>, <code>/privacy</code> &mdash; pro workflows without detours.</p>
+                </div>
+                <div class="feature-card feature-card-pro">
+                    <div class="feature-icon-wrap"><span class="feature-icon">&#128260;</span></div>
+                    <h4>Provider Hot-Swap</h4>
+                    <p>Switch AI provider and model mid-session via <code>/provider</code>. No restart, no context loss.</p>
                 </div>
             </div>
         </div>
@@ -242,6 +429,11 @@
                         <li class="yes">PII detection</li>
                         <li class="yes">Local learning</li>
                         <li class="yes">Multi-provider (BYOK)</li>
+                        <li class="no">Multi-agent system</li>
+                        <li class="no">Live model selection</li>
+                        <li class="no">SOAP incident reports</li>
+                        <li class="no">Slash commands</li>
+                        <li class="no">Provider hot-swap</li>
                         <li class="no">Advanced audit &amp; repair</li>
                         <li class="no">Web research</li>
                         <li class="no">Shared learning</li>
@@ -264,6 +456,11 @@
                     <ul class="price-list">
                         <li class="yes">Everything in Community</li>
                         <li class="yes"><strong>Unlimited</strong> repairs</li>
+                        <li class="yes"><strong>Multi-agent system</strong> (Steve + 3 agents)</li>
+                        <li class="yes"><strong>Live model selection</strong></li>
+                        <li class="yes"><strong>SOAP incident reports</strong></li>
+                        <li class="yes"><strong>Slash commands</strong></li>
+                        <li class="yes"><strong>Provider hot-swap</strong></li>
                         <li class="yes">Advanced audit tools</li>
                         <li class="yes">SFC, Network, Updates, Startup, Restore</li>
                         <li class="yes">Web research &amp; root cause analysis</li>
@@ -381,6 +578,7 @@
                     <a href="/en/privacy.html">Privacy Policy</a>
                     <a href="/en/terms.html">Terms</a>
                     <a href="/en/cancellation.html">Cancellation Policy</a>
+                    <a href="#" onclick="openCookieSettings();return false;">Cookie Settings</a>
                 </div>
                 <div class="footer-col">
                     <h5>Contact</h5>
