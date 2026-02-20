@@ -78,6 +78,14 @@ class PIIDetector:
 
         # Analyzer Engine initialisieren
         try:
+            # In PyInstaller-Binary: spaCy-Modell-Download unterdruecken
+            # (sys.executable zeigt auf Binary, nicht auf Python)
+            import spacy
+            for model_name in ("de_core_news_sm", "en_core_web_sm"):
+                if not spacy.util.is_package(model_name):
+                    self.enabled = False
+                    return
+
             # NLP Engine (spacy)
             configuration = {
                 "nlp_engine_name": "spacy",
