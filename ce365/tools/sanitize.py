@@ -81,6 +81,59 @@ def validate_description(description: str, max_length: int = 200) -> str:
     return safe[:max_length].strip() or "CE365"
 
 
+# ============================================================
+# File Reading — Blocklist fuer sensitive Dateien
+# ============================================================
+
+BLOCKED_READ_PATTERNS = [
+    "/etc/shadow",
+    "/etc/gshadow",
+    "*.pem",
+    "*.key",
+    "*.p12",
+    "*.pfx",
+    "*/.ssh/id_*",
+    "*/.ssh/authorized_keys",
+    "*/.env",
+    "*/.env.*",
+    "*/credentials*",
+    "*/secrets*",
+    "*/.aws/credentials",
+    "*/.azure/credentials",
+    "*/.gcloud/credentials",
+    "*/token.json",
+    "*/.netrc",
+]
+
+
+def validate_read_path(path: str) -> str:
+    """
+    Validiert einen Dateipfad fuer Lesezugriff.
+    Blockiert sensitive Dateien (Keys, Credentials, etc.).
+
+    Raises:
+        ValueError: Wenn Pfad blockiert oder ungueltig ist
+    """
+    if not path or not path.strip():
+        raise ValueError("Dateipfad darf nicht leer sein")
+
+    path = path.strip()
+
+    # Allgemeine Injection-Pruefung
+    validate_file_path(path)
+
+    # Blocklist pruefen
+    from fnmatch import fnmatch
+    path_lower = path.lower()
+    for pattern in BLOCKED_READ_PATTERNS:
+        if fnmatch(path_lower, pattern.lower()):
+            raise ValueError(
+                f"Zugriff auf '{Path(path).name}' ist blockiert (Sicherheitsrichtlinie)"
+            )
+
+    return path
+
+
 def validate_integer(value, min_val: int = None, max_val: int = None) -> int:
     """
     Validates and converts a value to integer within bounds.

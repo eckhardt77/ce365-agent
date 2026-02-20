@@ -60,23 +60,50 @@ class SlashCommandHandler:
         if raw_cmd.startswith("/"):
             raw_cmd = raw_cmd[1:]
 
-        # Bare "/" zeigt interaktives Menue
+        # Bare "/" zeigt interaktives Menue (gruppiert wie Claude Code)
         if not raw_cmd:
             from rich.prompt import Prompt
             console = bot.console.console
             bot.console.display_separator()
-            console.print("[bold]Menue[/bold]\n")
-            cmd_list = list(self._commands.values())
-            for i, cmd in enumerate(cmd_list, 1):
-                console.print(f"  [cyan]{i}[/cyan]  {cmd.description}")
-            console.print(f"  [cyan]0[/cyan]  Zurueck\n")
-            choices = [str(i) for i in range(len(cmd_list) + 1)]
+            console.print("[bold]Befehle[/bold]\n")
+
+            # Gruppierte Befehlsliste
+            groups = [
+                ("Diagnose & Analyse", ["scan", "check", "report", "stats"]),
+                ("Remote & Integration", ["connect", "disconnect", "remote", "mcp"]),
+                ("Einstellungen", ["provider", "model", "config", "privacy"]),
+                ("System", ["update", "rollback", "help"]),
+            ]
+
+            flat_cmds = []
+            idx = 1
+            for group_name, cmd_names in groups:
+                group_items = []
+                for cn in cmd_names:
+                    cmd_obj = self._commands.get(cn)
+                    if cmd_obj:
+                        group_items.append((idx, cmd_obj))
+                        flat_cmds.append(cmd_obj)
+                        idx += 1
+                if group_items:
+                    console.print(f"  [bold dim]{group_name}[/bold dim]")
+                    for num, cmd_obj in group_items:
+                        alias_hint = ""
+                        if cmd_obj.aliases:
+                            main_aliases = [a for a in cmd_obj.aliases if a.startswith("/") or len(a) <= 3]
+                            if main_aliases:
+                                alias_hint = f" [dim](/{main_aliases[0]})[/dim]"
+                        console.print(f"    [cyan]{num:>2}[/cyan]  /{cmd_obj.name:<14} {cmd_obj.description}{alias_hint}")
+                    console.print()
+
+            console.print(f"   [cyan]0[/cyan]  Zurueck\n")
+            choices = [str(i) for i in range(len(flat_cmds) + 1)]
             choice = Prompt.ask("  Wahl", choices=choices, default="0")
             idx = int(choice)
             if idx == 0:
                 bot.console.display_info("Zurueck zum Chat.")
                 return True
-            selected = cmd_list[idx - 1]
+            selected = flat_cmds[idx - 1]
             if selected.handler:
                 await selected.handler(bot, "")
             return True
@@ -177,6 +204,30 @@ class SlashCommandHandler:
             aliases=["downgrade"],
             description="Rollback zur vorherigen Version",
             handler=_cmd_rollback,
+        ))
+        self.register(SlashCommand(
+            name="mcp",
+            aliases=[],
+            description="MCP-Server verwalten (list/connect/disconnect/tools)",
+            handler=_cmd_mcp,
+        ))
+        self.register(SlashCommand(
+            name="connect",
+            aliases=["ssh"],
+            description="SSH-Verbindung zu Remote-Host herstellen",
+            handler=_cmd_connect,
+        ))
+        self.register(SlashCommand(
+            name="disconnect",
+            aliases=[],
+            description="SSH-Verbindung trennen",
+            handler=_cmd_disconnect,
+        ))
+        self.register(SlashCommand(
+            name="remote",
+            aliases=[],
+            description="Remote-Verbindungsstatus anzeigen",
+            handler=_cmd_remote,
         ))
 
 
@@ -376,31 +427,55 @@ async def _cmd_provider(bot, args: str):
 
 
 async def _cmd_model(bot, args: str):
-    """LLM-Modell anzeigen oder wechseln"""
-    from ce365.core.providers import create_provider, DEFAULT_MODELS
+    """LLM-Modell anzeigen oder wechseln — interaktive Auswahl"""
+    from ce365.core.providers import create_provider, DEFAULT_MODELS, RECOMMENDED_MODELS
     from ce365.config.settings import get_settings
+    from rich.prompt import Prompt
 
     settings = get_settings()
     target = args.strip() if args.strip() else None
 
     if not target:
-        # Status anzeigen
+        # Interaktive Modell-Auswahl
+        console = bot.console.console
         bot.console.display_separator()
-        bot.console.console.print("[bold]LLM-Modell Status:[/bold]\n")
-        bot.console.console.print(f"  Provider: {settings.llm_provider}")
-        bot.console.console.print(f"  Modell:   {settings.llm_model}")
-        bot.console.console.print()
-        bot.console.console.print("[bold]Verfuegbare Modelle:[/bold]")
-        try:
-            available = bot.client.list_models()
-            for model in available[:3]:
-                active = " [bold cyan]<< aktiv[/bold cyan]" if model == settings.llm_model else ""
-                bot.console.console.print(f"  {model}{active}")
-        except Exception:
-            bot.console.display_warning("Modell-Liste konnte nicht abgerufen werden.")
-        bot.console.console.print(f"\n  Wechseln: /model <name>")
-        bot.console.console.print()
-        return
+        console.print("[bold]LLM-Modell[/bold]\n")
+        console.print(f"  Provider: [cyan]{settings.llm_provider}[/cyan]")
+        console.print(f"  Modell:   [cyan]{settings.llm_model}[/cyan]\n")
+
+        # Kuratierte Modelle fuer den aktiven Provider
+        recommended = RECOMMENDED_MODELS.get(settings.llm_provider, [])
+        if recommended:
+            console.print("[bold]Empfohlene Modelle:[/bold]\n")
+            for i, (model_id, desc) in enumerate(recommended, 1):
+                active = " [bold cyan]<< aktiv[/bold cyan]" if model_id == settings.llm_model else ""
+                console.print(f"  [cyan]{i}[/cyan]  {model_id:<28} [dim]{desc}[/dim]{active}")
+            console.print(f"  [cyan]0[/cyan]  Zurueck\n")
+
+            # Auch freie Eingabe ermoeglichen
+            choices = [str(i) for i in range(len(recommended) + 1)]
+            choice = Prompt.ask("  Wahl (oder Modell-Name eingeben)", default="0")
+
+            if choice in choices:
+                idx = int(choice)
+                if idx == 0:
+                    bot.console.display_info("Zurueck zum Chat.")
+                    return
+                target = recommended[idx - 1][0]
+            else:
+                target = choice.strip()
+        else:
+            # Fallback: API-Liste
+            try:
+                available = bot.client.list_models()
+                for model in available[:5]:
+                    active = " [bold cyan]<< aktiv[/bold cyan]" if model == settings.llm_model else ""
+                    console.print(f"  {model}{active}")
+            except Exception:
+                bot.console.display_warning("Modell-Liste konnte nicht abgerufen werden.")
+            console.print(f"\n  Wechseln: /model <name>")
+            console.print()
+            return
 
     if target == settings.llm_model:
         bot.console.display_info(f"'{target}' ist bereits das aktive Modell.")
@@ -731,3 +806,333 @@ async def _cmd_check(bot, args: str):
         return
 
     await run_routine(bot, target)
+
+
+# ==========================================
+# SSH REMOTE COMMANDS
+# ==========================================
+
+async def _cmd_connect(bot, args: str):
+    """Remote-Verbindung herstellen (SSH oder WinRM)
+
+    SSH:   /connect <host> [--user root] [--key ~/.ssh/id_rsa] [--port 22]
+    WinRM: /connect <host> --winrm [--user Administrator] [--password ...] [--port 5985] [--ssl]
+    """
+    from ce365.core.license import check_edition_features
+    from ce365.config.settings import get_settings
+
+    settings = get_settings()
+    if not check_edition_features(settings.edition, "ssh_remote"):
+        bot.console.display_error("Remote-Zugriff ist ein Pro-Feature.")
+        return
+
+    if not args.strip():
+        bot.console.display_error(
+            "Verwendung:\n"
+            "  SSH:   /connect <host> [--user root] [--key ~/.ssh/id_rsa] [--port 22]\n"
+            "  WinRM: /connect <host> --winrm [--user Administrator] [--password ...] [--ssl]"
+        )
+        return
+
+    # Argumente parsen
+    parts = args.strip().split()
+    host = parts[0]
+    username = None  # Default wird spaeter je nach Transport gesetzt
+    key_path = None
+    password = None
+    port = None
+    use_winrm = False
+    use_ssl = False
+
+    i = 1
+    while i < len(parts):
+        flag = parts[i].lower()
+        if flag == "--user" and i + 1 < len(parts):
+            username = parts[i + 1]
+            i += 2
+        elif flag == "--key" and i + 1 < len(parts):
+            key_path = parts[i + 1]
+            i += 2
+        elif flag == "--password" and i + 1 < len(parts):
+            password = parts[i + 1]
+            i += 2
+        elif flag == "--port" and i + 1 < len(parts):
+            try:
+                port = int(parts[i + 1])
+            except ValueError:
+                bot.console.display_error(f"Ungueltiger Port: {parts[i + 1]}")
+                return
+            i += 2
+        elif flag == "--winrm":
+            use_winrm = True
+            i += 1
+        elif flag == "--ssl":
+            use_ssl = True
+            i += 1
+        else:
+            i += 1
+
+    from ce365.core.command_runner import get_command_runner
+    runner = get_command_runner()
+
+    if use_winrm:
+        # === WinRM-Verbindung ===
+        if not hasattr(bot, "winrm_manager") or bot.winrm_manager is None:
+            bot.console.display_error("WinRM-Manager nicht initialisiert.")
+            return
+
+        winrm_user = username or "Administrator"
+        winrm_port = port or (5986 if use_ssl else 5985)
+
+        # Passwort abfragen wenn nicht angegeben
+        if not password:
+            from rich.prompt import Prompt
+            password = Prompt.ask(
+                f"  Passwort fuer {winrm_user}@{host}",
+                password=True,
+            )
+            if not password:
+                bot.console.display_info("Abgebrochen.")
+                return
+
+        try:
+            proto = "HTTPS" if use_ssl else "HTTP"
+            bot.console.display_info(
+                f"Verbinde mit {winrm_user}@{host}:{winrm_port} (WinRM/{proto})..."
+            )
+            conn = await bot.winrm_manager.connect(
+                host=host,
+                port=winrm_port,
+                username=winrm_user,
+                password=password,
+                ssl=use_ssl,
+                verify_ssl=False,  # Selbstsignierte Zertifikate erlauben
+            )
+
+            runner.set_winrm(conn)
+
+            bot.console.display_success(f"Verbunden mit {conn.host_display}")
+            bot.console.display_info(
+                "Alle Tools laufen jetzt auf dem Remote-Windows-System. "
+                "Trenne mit /disconnect."
+            )
+
+        except Exception as e:
+            bot.console.display_error(f"WinRM-Verbindung fehlgeschlagen: {e}")
+
+    else:
+        # === SSH-Verbindung ===
+        if not hasattr(bot, "ssh_manager") or bot.ssh_manager is None:
+            bot.console.display_error("SSH-Manager nicht initialisiert.")
+            return
+
+        ssh_user = username or "root"
+        ssh_port = port or 22
+
+        try:
+            bot.console.display_info(f"Verbinde mit {ssh_user}@{host}:{ssh_port} (SSH)...")
+            conn = await bot.ssh_manager.connect(
+                host=host,
+                port=ssh_port,
+                username=ssh_user,
+                key_path=key_path,
+                password=password,
+            )
+
+            runner.set_remote(conn)
+
+            bot.console.display_success(f"Verbunden mit {conn.host_display}")
+            bot.console.display_info(
+                "Alle Tools laufen jetzt auf dem Remote-System. "
+                "Trenne mit /disconnect."
+            )
+
+        except Exception as e:
+            bot.console.display_error(f"SSH-Verbindung fehlgeschlagen: {e}")
+
+
+async def _cmd_disconnect(bot, args: str):
+    """Remote-Verbindung trennen (SSH oder WinRM)"""
+    from ce365.core.command_runner import get_command_runner
+    runner = get_command_runner()
+
+    if runner.mode == "winrm":
+        # WinRM trennen
+        if hasattr(bot, "winrm_manager") and bot.winrm_manager and bot.winrm_manager.is_connected:
+            host = bot.winrm_manager.host_display
+            await bot.winrm_manager.disconnect()
+            runner.set_local()
+            bot.console.display_success(f"WinRM-Verbindung zu {host} getrennt.")
+            bot.console.display_info("Alle Tools laufen jetzt wieder lokal.")
+        else:
+            bot.console.display_info("Keine aktive WinRM-Verbindung.")
+
+    elif runner.mode == "remote":
+        # SSH trennen
+        if hasattr(bot, "ssh_manager") and bot.ssh_manager and bot.ssh_manager.is_connected:
+            host = bot.ssh_manager.host_display
+            await bot.ssh_manager.disconnect()
+            runner.set_local()
+            bot.console.display_success(f"SSH-Verbindung zu {host} getrennt.")
+            bot.console.display_info("Alle Tools laufen jetzt wieder lokal.")
+        else:
+            bot.console.display_info("Keine aktive SSH-Verbindung.")
+
+    else:
+        bot.console.display_info("Keine aktive Remote-Verbindung.")
+
+
+async def _cmd_remote(bot, args: str):
+    """Remote-Verbindungsstatus anzeigen"""
+    from ce365.core.command_runner import get_command_runner
+    runner = get_command_runner()
+
+    bot.console.display_separator()
+    bot.console.console.print("[bold]Remote-Verbindung:[/bold]\n")
+
+    if runner.is_remote:
+        transport = runner.transport.upper()
+        bot.console.console.print(f"  Status:    [green]Verbunden[/green]")
+        bot.console.console.print(f"  Transport: {transport}")
+        bot.console.console.print(f"  Host:      {runner.remote_host}")
+
+        if runner.mode == "remote" and hasattr(bot, "ssh_manager") and bot.ssh_manager:
+            status = bot.ssh_manager.get_status()
+            bot.console.console.print(f"  Port:      {status.get('port', '?')}")
+            bot.console.console.print(f"  User:      {status.get('username', '?')}")
+
+        elif runner.mode == "winrm" and hasattr(bot, "winrm_manager") and bot.winrm_manager:
+            status = bot.winrm_manager.get_status()
+            bot.console.console.print(f"  Port:      {status.get('port', '?')}")
+            bot.console.console.print(f"  User:      {status.get('username', '?')}")
+            bot.console.console.print(f"  SSL:       {'Ja' if status.get('ssl') else 'Nein'}")
+
+        bot.console.console.print(f"\n  Trennen: /disconnect")
+
+    else:
+        bot.console.console.print("  Status:    [red]Nicht verbunden[/red]")
+        bot.console.console.print("")
+        bot.console.console.print("  SSH:   /connect <host> [--user root]")
+        bot.console.console.print("  WinRM: /connect <host> --winrm [--user Administrator]")
+
+    bot.console.console.print()
+
+
+# ==========================================
+# MCP SERVER COMMANDS
+# ==========================================
+
+async def _cmd_mcp(bot, args: str):
+    """MCP-Server verwalten: /mcp list|connect|disconnect|tools <name>"""
+    from ce365.core.license import check_edition_features
+    from ce365.config.settings import get_settings
+
+    settings = get_settings()
+    if not check_edition_features(settings.edition, "mcp_integration"):
+        bot.console.display_error("MCP-Integration ist ein Pro-Feature.")
+        return
+
+    if not hasattr(bot, "mcp_manager") or bot.mcp_manager is None:
+        bot.console.display_error("MCP-Manager nicht initialisiert.")
+        return
+
+    parts = args.strip().split(maxsplit=1) if args.strip() else []
+    action = parts[0].lower() if parts else "list"
+    target = parts[1].strip() if len(parts) > 1 else ""
+
+    if action == "list":
+        # Alle Server und Status anzeigen
+        status_list = bot.mcp_manager.get_server_status()
+        bot.console.display_separator()
+        bot.console.console.print("[bold]MCP-Server:[/bold]\n")
+
+        if not status_list:
+            bot.console.console.print("  Keine MCP-Server konfiguriert.")
+            bot.console.console.print(f"  Konfiguration: {bot.mcp_manager.config_path}")
+        else:
+            for s in status_list:
+                status_icon = "[green]Verbunden[/green]" if s["connected"] else "[red]Getrennt[/red]"
+                tools_info = f" ({s['tool_count']} Tools)" if s["connected"] else ""
+                bot.console.console.print(
+                    f"  {s['name']:<16} {status_icon}{tools_info}"
+                )
+                bot.console.console.print(f"  {'':16} {s['url']}")
+        bot.console.console.print()
+
+    elif action == "connect":
+        if not target:
+            names = bot.mcp_manager.get_server_names()
+            bot.console.display_error(
+                f"Verwendung: /mcp connect <name>\n"
+                f"Verfuegbar: {', '.join(names) or 'keine'}"
+            )
+            return
+
+        try:
+            bot.console.display_info(f"Verbinde mit MCP-Server '{target}'...")
+            proxy_tools = await bot.mcp_manager.connect(target)
+
+            # Proxy-Tools in Registry registrieren
+            registered = 0
+            for tool in proxy_tools:
+                try:
+                    bot.tool_registry.register(tool)
+                    registered += 1
+                except ValueError:
+                    pass  # Tool-Name bereits registriert
+
+            bot.console.display_success(
+                f"MCP-Server '{target}' verbunden — {registered} Tools registriert"
+            )
+
+            # Tool-Namen anzeigen
+            if proxy_tools:
+                tool_names = [t.name for t in proxy_tools]
+                bot.console.console.print(
+                    f"  Tools: {', '.join(tool_names[:10])}"
+                    + (f" (+{len(tool_names) - 10} weitere)" if len(tool_names) > 10 else "")
+                )
+
+        except Exception as e:
+            bot.console.display_error(f"MCP-Verbindung fehlgeschlagen: {e}")
+
+    elif action == "disconnect":
+        if not target:
+            bot.console.display_error("Verwendung: /mcp disconnect <name>")
+            return
+
+        try:
+            tool_names = await bot.mcp_manager.disconnect(target)
+
+            # Proxy-Tools aus Registry entfernen
+            for tool_name in tool_names:
+                bot.tool_registry.unregister(tool_name)
+
+            bot.console.display_success(
+                f"MCP-Server '{target}' getrennt — {len(tool_names)} Tools entfernt"
+            )
+
+        except Exception as e:
+            bot.console.display_error(f"MCP-Trennung fehlgeschlagen: {e}")
+
+    elif action == "tools":
+        if not target:
+            bot.console.display_error("Verwendung: /mcp tools <name>")
+            return
+
+        tools = bot.mcp_manager.get_tools_for_server(target)
+        if not tools:
+            bot.console.display_info(f"Keine Tools fuer '{target}' (nicht verbunden?)")
+            return
+
+        bot.console.display_separator()
+        bot.console.console.print(f"[bold]MCP-Tools ({target}):[/bold]\n")
+        for tool in tools:
+            bot.console.console.print(f"  {tool.name:<30} {tool.description[:60]}")
+        bot.console.console.print()
+
+    else:
+        bot.console.display_error(
+            f"Unbekannte MCP-Aktion: {action}\n"
+            "Verfuegbar: list, connect, disconnect, tools"
+        )

@@ -6,21 +6,18 @@ macOS + Windows
 """
 
 import platform
-import subprocess
 import os
 import shutil
 from pathlib import Path
 from typing import Dict, Any
 from ce365.tools.base import RepairTool
+from ce365.core.command_runner import get_command_runner
 
 
 def _run_cmd(cmd: list, timeout: int = 30) -> tuple:
     """(success, output)"""
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
-        return result.returncode == 0, result.stdout.strip() or result.stderr.strip()
-    except Exception as e:
-        return False, str(e)
+    result = get_command_runner().run_sync(cmd, timeout=timeout)
+    return result.success, result.output
 
 
 class RebuildCacheTool(RepairTool):

@@ -70,6 +70,25 @@ class ToolRegistry:
         """Check ob Tool ein Audit-Tool ist"""
         return tool_name in self._audit_tools
 
+    def unregister(self, tool_name: str) -> bool:
+        """
+        Tool de-registrieren (fuer dynamische MCP-Tools).
+
+        Returns:
+            True wenn Tool entfernt wurde
+        """
+        if tool_name not in self._tools:
+            return False
+
+        del self._tools[tool_name]
+
+        if tool_name in self._audit_tools:
+            self._audit_tools.remove(tool_name)
+        if tool_name in self._repair_tools:
+            self._repair_tools.remove(tool_name)
+
+        return True
+
     def __len__(self):
         return len(self._tools)
 

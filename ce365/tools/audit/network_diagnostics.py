@@ -7,19 +7,14 @@ Plattformuebergreifend: macOS + Windows
 
 import platform
 import socket
-import subprocess
 from typing import Dict, Any
 from ce365.tools.base import AuditTool
+from ce365.core.command_runner import get_command_runner
 
 
 def _run_cmd(cmd: list, timeout: int = 15) -> str:
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
-        return result.stdout.strip() if result.returncode == 0 else result.stderr.strip()
-    except subprocess.TimeoutExpired:
-        return "Timeout"
-    except Exception as e:
-        return f"Fehler: {e}"
+    result = get_command_runner().run_sync(cmd, timeout=timeout)
+    return result.output
 
 
 class NetworkDiagnosticsTool(AuditTool):

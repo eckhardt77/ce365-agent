@@ -428,12 +428,17 @@ def check_edition_features(edition: str, feature: str) -> bool:
             "unlimited_repairs",  # Unbegrenzte Remediation Runs
             "advanced_audit",  # Stress-Tests, Malware, Temp, Drivers, Report
             "advanced_repair",  # SFC, Network, Updates, Startup, Restore
-            "web_search",  # Web-Suche für Problemlösung
+            "web_search",  # Web-Suche fuer Problemloesung
             "root_cause_analysis",  # KI Root-Cause-Analyse
             "system_report",  # HTML System-Report
             "driver_management",  # Treiber-Check
             "commercial_use",  # Kommerzielle Nutzung erlaubt
             "shared_learning",  # Gemeinsame Wissensdatenbank (PostgreSQL)
+            "hooks",  # Workflow-Hooks (PRE/POST Repair, Session)
+            "file_reading",  # Dateien lesen (Log-Analyse, Config)
+            "ssh_remote",  # SSH/Remote-Zugriff
+            "mcp_integration",  # MCP-Server-Anbindung
+            "system_control",  # Reboot, Software, User, File Management
             # 1 Seat per License
         ],
     }

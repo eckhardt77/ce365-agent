@@ -1,8 +1,8 @@
 import platform
-import subprocess
 import psutil
 from datetime import datetime, timedelta
 from ce365.tools.base import AuditTool
+from ce365.core.command_runner import get_command_runner
 
 
 # ============================================================
@@ -21,13 +21,8 @@ _MACOS_CODENAMES = {
 
 def _run_cmd(cmd: list, timeout: int = 3) -> str:
     """Subprocess ausfuehren, Ergebnis als String oder leer bei Fehler"""
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
-        if result.returncode == 0:
-            return result.stdout.strip()
-    except Exception:
-        pass
-    return ""
+    result = get_command_runner().run_sync(cmd, timeout=timeout)
+    return result.stdout if result.success else ""
 
 
 def _parse_wmic_value(output: str) -> str:
@@ -264,7 +259,13 @@ class SystemInfoTool(AuditTool):
         }
 
     async def execute(self, detailed: bool = False) -> str:
-        """System-Info sammeln"""
+        """System-Info sammeln — lokal oder remote"""
+        # Remote-Fallback: psutil nicht verfuegbar, nutze SSH-Commands
+        from ce365.core.command_runner import get_command_runner
+        runner = get_command_runner()
+        if runner.is_remote:
+            return await self._execute_remote(runner)
+
         hw = get_hardware_info()
         lines = []
 
@@ -393,5 +394,55 @@ class SystemInfoTool(AuditTool):
                     lines.append(f"   {part.device} ({part.mountpoint}): {total_gb:.1f} GB, {usage.percent}% belegt")
                 except Exception:
                     lines.append(f"   {part.device} ({part.mountpoint}): nicht zugreifbar")
+
+        return "\n".join(lines)
+
+    async def _execute_remote(self, runner) -> str:
+        """System-Info per SSH sammeln (psutil-Fallback)"""
+        lines = ["🖥️  SYSTEM-INFORMATIONEN (Remote)", "=" * 50, ""]
+
+        # OS
+        os_result = await runner.run(["uname", "-a"], timeout=5)
+        if os_result.success:
+            lines.append(f"System: {os_result.stdout}")
+
+        # Hostname
+        hostname = await runner.run(["hostname"], timeout=3)
+        if hostname.success:
+            lines.append(f"Hostname: {hostname.stdout}")
+        lines.append("")
+
+        # CPU
+        cpu_info = await runner.run(
+            ["sh", "-c", "grep 'model name' /proc/cpuinfo | head -1 | cut -d: -f2"],
+            timeout=5,
+        )
+        if cpu_info.success and cpu_info.stdout:
+            lines.append(f"CPU: {cpu_info.stdout.strip()}")
+
+        cpu_count = await runner.run(["nproc"], timeout=3)
+        if cpu_count.success:
+            lines.append(f"CPU Kerne: {cpu_count.stdout}")
+
+        # Load Average
+        load = await runner.run(["uptime"], timeout=3)
+        if load.success:
+            lines.append(f"Last/Uptime: {load.stdout}")
+        lines.append("")
+
+        # RAM
+        mem = await runner.run(["free", "-h"], timeout=3)
+        if mem.success:
+            lines.append("RAM:")
+            for line in mem.stdout.splitlines():
+                lines.append(f"   {line}")
+        lines.append("")
+
+        # Disk
+        disk = await runner.run(["df", "-h", "/"], timeout=3)
+        if disk.success:
+            lines.append("Disk:")
+            for line in disk.stdout.splitlines():
+                lines.append(f"   {line}")
 
         return "\n".join(lines)

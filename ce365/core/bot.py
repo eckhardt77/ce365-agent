@@ -76,6 +76,16 @@ from ce365.tools.repair.disk_optimize import OptimizeDriveTool
 from ce365.tools.repair.windows_update_reset import ResetWindowsUpdateTool
 from ce365.tools.repair.cache_rebuild import RebuildCacheTool
 from ce365.tools.repair.task_scheduler import ManageScheduledTaskTool
+from ce365.tools.repair.power_management import RebootTool, CancelShutdownTool
+from ce365.tools.repair.software_manager import (
+    InstallSoftwareTool, UninstallSoftwareTool, UpdateSoftwareTool,
+)
+from ce365.tools.repair.user_manager import (
+    CreateUserTool, DeleteUserTool, ChangePasswordTool, ToggleUserTool,
+)
+from ce365.tools.repair.file_manager import (
+    WriteFileTool, EditFileTool, DeleteFileTool, MoveFileTool,
+)
 from ce365.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 from ce365.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
 from ce365.tools.analysis.consult_specialist import ConsultSpecialistTool  # Multi-Agent
@@ -86,6 +96,16 @@ from ce365.core.agents import SpecialistAgent, SPECIALISTS  # Multi-Agent System
 from ce365.core.license import validate_license, check_edition_features
 from ce365.core.usage_tracker import UsageTracker
 from ce365.config.settings import get_settings
+
+# Hook System
+from ce365.workflow.hooks import HookManager, HookEvent, HookContext
+
+# SSH + WinRM Remote
+from ce365.core.ssh import SSHConnectionManager
+from ce365.core.winrm import WinRMConnectionManager
+
+# MCP Integration
+from ce365.integrations.mcp_manager import MCPManager
 
 
 class CE365Bot:
@@ -157,20 +177,44 @@ class CE365Bot:
         # Slash Commands
         self.command_handler = SlashCommandHandler()
 
+        # Hook System (Pro)
+        self.hook_manager = HookManager()
+        if check_edition_features(settings.edition, "hooks"):
+            self._register_hooks()
+
+        # SSH + WinRM Remote (Pro)
+        self.ssh_manager: Optional[SSHConnectionManager] = None
+        self.winrm_manager: Optional[WinRMConnectionManager] = None
+        if check_edition_features(settings.edition, "ssh_remote"):
+            self.ssh_manager = SSHConnectionManager()
+            self.winrm_manager = WinRMConnectionManager()
+
+        # MCP Integration (Pro)
+        self.mcp_manager: Optional[MCPManager] = None
+        if check_edition_features(settings.edition, "mcp_integration"):
+            self.mcp_manager = MCPManager()
+
         # Tool System
         self.tool_registry = ToolRegistry()
         self._register_tools()
 
-        # Executor
+        # Executor (mit Hook-System)
         self.executor = CommandExecutor(
             tool_registry=self.tool_registry,
             state_machine=self.state_machine,
             changelog_writer=self.changelog,
             usage_tracker=self.usage_tracker,
+            hook_manager=self.hook_manager,
         )
 
         # System Prompt
         self.system_prompt = get_system_prompt()
+
+    def _register_hooks(self):
+        """Eingebaute Hooks registrieren (Pro Edition)"""
+        from ce365.workflow.builtin_hooks import get_builtin_hooks
+        for hook in get_builtin_hooks():
+            self.hook_manager.register(hook)
 
     def _register_tools(self):
         """Alle Tools registrieren (mit Edition-basiertem Feature-Gating)"""
@@ -240,6 +284,31 @@ class CE365Bot:
             self.tool_registry.register(RebuildCacheTool())
             self.tool_registry.register(ManageScheduledTaskTool())
 
+        # === Steuerungs-Tools (Pro) ===
+        if check_edition_features(edition, "system_control"):
+            self.tool_registry.register(RebootTool())
+            self.tool_registry.register(CancelShutdownTool())
+            self.tool_registry.register(InstallSoftwareTool())
+            self.tool_registry.register(UninstallSoftwareTool())
+            self.tool_registry.register(UpdateSoftwareTool())
+            self.tool_registry.register(CreateUserTool())
+            self.tool_registry.register(DeleteUserTool())
+            self.tool_registry.register(ChangePasswordTool())
+            self.tool_registry.register(ToggleUserTool())
+            self.tool_registry.register(WriteFileTool())
+            self.tool_registry.register(EditFileTool())
+            self.tool_registry.register(DeleteFileTool())
+            self.tool_registry.register(MoveFileTool())
+
+        # === File Reading Tools (Pro) ===
+        if check_edition_features(edition, "file_reading"):
+            from ce365.tools.audit.file_reader import (
+                ReadFileTool, SearchInFileTool, TailLogTool,
+            )
+            self.tool_registry.register(ReadFileTool())
+            self.tool_registry.register(SearchInFileTool())
+            self.tool_registry.register(TailLogTool())
+
         # === Web Search + Root Cause Analysis (Pro) ===
         if check_edition_features(edition, "web_search"):
             self.tool_registry.register(WebSearchTool())
@@ -286,6 +355,23 @@ class CE365Bot:
         # Konsolidiertes Startup-Panel
         await self._display_startup_panel()
 
+        # MCP Auto-Connect (Pro)
+        if self.mcp_manager:
+            try:
+                auto_results = await self.mcp_manager.auto_connect()
+                for server_name, tools in auto_results.items():
+                    for tool in tools:
+                        try:
+                            self.tool_registry.register(tool)
+                        except ValueError:
+                            pass
+                    if tools:
+                        self.console.display_info(
+                            f"MCP '{server_name}' auto-connected ({len(tools)} Tools)"
+                        )
+            except Exception:
+                pass  # Auto-Connect darf Start nicht blockieren
+
         while True:
             try:
                 # User Input
@@ -330,9 +416,33 @@ class CE365Bot:
             except Exception as e:
                 self.console.display_error(f"Unerwarteter Fehler: {str(e)}")
 
+        # Session-End Hooks
+        if self.hook_manager.enabled:
+            end_context = HookContext(
+                event=HookEvent.SESSION_END,
+                session_id=self.session.session_id,
+            )
+            end_result = await self.hook_manager.run_hooks(HookEvent.SESSION_END, end_context)
+            if end_result.message:
+                self.console.display_info(end_result.message)
+
         # Incident Report anbieten (wenn Changelog-Eintraege vorhanden)
         if self.changelog.entries:
             await self._offer_incident_report()
+
+        # MCP-Server trennen
+        if self.mcp_manager:
+            await self.mcp_manager.disconnect_all()
+
+        # Remote-Verbindungen trennen (SSH / WinRM)
+        from ce365.core.command_runner import get_command_runner
+        runner = get_command_runner()
+        if self.ssh_manager and self.ssh_manager.is_connected:
+            await self.ssh_manager.disconnect()
+        if self.winrm_manager and self.winrm_manager.is_connected:
+            await self.winrm_manager.disconnect()
+        if runner.is_remote:
+            runner.set_local()
 
         # Session freigeben (Pro)
         await self._release_session()

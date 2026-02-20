@@ -5,12 +5,15 @@ Fuehrt echte Tool-Aufrufe, PDF-Generierung, DB-Roundtrips und
 LLM Tool-Use durch — schliesst die Luecke zwischen "importierbar" (--health)
 und "funktioniert tatsaechlich" (--selftest).
 
-5 Sektionen:
+8 Sektionen:
 1. Tool-Ausfuehrung (SystemInfo, Prozesse, DiskHealth)
 2. PDF-Generierung mit Emojis/Umlauten
 3. Datenbank-Roundtrip (Case schreiben/lesen/loeschen)
 4. LLM Tool-Use Roundtrip
 5. Session-Roundtrip
+6. Command Runner (lokal)
+7. File-Reading Tools
+8. Hook-System
 """
 
 import asyncio
@@ -362,6 +365,206 @@ def _test_session(verbose: bool) -> Tuple[int, int, int]:
     return passed, failed, warned
 
 
+# --- Sektion 6: Command Runner ---
+
+async def _test_command_runner(verbose: bool) -> Tuple[int, int, int]:
+    console.print("[bold]6. Command Runner[/bold]")
+    passed = failed = warned = 0
+
+    try:
+        from ce365.core.command_runner import get_command_runner, CommandResult
+
+        runner = get_command_runner()
+
+        # Mode pruefen
+        if runner.mode == "local":
+            _pass(f"Modus: {runner.mode}")
+            passed += 1
+        else:
+            _warn(f"Modus: {runner.mode} (erwartet: local)")
+            warned += 1
+
+        # Sync-Befehl
+        import platform
+        if platform.system() == "Darwin":
+            result = runner.run_sync(["uname", "-s"])
+        else:
+            result = runner.run_sync(["hostname"])
+
+        if result.success and result.stdout:
+            _pass(f"run_sync — {result.stdout[:50]} ({result.duration_ms}ms)")
+            passed += 1
+        else:
+            _fail(f"run_sync fehlgeschlagen: {result.stderr}")
+            failed += 1
+
+        # Async-Befehl
+        result2 = await runner.run(["echo", "selftest"], timeout=5)
+        if result2.success and "selftest" in result2.stdout:
+            _pass(f"run (async) — OK ({result2.duration_ms}ms)")
+            passed += 1
+        else:
+            _fail(f"run (async) fehlgeschlagen: {result2.stderr}")
+            failed += 1
+
+        # File read
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+            f.write("zeile1\nzeile2\nzeile3\n")
+            tmp_path = f.name
+
+        result3 = await runner.read_file(tmp_path, max_lines=2)
+        os.unlink(tmp_path)
+
+        if result3.success and "zeile1" in result3.stdout and "zeile3" not in result3.stdout:
+            _pass("read_file — max_lines Limit funktioniert")
+            passed += 1
+        elif result3.success:
+            _warn("read_file — Datei gelesen, aber max_lines nicht beachtet")
+            warned += 1
+        else:
+            _fail(f"read_file fehlgeschlagen: {result3.stderr}")
+            failed += 1
+
+    except Exception as e:
+        _fail(f"Command Runner — {e}")
+        failed += 1
+
+    return passed, failed, warned
+
+
+# --- Sektion 7: File-Reading Tools ---
+
+async def _test_file_reading(verbose: bool) -> Tuple[int, int, int]:
+    console.print("[bold]7. File-Reading Tools[/bold]")
+    passed = failed = warned = 0
+
+    try:
+        from ce365.tools.audit.file_reader import ReadFileTool, SearchInFileTool, TailLogTool
+        from ce365.tools.sanitize import validate_read_path
+
+        # Blocklist-Test: sensitive Dateien muessen blockiert werden
+        blocked_paths = ["/etc/shadow", "/Users/test/.ssh/id_rsa", "/Users/test/.env"]
+        all_blocked = True
+        for bp in blocked_paths:
+            try:
+                validate_read_path(bp)
+                all_blocked = False
+                _fail(f"Blocklist — {bp} wurde NICHT blockiert!")
+                failed += 1
+            except ValueError:
+                pass  # Korrekt blockiert
+
+        if all_blocked:
+            _pass(f"Blocklist — {len(blocked_paths)} sensitive Pfade blockiert")
+            passed += 1
+
+        # ReadFileTool mit eigener Datei testen
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".log", delete=False) as f:
+            for i in range(1, 11):
+                f.write(f"Zeile {i}: Test-Inhalt\n")
+            tmp_path = f.name
+
+        try:
+            # read_file
+            reader = ReadFileTool()
+            result = await reader.execute(path=tmp_path, max_lines=5)
+            if "Zeile 1" in result and "Zeile 5" in result:
+                _pass(f"ReadFileTool — {len(result)} Zeichen")
+                passed += 1
+            else:
+                _fail(f"ReadFileTool — unerwartetes Ergebnis")
+                failed += 1
+
+            # search_in_file
+            searcher = SearchInFileTool()
+            result2 = await searcher.execute(path=tmp_path, pattern="Zeile [35]")
+            if "Zeile 3" in result2 and "Zeile 5" in result2:
+                _pass("SearchInFileTool — Regex-Suche OK")
+                passed += 1
+            else:
+                _fail(f"SearchInFileTool — Pattern nicht gefunden")
+                failed += 1
+
+            # tail_log
+            tailer = TailLogTool()
+            result3 = await tailer.execute(path=tmp_path, lines=3)
+            if "Zeile 10" in result3 and "Zeile 8" in result3:
+                _pass("TailLogTool — Letzte 3 Zeilen OK")
+                passed += 1
+            else:
+                _fail(f"TailLogTool — unerwartetes Ergebnis")
+                failed += 1
+
+        finally:
+            os.unlink(tmp_path)
+
+    except Exception as e:
+        _fail(f"File-Reading — {e}")
+        failed += 1
+
+    return passed, failed, warned
+
+
+# --- Sektion 8: Hook-System ---
+
+async def _test_hooks(verbose: bool) -> Tuple[int, int, int]:
+    console.print("[bold]8. Hook-System[/bold]")
+    passed = failed = warned = 0
+
+    try:
+        from ce365.workflow.hooks import HookManager, HookEvent, HookContext, BaseHook, HookResult
+
+        manager = HookManager()
+
+        # Test-Hook der eine Message zurueckgibt
+        class TestHook(BaseHook):
+            @property
+            def name(self) -> str:
+                return "test_hook"
+
+            @property
+            def events(self):
+                return [HookEvent.PRE_TOOL]
+
+            async def execute(self, context: HookContext) -> HookResult:
+                return HookResult(
+                    proceed=True,
+                    message=f"Hook fired: {context.tool_name}",
+                )
+
+        manager.register(TestHook())
+        _pass("Hook registriert")
+        passed += 1
+
+        # Hook ausfuehren
+        ctx = HookContext(
+            event=HookEvent.PRE_TOOL,
+            tool_name="selftest_tool",
+            tool_input={"test": True},
+        )
+        result = await manager.run_hooks(HookEvent.PRE_TOOL, ctx)
+
+        if result.proceed and "selftest_tool" in (result.message or ""):
+            _pass(f"PRE_TOOL Hook ausgefuehrt — proceed={result.proceed}")
+            passed += 1
+        else:
+            _fail(f"Hook-Ergebnis unerwartet: proceed={result.proceed}, msg={result.message}")
+            failed += 1
+
+        # Builtin-Hooks importierbar?
+        from ce365.workflow.builtin_hooks import BackupCheckHook, VerifyRepairHook, SessionReportHook
+        _pass("Builtin-Hooks (Backup, Verify, Report) importierbar")
+        passed += 1
+
+    except Exception as e:
+        _fail(f"Hook-System — {e}")
+        failed += 1
+
+    return passed, failed, warned
+
+
 # --- Orchestrator ---
 
 def run_selftest(verbose: bool = False) -> int:
@@ -424,6 +627,18 @@ def run_selftest(verbose: bool = False) -> int:
 
     # Sektion 5: Session
     p, f, w = _test_session(verbose)
+    total_passed += p; total_failed += f; total_warned += w
+
+    # Sektion 6: Command Runner (async)
+    p, f, w = asyncio.run(_test_command_runner(verbose))
+    total_passed += p; total_failed += f; total_warned += w
+
+    # Sektion 7: File-Reading Tools (async)
+    p, f, w = asyncio.run(_test_file_reading(verbose))
+    total_passed += p; total_failed += f; total_warned += w
+
+    # Sektion 8: Hook-System (async)
+    p, f, w = asyncio.run(_test_hooks(verbose))
     total_passed += p; total_failed += f; total_warned += w
 
     # Zusammenfassung

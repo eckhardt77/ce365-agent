@@ -7,17 +7,14 @@ Windows: net user / PowerShell Get-LocalUser
 """
 
 import platform
-import subprocess
 from typing import Dict, Any
 from ce365.tools.base import AuditTool
+from ce365.core.command_runner import get_command_runner
 
 
 def _run_cmd(cmd: list, timeout: int = 10) -> str:
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
-        return result.stdout.strip() if result.returncode == 0 else ""
-    except Exception:
-        return ""
+    result = get_command_runner().run_sync(cmd, timeout=timeout)
+    return result.stdout if result.success else ""
 
 
 class UserAccountAuditTool(AuditTool):

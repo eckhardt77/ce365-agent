@@ -303,8 +303,25 @@ class _NormalizedResponse:
 # Provider Factory
 DEFAULT_MODELS = {
     "anthropic": "claude-sonnet-4-6",
-    "openai": "gpt-4o",
+    "openai": "gpt-5.2",
     "openrouter": "google/gemini-3-flash-preview",
+}
+
+# Kuratierte Modell-Listen (fuer /model Auswahl)
+RECOMMENDED_MODELS = {
+    "anthropic": [
+        ("claude-opus-4-6", "Opus 4.6 — Staerkstes Modell, beste Analyse"),
+        ("claude-sonnet-4-6", "Sonnet 4.6 — Schnell und leistungsstark"),
+    ],
+    "openai": [
+        ("gpt-5.2", "GPT-5.2 — Neuestes OpenAI-Modell"),
+        ("gpt-4o", "GPT-4o — Schnell und kosteneffizient"),
+    ],
+    "openrouter": [
+        ("google/gemini-3-flash-preview", "Gemini 3 Flash — Schnell"),
+        ("x-ai/grok-3", "Grok 3 — xAI"),
+        ("mistralai/mistral-large-latest", "Mistral Large"),
+    ],
 }
 
 

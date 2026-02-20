@@ -77,6 +77,8 @@ def _check_system(verbose: bool) -> Tuple[int, int, int]:
     # Optionale Deps
     optional_deps = [
         ("openai", "OpenAI SDK"),
+        ("asyncssh", "AsyncSSH (Remote SSH)"),
+        ("pypsrp", "PyPSRP (Remote WinRM)"),
     ]
     for module_name, display_name in optional_deps:
         try:
@@ -203,14 +205,20 @@ def _check_core_modules(verbose: bool) -> Tuple[int, int, int]:
 
     core_imports = [
         ("ce365.workflow.state_machine", "WorkflowStateMachine", "WorkflowStateMachine"),
+        ("ce365.workflow.hooks", "HookManager", "HookManager"),
         ("ce365.tools.registry", "ToolRegistry", "ToolRegistry"),
+        ("ce365.tools.executor", "CommandExecutor", "CommandExecutor"),
         ("ce365.core.session", "Session", "Session"),
         ("ce365.core.providers", "create_provider", "create_provider"),
         ("ce365.core.license", "check_edition_features", "check_edition_features"),
         ("ce365.core.commands", "SlashCommandHandler", "SlashCommandHandler"),
+        ("ce365.core.command_runner", "CommandRunner", "CommandRunner"),
+        ("ce365.core.ssh", "SSHConnectionManager", "SSHConnectionManager"),
+        ("ce365.core.winrm", "WinRMConnectionManager", "WinRMConnectionManager"),
         ("ce365.storage.changelog", "ChangelogWriter", "ChangelogWriter"),
         ("ce365.learning.case_library", "CaseLibrary", "CaseLibrary"),
         ("ce365.ui.console", "RichConsole", "RichConsole"),
+        ("ce365.integrations.mcp_manager", "MCPManager", "MCPManager"),
     ]
 
     ok_count = 0
@@ -255,8 +263,8 @@ def _check_tool_imports(verbose: bool) -> Tuple[int, int, int]:
 
     audit_modules = [
         "backup", "battery_health", "disk_health", "drivers",
-        "encryption_status", "hosts_file", "incident_report", "logs",
-        "malware_scan", "network_diagnostics", "network_security",
+        "encryption_status", "file_reader", "hosts_file", "incident_report",
+        "logs", "malware_scan", "network_diagnostics", "network_security",
         "pdf_report", "printer_status", "processes", "reporting",
         "scheduled_tasks", "security", "software_inventory", "startup",
         "stress_tests", "system_info", "updates", "user_accounts",
@@ -265,9 +273,10 @@ def _check_tool_imports(verbose: bool) -> Tuple[int, int, int]:
 
     repair_modules = [
         "backup", "browser_cleanup", "cache_rebuild", "disk_cleanup",
-        "disk_optimize", "network_tools", "process_manager",
-        "service_manager", "startup", "system_repair",
-        "update_scheduler", "updates", "windows_update_reset",
+        "disk_optimize", "file_manager", "network_tools", "power_management",
+        "process_manager", "service_manager", "software_manager", "startup",
+        "system_repair", "task_scheduler", "update_scheduler", "updates",
+        "user_manager", "windows_update_reset",
     ]
 
     other_modules = [
@@ -364,7 +373,7 @@ def _check_tool_registry(verbose: bool) -> Tuple[int, int, int]:
         tool_packages = [
             ("ce365.tools.audit", [
                 "backup", "battery_health", "disk_health", "drivers",
-                "encryption_status", "hosts_file", "logs",
+                "encryption_status", "file_reader", "hosts_file", "logs",
                 "malware_scan", "network_diagnostics", "network_security",
                 "pdf_report", "printer_status", "processes", "reporting",
                 "scheduled_tasks", "security", "software_inventory", "startup",
@@ -373,10 +382,11 @@ def _check_tool_registry(verbose: bool) -> Tuple[int, int, int]:
             ]),
             ("ce365.tools.repair", [
                 "backup", "browser_cleanup", "cache_rebuild", "disk_cleanup",
-                "disk_optimize", "network_tools", "process_manager",
-                "service_manager", "startup", "system_repair",
+                "disk_optimize", "file_manager", "network_tools",
+                "power_management", "process_manager", "service_manager",
+                "software_manager", "startup", "system_repair",
                 "task_scheduler", "update_scheduler", "updates",
-                "windows_update_reset",
+                "user_manager", "windows_update_reset",
             ]),
             ("ce365.tools.analysis", ["root_cause", "consult_specialist"]),
             ("ce365.tools.research", ["web_search"]),
