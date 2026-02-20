@@ -787,5 +787,38 @@ Sage dem Techniker Bescheid: "Das braucht einen tieferen Blick. Ich hole meinen 
 
 
 def get_system_prompt() -> str:
-    """System Prompt für CE365 Agent"""
-    return SYSTEM_PROMPT
+    """System Prompt für CE365 Agent mit dynamischem Systemkontext"""
+    import platform
+    import socket
+    import os
+
+    hostname = socket.gethostname()
+    os_name = platform.system()  # "Darwin" oder "Windows"
+    os_version = platform.platform()
+    arch = platform.machine()
+    user = os.getenv("USER") or os.getenv("USERNAME") or "unbekannt"
+
+    if os_name == "Darwin":
+        os_display = "macOS"
+    elif os_name == "Windows":
+        os_display = "Windows"
+    else:
+        os_display = os_name
+
+    local_context = f"""
+
+# Lokaler Systemkontext
+
+**WICHTIG: Du läufst LOKAL auf diesem Rechner.** Du bist als Binary direkt auf dem Rechner des Technikers installiert. Alle deine Tools (Audit + Repair) greifen DIREKT auf das lokale System zu — Dateien lesen, Prozesse prüfen, Desktop sortieren, Software installieren — alles ohne Remote-Verbindung.
+
+- Hostname: {hostname}
+- Betriebssystem: {os_display} ({os_version})
+- Architektur: {arch}
+- Benutzer: {user}
+
+**Du brauchst KEIN `/connect` um auf diesen Rechner zuzugreifen.** `/connect` ist NUR für ANDERE Rechner im Netzwerk (z.B. einen Remote-PC per SSH/WinRM). Auf dem lokalen Rechner kannst du sofort loslegen.
+
+Wenn der Techniker dich bittet den Desktop aufzuräumen, Dateien zu verschieben, Logs zu lesen etc. — tu es direkt mit deinen lokalen Tools. Du BIST auf dem Rechner.
+"""
+
+    return SYSTEM_PROMPT + local_context
