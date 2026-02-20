@@ -5,23 +5,31 @@ Copyright (c) 2026 Carsten Eckhardt / Eckhardt-Marketing
 Licensed under Source Available License
 """
 
+import sys
+
+# Sofort Ladebalken anzeigen (vor allen schweren Imports)
+if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == "--setup"):
+    # Nur beim normalen Start / Setup — nicht bei --version, --help etc.
+    print("\r⏳ CE365 Agent wird geladen...", end="", flush=True)
+    _show_loading = True
+else:
+    _show_loading = False
+
 import asyncio
 import atexit
 import signal
-import sys
 import argparse
 import shutil
 from pathlib import Path
 from rich.console import Console
 from rich.prompt import Prompt, Confirm
-import bcrypt
-from ce365.core.bot import CE365Bot
-from ce365.setup.wizard import run_setup_if_needed
 from ce365.config.settings import get_settings
-from ce365.core.health import run_health_check
-
 
 console = Console()
+
+# Ladebalken entfernen
+if _show_loading:
+    print("\r" + " " * 40 + "\r", end="", flush=True)
 
 
 def _show_portable_banner():
@@ -68,6 +76,7 @@ def verify_technician_password() -> bool:
         for attempt in range(3):
             password = Prompt.ask("Passwort", password=True)
 
+            import bcrypt
             if bcrypt.checkpw(password.encode("utf-8"), settings.technician_password_hash.encode("utf-8")):
                 console.print("[green]✓ Authentifiziert[/green]\n")
                 return True
@@ -149,6 +158,7 @@ def set_password():
             continue
 
         # Hash erstellen
+        import bcrypt
         password_hash = bcrypt.hashpw(
             password.encode("utf-8"), bcrypt.gensalt()
         ).decode("utf-8")
@@ -378,6 +388,7 @@ def main():
         return
 
     if args.health:
+        from ce365.core.health import run_health_check
         exit_code = run_health_check(verbose=args.verbose)
         sys.exit(exit_code)
 
@@ -436,6 +447,7 @@ def main():
             _check_and_offer_update()
         else:
             # 1. Setup-Wizard (falls .env nicht existiert)
+            from ce365.setup.wizard import run_setup_if_needed
             if not run_setup_if_needed():
                 print("\n👋 Setup abgebrochen. Auf Wiedersehen!")
                 sys.exit(0)
@@ -449,6 +461,7 @@ def main():
             sys.exit(1)
 
         # 3. Bot starten mit Lizenz-Session-Management
+        from ce365.core.bot import CE365Bot
         bot = CE365Bot()
         asyncio.run(_run_with_license_session(bot))
 
