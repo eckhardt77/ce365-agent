@@ -101,16 +101,20 @@ i18n_data = [(i18n_dir, 'ce365/i18n/languages')]
 font_dir = os.path.join(PROJECT_ROOT, 'ce365', 'assets')
 font_data = [(font_dir, 'ce365/assets')]
 
-# asyncmy komplett einbinden (Cython-Extensions + Submodule)
-import asyncmy
-asyncmy_dir = os.path.dirname(asyncmy.__file__)
-asyncmy_data = [
-    (asyncmy_dir, 'asyncmy'),
-    (os.path.join(asyncmy_dir, 'constants'), 'asyncmy/constants'),
-]
-# Replication-Submodul falls vorhanden
-if os.path.isdir(os.path.join(asyncmy_dir, 'replication')):
-    asyncmy_data.append((os.path.join(asyncmy_dir, 'replication'), 'asyncmy/replication'))
+# asyncmy komplett einbinden (Cython-Extensions + Submodule), falls installiert
+asyncmy_data = []
+try:
+    import asyncmy
+    asyncmy_dir = os.path.dirname(asyncmy.__file__)
+    asyncmy_data = [
+        (asyncmy_dir, 'asyncmy'),
+        (os.path.join(asyncmy_dir, 'constants'), 'asyncmy/constants'),
+    ]
+    # Replication-Submodul falls vorhanden
+    if os.path.isdir(os.path.join(asyncmy_dir, 'replication')):
+        asyncmy_data.append((os.path.join(asyncmy_dir, 'replication'), 'asyncmy/replication'))
+except ImportError:
+    print("WARNUNG: asyncmy nicht gefunden — wird nicht eingebettet")
 
 # Daten-Dateien
 datas = [

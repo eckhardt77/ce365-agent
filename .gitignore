@@ -51,7 +51,7 @@ docker-compose.learning-db.yml
 generate_docs.py
 setup.py
 # requirements-build.txt — erlaubt (Open-Core Build-System)
-requirements-dev.txt
+# requirements-dev.txt — erlaubt (CI Test-Dependencies)
 SECURITY_AUDIT.md
 EDITION_FEATURES.md
 CHANGELOG_HYBRID.md
