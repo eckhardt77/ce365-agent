@@ -295,7 +295,12 @@ def main():
     parser.add_argument(
         "--verbose",
         action="store_true",
-        help="Zeigt Details bei --health (jedes Tool/Modul einzeln)"
+        help="Zeigt Details bei --health/--selftest (jedes Tool/Modul einzeln)"
+    )
+    parser.add_argument(
+        "--selftest",
+        action="store_true",
+        help="Integrations-Selftest (fuehrt Tools, PDF, DB, LLM tatsaechlich aus)"
     )
     parser.add_argument(
         "--update",
@@ -341,6 +346,11 @@ def main():
 
     if args.health:
         exit_code = run_health_check(verbose=args.verbose)
+        sys.exit(exit_code)
+
+    if args.selftest:
+        from ce365.core.selftest import run_selftest
+        exit_code = run_selftest(verbose=args.verbose)
         sys.exit(exit_code)
 
     if args.update:
