@@ -46,7 +46,7 @@ website/
 license-server/
 docs/
 scripts/
-tools/
+/tools/
 docker-compose.learning-db.yml
 generate_docs.py
 setup.py

@@ -126,16 +126,34 @@ class GenerateSystemReportTool(AuditTool):
             section.append("SYSTEM INFORMATION")
             section.append("-" * 70)
 
-        os_name = platform.system()
-        os_release = platform.release()
-        os_version = platform.version()
+        try:
+            from ce365.tools.audit.system_info import get_hardware_info
+            hw = get_hardware_info()
+        except Exception:
+            hw = {}
 
-        if os_name == "Darwin":
-            os_name = "macOS"
+        os_display = hw.get("os_name") or f"{platform.system()} {platform.release()}"
+        section.append(f"**Betriebssystem:** {os_display}")
+        section.append(f"**Version:** {platform.version()}")
 
-        section.append(f"**Betriebssystem:** {os_name} {os_release}")
-        section.append(f"**Version:** {os_version}")
-        section.append(f"**Architektur:** {platform.machine()}")
+        # Architektur mit CPU-Name
+        arch = platform.machine()
+        cpu_name = hw.get("cpu_name", "")
+        if cpu_name:
+            section.append(f"**Architektur:** {arch} ({cpu_name})")
+        else:
+            section.append(f"**Architektur:** {arch}")
+
+        # Hersteller / Modell
+        manufacturer = hw.get("manufacturer", "")
+        model = hw.get("model", "")
+        if manufacturer or model:
+            device = f"{manufacturer} {model}".strip()
+            section.append(f"**Geraet:** {device}")
+
+        if hw.get("serial"):
+            section.append(f"**Seriennummer:** {hw['serial']}")
+
         section.append(f"**Hostname:** {platform.node()}")
 
         # Uptime
@@ -161,18 +179,34 @@ class GenerateSystemReportTool(AuditTool):
             section.append("HARDWARE")
             section.append("-" * 70)
 
+        try:
+            from ce365.tools.audit.system_info import get_hardware_info
+            hw = get_hardware_info()
+        except Exception:
+            hw = {}
+
         # CPU
-        cpu_count_physical = psutil.cpu_count(logical=False)
-        cpu_count_logical = psutil.cpu_count(logical=True)
+        cpu_name = hw.get("cpu_name", "")
+        cpu_count_physical = hw.get("cpu_cores_physical") or psutil.cpu_count(logical=False)
+        cpu_count_logical = hw.get("cpu_cores_logical") or psutil.cpu_count(logical=True)
         cpu_freq = psutil.cpu_freq()
 
-        section.append(f"**CPU:**")
+        if cpu_name:
+            section.append(f"**CPU:** {cpu_name}")
+        else:
+            section.append(f"**CPU:**")
         section.append(f"  • Cores: {cpu_count_physical} Physical, {cpu_count_logical} Logical")
         if cpu_freq:
             section.append(f"  • Frequenz: {cpu_freq.current:.0f} MHz (Max: {cpu_freq.max:.0f} MHz)")
 
         cpu_percent = psutil.cpu_percent(interval=1)
         section.append(f"  • Auslastung: {cpu_percent}%")
+
+        # GPU
+        gpu = hw.get("gpu", "")
+        if gpu:
+            section.append("")
+            section.append(f"**GPU:** {gpu}")
 
         # RAM
         mem = psutil.virtual_memory()
@@ -181,6 +215,12 @@ class GenerateSystemReportTool(AuditTool):
         section.append(f"  • Total: {self._format_bytes(mem.total)}")
         section.append(f"  • Verfügbar: {self._format_bytes(mem.available)}")
         section.append(f"  • Genutzt: {mem.percent}%")
+
+        # Disk-Typ
+        disk_type = hw.get("disk_type", "")
+        if disk_type:
+            section.append("")
+            section.append(f"**Speichertyp:** {disk_type}")
 
         section.append("")
         return section

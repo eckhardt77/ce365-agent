@@ -154,6 +154,12 @@ class SlashCommandHandler:
             description="Einstellungen anzeigen/aendern",
             handler=_cmd_config,
         ))
+        self.register(SlashCommand(
+            name="scan",
+            aliases=["analyze", "audit", "analyse"],
+            description="Vollstaendige System-Analyse starten",
+            handler=_cmd_scan,
+        ))
 
 
 # ==========================================
@@ -170,21 +176,29 @@ async def _cmd_help(bot, args: str):
 
 async def _cmd_report(bot, args: str):
     """Incident Report on-demand generieren"""
+    fmt = args.strip().lower() if args.strip() else None
+
+    # PDF-Shortcut
+    if fmt == "pdf":
+        await _generate_pdf_report(bot)
+        return
+
     report_tool = bot.tool_registry.get_tool("generate_incident_report")
     if not report_tool:
         bot.console.display_error("Incident Report Tool nicht verfuegbar.")
         return
 
-    fmt = args.strip().lower() if args.strip() else None
-
     if not fmt:
         choice = bot.console.get_input(
-            "Report-Format? [M]arkdown / [S]OAP"
+            "Report-Format? [M]arkdown / [S]OAP / [P]DF"
         ).strip().lower()
         if choice in ("m", "markdown"):
             fmt = "markdown"
         elif choice in ("s", "soap"):
             fmt = "soap"
+        elif choice in ("p", "pdf"):
+            await _generate_pdf_report(bot)
+            return
         else:
             bot.console.display_info("Abgebrochen.")
             return
@@ -197,7 +211,7 @@ async def _cmd_report(bot, args: str):
             fmt = "soap"
         else:
             bot.console.display_error(
-                f"Unbekanntes Format: {fmt}. Verfuegbar: markdown, soap"
+                f"Unbekanntes Format: {fmt}. Verfuegbar: markdown, soap, pdf"
             )
             return
 
@@ -210,6 +224,48 @@ async def _cmd_report(bot, args: str):
         bot.console.console.print(report)
     except Exception as e:
         bot.console.display_error(f"Report-Fehler: {e}")
+
+
+async def _generate_pdf_report(bot):
+    """PDF-Report auf Desktop generieren"""
+    from ce365.tools.audit.pdf_report import generate_pdf_report
+    from ce365.config.settings import get_settings
+
+    settings = get_settings()
+
+    # System-Info sammeln
+    system_info_tool = bot.tool_registry.get_tool("get_system_info")
+    system_info = ""
+    if system_info_tool:
+        try:
+            with bot.console.show_spinner("Sammle System-Informationen"):
+                system_info = await system_info_tool.execute()
+        except Exception:
+            pass
+
+    report_data = {
+        "system_info": system_info,
+        "raw_analysis": "System-Report erstellt auf Anfrage.",
+    }
+
+    # Changelog-Daten hinzufuegen falls vorhanden
+    if bot.changelog.entries:
+        repairs = "\n".join(
+            f"- {e.get('action', 'N/A')}: {e.get('detail', '')}"
+            for e in bot.changelog.entries
+        )
+        report_data["repairs"] = repairs
+
+    try:
+        with bot.console.show_spinner("Erstelle PDF-Report"):
+            path = generate_pdf_report(
+                report_data=report_data,
+                technician=settings.technician_name or "",
+                company=settings.company or "",
+            )
+        bot.console.display_success(f"PDF-Report gespeichert: {path}")
+    except Exception as e:
+        bot.console.display_error(f"PDF-Fehler: {e}")
 
 
 async def _cmd_provider(bot, args: str):
@@ -580,3 +636,8 @@ async def _cmd_config(bot, args: str):
             f"Unbekannte Option: {target}\n"
             "Verfuegbar: apikey, provider, db, password, briefing, license, wizard"
         )
+
+
+async def _cmd_scan(bot, args: str):
+    """Vollstaendige System-Analyse durchfuehren"""
+    await bot.run_full_scan()

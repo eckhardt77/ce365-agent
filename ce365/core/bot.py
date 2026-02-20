@@ -28,7 +28,6 @@ try:
     PII_AVAILABLE = True
 except ImportError:
     PII_AVAILABLE = False
-    print("⚠️  PII Detection nicht verfügbar (Python 3.14 Kompatibilität)")
 
 # Tools importieren
 from ce365.tools.audit.system_info import SystemInfoTool
@@ -41,18 +40,38 @@ from ce365.tools.audit.stress_tests import (
     CheckSystemTemperatureTool, RunStabilityTestTool
 )
 from ce365.tools.audit.reporting import GenerateSystemReportTool
+from ce365.tools.audit.pdf_report import SaveReportPDFTool
 from ce365.tools.audit.security import CheckSecurityStatusTool
 from ce365.tools.audit.startup import CheckStartupProgramsTool
-from ce365.tools.audit.malware_scan import MalwareScanTool  # NEU
-from ce365.tools.audit.drivers import CheckDriversTool  # NEU - Driver Check
+from ce365.tools.audit.malware_scan import MalwareScanTool
+from ce365.tools.audit.drivers import CheckDriversTool
+from ce365.tools.audit.network_diagnostics import NetworkDiagnosticsTool
+from ce365.tools.audit.software_inventory import SoftwareInventoryTool
+from ce365.tools.audit.disk_health import DiskHealthTool
+from ce365.tools.audit.network_security import NetworkSecurityAuditTool
+from ce365.tools.audit.wifi_info import WiFiInfoTool
+from ce365.tools.audit.user_accounts import UserAccountAuditTool
+from ce365.tools.audit.hosts_file import HostsFileViewerTool
+from ce365.tools.audit.scheduled_tasks import ScheduledTasksAuditTool
+from ce365.tools.audit.encryption_status import EncryptionStatusTool
+from ce365.tools.audit.printer_status import PrinterStatusTool
+from ce365.tools.audit.battery_health import BatteryHealthTool
 from ce365.tools.repair.service_manager import ServiceManagerTool
 from ce365.tools.repair.disk_cleanup import DiskCleanupTool
 from ce365.tools.repair.network_tools import FlushDNSCacheTool, ResetNetworkStackTool
-from ce365.tools.repair.system_repair import RunSFCScanTool, RepairDiskPermissionsTool, RepairDiskTool
+from ce365.tools.repair.system_repair import (
+    RunSFCScanTool, RunDISMRepairTool, RunChkdskTool,
+    RepairDiskPermissionsTool, RepairDiskTool,
+)
 from ce365.tools.repair.updates import InstallSystemUpdatesTool
 from ce365.tools.repair.backup import CreateRestorePointTool, TriggerTimeMachineBackupTool
 from ce365.tools.repair.startup import DisableStartupProgramTool, EnableStartupProgramTool
 from ce365.tools.repair.update_scheduler import ScheduleSystemUpdatesTool
+from ce365.tools.repair.process_manager import KillProcessTool
+from ce365.tools.repair.browser_cleanup import BrowserCacheCleanupTool
+from ce365.tools.repair.disk_optimize import OptimizeDriveTool
+from ce365.tools.repair.windows_update_reset import ResetWindowsUpdateTool
+from ce365.tools.repair.cache_rebuild import RebuildCacheTool
 from ce365.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 from ce365.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
 from ce365.tools.analysis.consult_specialist import ConsultSpecialistTool  # Multi-Agent
@@ -162,11 +181,15 @@ class CE365Bot:
         self.tool_registry.register(CheckBackupStatusTool())
         self.tool_registry.register(CheckSecurityStatusTool())
         self.tool_registry.register(CheckStartupProgramsTool())
+        self.tool_registry.register(NetworkDiagnosticsTool())
+        self.tool_registry.register(WiFiInfoTool())
+        self.tool_registry.register(PrinterStatusTool())
 
         # === Basis-Repair Tools (alle Editionen, Free: 5/Monat) ===
         self.tool_registry.register(ServiceManagerTool())
         self.tool_registry.register(DiskCleanupTool())
         self.tool_registry.register(FlushDNSCacheTool())
+        self.tool_registry.register(KillProcessTool())
 
         # === Erweiterte Audit Tools (Pro) ===
         if check_edition_features(edition, "advanced_audit"):
@@ -178,10 +201,21 @@ class CE365Bot:
             self.tool_registry.register(MalwareScanTool())
             self.tool_registry.register(GenerateSystemReportTool())
             self.tool_registry.register(CheckDriversTool())
+            self.tool_registry.register(SaveReportPDFTool())
+            self.tool_registry.register(SoftwareInventoryTool())
+            self.tool_registry.register(DiskHealthTool())
+            self.tool_registry.register(NetworkSecurityAuditTool())
+            self.tool_registry.register(UserAccountAuditTool())
+            self.tool_registry.register(HostsFileViewerTool())
+            self.tool_registry.register(ScheduledTasksAuditTool())
+            self.tool_registry.register(EncryptionStatusTool())
+            self.tool_registry.register(BatteryHealthTool())
 
         # === Erweiterte Repair Tools (Pro) ===
         if check_edition_features(edition, "advanced_repair"):
             self.tool_registry.register(RunSFCScanTool())
+            self.tool_registry.register(RunDISMRepairTool())
+            self.tool_registry.register(RunChkdskTool())
             self.tool_registry.register(RepairDiskPermissionsTool())
             self.tool_registry.register(RepairDiskTool())
             self.tool_registry.register(ResetNetworkStackTool())
@@ -191,6 +225,10 @@ class CE365Bot:
             self.tool_registry.register(DisableStartupProgramTool())
             self.tool_registry.register(EnableStartupProgramTool())
             self.tool_registry.register(ScheduleSystemUpdatesTool())
+            self.tool_registry.register(BrowserCacheCleanupTool())
+            self.tool_registry.register(OptimizeDriveTool())
+            self.tool_registry.register(ResetWindowsUpdateTool())
+            self.tool_registry.register(RebuildCacheTool())
 
         # === Web Search + Root Cause Analysis (Pro) ===
         if check_edition_features(edition, "web_search"):
@@ -211,11 +249,10 @@ class CE365Bot:
             bot=self,
         ))
 
-        self.console.display_info(
-            f"🔧 Tools registriert: {len(self.tool_registry)} "
-            f"(Audit: {len(self.tool_registry.get_audit_tools())}, "
-            f"Repair: {len(self.tool_registry.get_repair_tools())})"
-        )
+        # Tool-Count wird im Startup-Panel angezeigt
+        self._tool_count = len(self.tool_registry)
+        self._audit_tool_count = len(self.tool_registry.get_audit_tools())
+        self._repair_tool_count = len(self.tool_registry.get_repair_tools())
 
     async def run(self):
         """Main Bot Loop"""
@@ -236,26 +273,8 @@ class CE365Bot:
         if not self._check_tos_acceptance():
             return
 
-        self.console.display_info(f"Session ID: {self.session.session_id}")
-        self.console.display_info("Tippe /help fuer Commands, 'exit' zum Beenden")
-
-        # Learning Stats anzeigen
-        try:
-            stats = self.case_library.get_statistics()
-            if stats['total_cases'] > 0:
-                self.console.display_info(
-                    f"💡 Learning: {stats['total_cases']} Fälle gespeichert, "
-                    f"{stats['total_reuses']} Wiederverwendungen"
-                )
-        except:
-            pass
-
-        self.console.display_separator()
-
-        # Automatischer System-Statusbericht beim Start
-        await self._display_initial_system_status()
-
-        self.console.display_separator()
+        # Konsolidiertes Startup-Panel
+        await self._display_startup_panel()
 
         while True:
             try:
@@ -470,21 +489,157 @@ class CE365Bot:
             import sys
             sys.exit(1)
 
-    async def _display_initial_system_status(self):
-        """Zeigt kompakte einzeilige System-Zusammenfassung beim Start"""
+    async def _display_startup_panel(self):
+        """Konsolidiertes Startup-Panel mit allen Infos"""
+        import platform
+        import psutil
+        from ce365.__version__ import __version__
+
+        settings = get_settings()
+        lines = []
+
+        # Techniker-Info
+        tech_name = settings.technician_name or "Techniker"
+        company = settings.company or ""
+        tech_line = f"  Techniker: {tech_name}"
+        if company:
+            tech_line += f" · {company}"
+        lines.append(tech_line)
+        lines.append(f"  Session: {self.session.session_id[:8]}")
+        lines.append("")
+
+        # System-Info (plattformuebergreifend)
         try:
-            import platform
-            import psutil
-            os_name = f"{platform.system()} {platform.release()}"
-            cpu_cores = psutil.cpu_count(logical=True)
-            ram_percent = psutil.virtual_memory().percent
-            disk_free_gb = psutil.disk_usage("/").free / (1024**3)
-            self.console.console.print(
-                f"[dim]💻 {os_name} | CPU: {cpu_cores} Kerne | RAM: {ram_percent}% | Disk frei: {disk_free_gb:.1f} GB[/dim]"
+            from ce365.tools.audit.system_info import get_hardware_info
+            hw = get_hardware_info()
+
+            os_display = hw["os_name"] or f"{platform.system()} {platform.release()}"
+            cpu_display = hw["cpu_name"] or platform.machine()
+            ram_gb = hw["ram_total_gb"]
+
+            sys_line = f"  System: {os_display} · {cpu_display} · {ram_gb:.0f} GB RAM"
+
+            # Hersteller/Modell wenn vorhanden (z.B. "Dell Latitude 5540")
+            if hw["manufacturer"] or hw["model"]:
+                device = f"{hw['manufacturer']} {hw['model']}".strip()
+                sys_line += f"\n  Geraet: {device}"
+
+            lines.append(sys_line)
+        except Exception:
+            lines.append(f"  System: {platform.system()} {platform.release()} · {platform.machine()}")
+
+        # DB + Tools + Learning
+        db_type = settings.learning_db_type or "sqlite"
+        db_display = "SQLite (lokal)" if db_type == "sqlite" else db_type.upper()
+
+        learning_count = 0
+        try:
+            stats = self.case_library.get_statistics()
+            learning_count = stats.get('total_cases', 0)
+        except Exception:
+            pass
+
+        lines.append(f"  DB: {db_display} · Tools: {self._tool_count} · Learning: {learning_count} Fälle")
+
+        # Warnungen (dezent)
+        warnings = []
+        if not PII_AVAILABLE:
+            warnings.append("PII Detection nicht verfügbar")
+        if db_type == "sqlite" and settings.learning_db_type != "sqlite":
+            warnings.append("DB-Fallback auf SQLite")
+
+        if warnings:
+            lines.append("")
+            for w in warnings:
+                lines.append(f"  [dim yellow]⚠ {w}[/dim yellow]")
+
+        lines.append("")
+        lines.append("  Tippe /help oder /scan für System-Analyse")
+
+        edition = settings.edition.title()
+        title = f"CE365 Agent v{__version__} — {edition} Edition"
+        self.console.display_status_panel(lines, title=title)
+
+    async def run_full_scan(self):
+        """
+        Vollstaendige System-Analyse: sammelt Daten, schickt sie an Claude
+        zur Priorisierung, zeigt Ergebnisse und bietet Reparatur + PDF an.
+        """
+        from rich.live import Live
+        from rich.text import Text
+        from rich.panel import Panel
+        from rich import box
+        from ce365.ui.console import _get_width
+
+        w = _get_width()
+
+        # Scan-Schritte definieren
+        scan_steps = [
+            ("System-Informationen", "get_system_info"),
+            ("Laufende Prozesse", "check_running_processes"),
+            ("System-Logs", "check_system_logs"),
+            ("Sicherheits-Status", "check_security_status"),
+            ("Updates", "check_system_updates"),
+            ("Autostart-Programme", "check_startup_programs"),
+            ("Backup-Status", "check_backup_status"),
+        ]
+
+        # Fortschritt anzeigen + Daten sammeln
+        results = {}
+        step_status = [(name, False) for name, _ in scan_steps]
+
+        def _build_progress_panel():
+            content = Text()
+            for i, (name, done) in enumerate(step_status):
+                icon = "✓" if done else "⏳"
+                style = "green" if done else "yellow"
+                content.append(f"  {icon} {name}\n", style=style)
+            return Panel(
+                content,
+                title="🔍 System-Analyse gestartet",
+                border_style="cyan",
+                box=box.ROUNDED,
+                padding=(1, 1),
+                width=w,
             )
-            self.console.display_info("💬 Wie kann ich dir helfen?")
-        except Exception as e:
-            self.console.display_warning(f"⚠️  System-Info nicht verfügbar: {str(e)}")
+
+        with Live(_build_progress_panel(), console=self.console.console, refresh_per_second=4) as live:
+            for i, (name, tool_name) in enumerate(scan_steps):
+                tool = self.tool_registry.get_tool(tool_name)
+                if tool:
+                    try:
+                        result = await tool.execute()
+                        results[name] = result
+                    except Exception as e:
+                        results[name] = f"Fehler: {e}"
+                else:
+                    results[name] = "Tool nicht verfügbar"
+
+                step_status[i] = (name, True)
+                live.update(_build_progress_panel())
+
+        # Ergebnisse an Claude zur Analyse schicken
+        scan_data = "\n\n---\n\n".join(
+            f"### {name}\n{data}" for name, data in results.items()
+        )
+
+        analysis_prompt = (
+            "Du hast gerade eine vollständige System-Analyse durchgeführt. "
+            "Hier sind die Ergebnisse aller Audit-Tools:\n\n"
+            f"{scan_data}\n\n"
+            "---\n\n"
+            "Bitte analysiere die Ergebnisse und erstelle eine priorisierte Übersicht:\n"
+            "1. Nummeriere alle Findings\n"
+            "2. Verwende 🔴 für kritische Probleme (sofort handeln)\n"
+            "3. Verwende 🟡 für Warnungen (sollte behoben werden)\n"
+            "4. Verwende 🟢 für OK-Bereiche (kurz zusammenfassen)\n\n"
+            "Am Ende frage: 'Welche Punkte soll ich beheben? (z.B. \"1,3\")'\n"
+            "Falls alles OK ist, sage das und biete an einen Report zu erstellen.\n"
+            "Frage am Ende auch: 'Report als PDF auf den Desktop speichern? [J/N]'"
+        )
+
+        # Als normalen Message-Flow verarbeiten
+        await self.process_message(analysis_prompt)
 
     async def process_message(self, user_input: str):
         """

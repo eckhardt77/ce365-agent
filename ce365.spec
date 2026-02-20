@@ -83,6 +83,7 @@ hidden_imports = [
     'ce365.setup.package_generator',
     'ce365.__version__',
     'ce365.__main__',
+    'fpdf',
 ]
 
 # rich._unicode_data Module (dynamisch geladen, Bindestriche im Namen)

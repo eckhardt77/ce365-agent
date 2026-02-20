@@ -6,6 +6,7 @@ from rich.spinner import Spinner
 from rich.live import Live
 from rich import box
 import json
+import shutil
 from contextlib import contextmanager
 
 # readline aktivieren fuer Pfeiltasten-Support (links/rechts, History)
@@ -21,24 +22,30 @@ except ImportError:
     __edition__ = "Community"
 
 
+def _get_width() -> int:
+    """Adaptive Terminal-Breite (max 100)"""
+    return min(shutil.get_terminal_size().columns, 100)
+
+
 class RichConsole:
     """Rich Console für Terminal UI"""
 
     def __init__(self):
-        self.console = Console()
+        self.console = Console(width=_get_width())
 
     def display_logo(self):
         """Modernes Logo anzeigen"""
         from rich.text import Text
         from rich.align import Align
 
+        w = _get_width()
+
         # Haupttitel
         title = Text()
         title.append("CE", style="bold cyan")
         title.append("365", style="bold blue")
         title.append(" Agent", style="bold white")
-        title.append(" ", style="")
-        title.append("🔧", style="")
+        title.append(" 🔧", style="")
 
         # Version und Edition Info (dynamisch aus Settings)
         try:
@@ -49,10 +56,10 @@ class RichConsole:
 
         info = Text()
         info.append(f"v{__version__}", style="dim cyan")
-        info.append(" • ", style="dim")
+        info.append(" · ", style="dim")
         edition_style = "dim green" if _edition.lower() == "pro" else "dim yellow"
         info.append(f"{_edition} Edition", style=edition_style)
-        info.append(" • ", style="dim")
+        info.append(" · ", style="dim")
         info.append("Windows & macOS", style="dim green")
 
         # Tagline
@@ -70,7 +77,8 @@ class RichConsole:
             Align.center(content),
             border_style="cyan",
             box=box.DOUBLE,
-            padding=(1, 2)
+            padding=(1, 2),
+            width=w,
         )
 
         self.console.print()
@@ -79,6 +87,45 @@ class RichConsole:
             Align.center("[dim]Natürlich kommunizieren · Sicher reparieren · Aus Fällen lernen[/dim]")
         )
         self.console.print()
+
+    def display_status_panel(self, lines: list, title: str = "CE365 Agent"):
+        """Konsolidiertes Status-Panel beim Start anzeigen"""
+        from rich.text import Text
+
+        w = _get_width()
+        content = Text()
+        for line in lines:
+            content.append(line + "\n")
+
+        panel = Panel(
+            content,
+            title=title,
+            border_style="cyan",
+            box=box.ROUNDED,
+            padding=(1, 2),
+            width=w,
+        )
+        self.console.print(panel)
+
+    def display_scan_progress(self, steps: list):
+        """Scan-Fortschritt als Panel anzeigen (steps = [(name, done_bool), ...])"""
+        from rich.text import Text
+
+        w = _get_width()
+        content = Text()
+        for name, done in steps:
+            icon = "[green]✓[/green]" if done else "[yellow]⏳[/yellow]"
+            content.append_text(Text.from_markup(f"  {icon} {name}\n"))
+
+        panel = Panel(
+            content,
+            title="🔍 System-Analyse",
+            border_style="cyan",
+            box=box.ROUNDED,
+            padding=(1, 1),
+            width=w,
+        )
+        self.console.print(panel)
 
     def display_assistant_message(self, text: str):
         """Assistant-Nachricht mit Markdown anzeigen"""
@@ -89,27 +136,29 @@ class RichConsole:
             border_style="blue",
             box=box.ROUNDED,
             padding=(1, 2),
+            width=_get_width(),
         )
         self.console.print(panel)
 
     def display_tool_call(self, tool_name: str, tool_input: dict):
-        """Tool Call anzeigen"""
-        input_json = json.dumps(tool_input, indent=2)
-        syntax = Syntax(input_json, "json", theme="monokai", line_numbers=False)
-
-        self.console.print()
-        self.console.print(f"[bold yellow]🔧 Tool:[/bold yellow] {tool_name}")
-        self.console.print("[bold yellow]📥 Input:[/bold yellow]")
-        self.console.print(syntax)
+        """Tool Call kompakt anzeigen (nur Name, kein JSON)"""
+        self.console.print(f"  [dim yellow]🔧 {tool_name}[/dim yellow]")
 
     def display_tool_result(self, tool_name: str, result: str, success: bool = True):
-        """Tool Result anzeigen"""
+        """Tool Result kompakt anzeigen (max 20 Zeilen)"""
         status = "✓" if success else "✗"
         color = "green" if success else "red"
 
-        # Nur kompakte Anzeige ohne Box
-        self.console.print(f"[bold {color}]{status} {tool_name}:[/bold {color}]")
-        self.console.print(result)
+        self.console.print(f"[bold {color}]{status} {tool_name}[/bold {color}]")
+
+        # Lange Outputs kürzen
+        lines = result.split("\n")
+        if len(lines) > 20:
+            truncated = "\n".join(lines[:20])
+            self.console.print(truncated)
+            self.console.print(f"[dim]... ({len(lines) - 20} weitere Zeilen)[/dim]")
+        else:
+            self.console.print(result)
         self.console.print()
 
     def display_error(self, error: str):
@@ -120,6 +169,7 @@ class RichConsole:
                 title="❌ Error",
                 border_style="red",
                 box=box.ROUNDED,
+                width=_get_width(),
             )
         )
 
@@ -151,7 +201,7 @@ class RichConsole:
 
     def display_separator(self):
         """Separator-Linie anzeigen"""
-        self.console.print("─" * 80, style="dim")
+        self.console.print("─" * _get_width(), style="dim")
 
     def clear(self):
         """Console clearen"""
@@ -198,7 +248,8 @@ Bitte antworte mit **"1"** oder **"2"**.
             title="💡 Smart Learning",
             border_style="green",
             box=box.ROUNDED,
-            padding=(1, 2)
+            padding=(1, 2),
+            width=_get_width(),
         )
 
         self.console.print(panel)
@@ -229,7 +280,8 @@ Bitte antworte mit **"1"** oder **"2"**.
             Markdown(content),
             title="📊 Learning Statistics",
             border_style="cyan",
-            box=box.ROUNDED
+            box=box.ROUNDED,
+            width=_get_width(),
         )
 
         self.console.print(panel)
