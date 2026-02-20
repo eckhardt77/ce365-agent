@@ -124,7 +124,11 @@ if _PORTABLE_CONFIG:
             os.environ[key] = str(value)
 else:
     # 3. Standard .env laden (Techniker-PC / pip-Installation)
-    load_dotenv()
+    binary_dir = _get_binary_dir()
+    if binary_dir:
+        load_dotenv(binary_dir / "config" / ".env", override=True)
+    else:
+        load_dotenv()
 
 # Secrets Manager importieren
 try:
@@ -192,7 +196,11 @@ class Settings(BaseModel):
 
         # .env neu laden (wichtig: Wizard erstellt .env nach dem ersten Import)
         if not _PORTABLE_CONFIG:
-            load_dotenv(override=True)
+            binary_dir = _get_binary_dir()
+            if binary_dir:
+                load_dotenv(binary_dir / "config" / ".env", override=True)
+            else:
+                load_dotenv(override=True)
 
         # Config-Datei laden (falls vorhanden)
         user_config = cls._load_user_config()

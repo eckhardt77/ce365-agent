@@ -35,7 +35,12 @@ class SetupWizard:
 
     def __init__(self):
         self.console = Console()
-        self.env_path = Path(".env")
+        if getattr(sys, "frozen", False):
+            config_dir = Path(sys.executable).parent / "config"
+            config_dir.mkdir(exist_ok=True)
+            self.env_path = config_dir / ".env"
+        else:
+            self.env_path = Path(".env")
         self.env_example_path = Path(".env.example")
         self.license_server_url = self.DEFAULT_LICENSE_SERVER_URL
 
@@ -547,6 +552,14 @@ class SetupWizard:
 
             # Permissions setzen (nur Owner kann lesen/schreiben)
             os.chmod(self.env_path, 0o600)
+
+            # Bei sudo: Ownership auf echten User uebertragen
+            sudo_user = os.environ.get("SUDO_USER")
+            if sudo_user and os.getuid() == 0:
+                import pwd
+                pw = pwd.getpwnam(sudo_user)
+                os.chown(self.env_path, pw.pw_uid, pw.pw_gid)
+                os.chown(self.env_path.parent, pw.pw_uid, pw.pw_gid)
 
             return True
 
