@@ -34,7 +34,7 @@ from ce365.tools.audit.system_info import SystemInfoTool
 from ce365.tools.audit.logs import CheckSystemLogsTool
 from ce365.tools.audit.processes import CheckRunningProcessesTool
 from ce365.tools.audit.updates import CheckSystemUpdatesTool
-from ce365.tools.audit.backup import CheckBackupStatusTool
+from ce365.tools.audit.backup import CheckBackupStatusTool, ListBackupsTool, VerifyBackupTool
 from ce365.tools.audit.stress_tests import (
     StressTestCPUTool, StressTestMemoryTool, TestDiskSpeedTool,
     CheckSystemTemperatureTool, RunStabilityTestTool
@@ -64,7 +64,10 @@ from ce365.tools.repair.system_repair import (
     RepairDiskPermissionsTool, RepairDiskTool,
 )
 from ce365.tools.repair.updates import InstallSystemUpdatesTool
-from ce365.tools.repair.backup import CreateRestorePointTool, TriggerTimeMachineBackupTool
+from ce365.tools.repair.backup import (
+    CreateRestorePointTool, TriggerTimeMachineBackupTool,
+    StopBackupTool, ManageBackupExclusionsTool, ManageSnapshotsTool
+)
 from ce365.tools.repair.startup import DisableStartupProgramTool, EnableStartupProgramTool
 from ce365.tools.repair.update_scheduler import ScheduleSystemUpdatesTool
 from ce365.tools.repair.process_manager import KillProcessTool
@@ -211,6 +214,8 @@ class CE365Bot:
             self.tool_registry.register(ScheduledTasksAuditTool())
             self.tool_registry.register(EncryptionStatusTool())
             self.tool_registry.register(BatteryHealthTool())
+            self.tool_registry.register(ListBackupsTool())
+            self.tool_registry.register(VerifyBackupTool())
 
         # === Erweiterte Repair Tools (Pro) ===
         if check_edition_features(edition, "advanced_repair"):
@@ -223,6 +228,9 @@ class CE365Bot:
             self.tool_registry.register(InstallSystemUpdatesTool())
             self.tool_registry.register(CreateRestorePointTool())
             self.tool_registry.register(TriggerTimeMachineBackupTool())
+            self.tool_registry.register(StopBackupTool())
+            self.tool_registry.register(ManageBackupExclusionsTool())
+            self.tool_registry.register(ManageSnapshotsTool())
             self.tool_registry.register(DisableStartupProgramTool())
             self.tool_registry.register(EnableStartupProgramTool())
             self.tool_registry.register(ScheduleSystemUpdatesTool())

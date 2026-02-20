@@ -25,6 +25,8 @@ _RICH_MARKUP_RE = re.compile(r"\[/?[a-z][a-z _]*\]")
 _EMOJI_RE = re.compile(
     "["
     "\U0001F300-\U0001F9FF"  # Misc Symbols, Emoticons, etc.
+    "\U00002300-\U000023FF"  # Misc Technical (⏱⏰ etc.)
+    "\U00002600-\U000026FF"  # Misc Symbols (☀☁ etc.)
     "\U00002702-\U000027B0"  # Dingbats
     "\U0000FE00-\U0000FE0F"  # Variation Selectors
     "\U0000200D"             # ZWJ
