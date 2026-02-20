@@ -45,7 +45,8 @@ releases/
 website/
 license-server/
 docs/
-scripts/
+scripts/*
+!scripts/smoke_test_binary.py
 /tools/
 docker-compose.learning-db.yml
 generate_docs.py

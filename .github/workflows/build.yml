@@ -64,6 +64,9 @@ jobs:
       - name: Build binary
         run: python -m PyInstaller ce365.spec --noconfirm --clean
 
+      - name: Smoke test — verify all modules available
+        run: python scripts/smoke_test_binary.py
+
       - name: Rename binary
         shell: bash
         run: |

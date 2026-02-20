@@ -63,9 +63,11 @@ hidden_imports = [
     'sqlalchemy.dialects.mysql',
     'asyncmy',
     'pymysql',
+    'asyncssh',
+    'pypsrp',
     'presidio_analyzer',
     'presidio_anonymizer',
-] + collect_submodules('presidio_analyzer') + collect_submodules('presidio_anonymizer') + [
+] + collect_submodules('asyncssh') + collect_submodules('pypsrp') + collect_submodules('presidio_analyzer') + collect_submodules('presidio_anonymizer') + [
     'spacy',
     'cryptography',
     'duckduckgo_search',
