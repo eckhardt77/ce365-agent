@@ -6,6 +6,8 @@ Licensed under Source Available License
 """
 
 import asyncio
+import atexit
+import signal
 import sys
 import argparse
 import shutil
@@ -224,6 +226,34 @@ def _check_and_offer_update():
         pass  # Update-Check soll nie den Start blockieren
 
 
+_active_session_manager = None
+
+
+def _sync_release_session():
+    """Notfall-Release falls async finally nicht greift"""
+    mgr = _active_session_manager
+    if mgr and mgr.session_token:
+        try:
+            import httpx
+            settings = get_settings()
+            httpx.post(
+                f"{settings.license_server_url}/api/license/session/release",
+                json={"session_token": mgr.session_token},
+                timeout=3,
+            )
+        except Exception:
+            pass
+
+
+def _signal_handler(signum, frame):
+    _sync_release_session()
+    sys.exit(0)
+
+
+atexit.register(_sync_release_session)
+signal.signal(signal.SIGTERM, _signal_handler)
+
+
 async def _run_with_license_session(bot):
     """
     Führt den Bot mit Lizenz-Session-Management aus
@@ -232,6 +262,7 @@ async def _run_with_license_session(bot):
     - Heartbeats alle 5 Minuten
     - Session-Release beim Beenden
     """
+    global _active_session_manager
     session_manager = None
 
     try:
@@ -245,6 +276,7 @@ async def _run_with_license_session(bot):
             result = await session_manager.start_session()
 
             if result.get("success"):
+                _active_session_manager = session_manager
                 session_manager.start_heartbeat_timer()
             else:
                 error = result.get("error", "")
@@ -264,6 +296,7 @@ async def _run_with_license_session(bot):
         if session_manager:
             session_manager.stop_heartbeat_timer()
             await session_manager.release_session()
+            _active_session_manager = None
 
 
 def main():
