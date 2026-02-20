@@ -281,7 +281,7 @@ def run_update(license_key: str = ""):
         console.print("  Installiere Update...")
         try:
             result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", "--upgrade", "ce365-agent"],
+                [sys.executable, "-m", "pip", "install", "--upgrade", "git+https://github.com/eckhardt77/ce365-agent.git"],
                 capture_output=True, text=True, timeout=120,
             )
             if result.returncode != 0:

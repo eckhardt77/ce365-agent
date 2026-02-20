@@ -166,6 +166,18 @@ class SlashCommandHandler:
             description="Audit-Routine starten (komplett/sicherheit/performance/wartung)",
             handler=_cmd_check,
         ))
+        self.register(SlashCommand(
+            name="update",
+            aliases=["upgrade"],
+            description="CE365 auf neueste Version aktualisieren",
+            handler=_cmd_update,
+        ))
+        self.register(SlashCommand(
+            name="rollback",
+            aliases=["downgrade"],
+            description="Rollback zur vorherigen Version",
+            handler=_cmd_rollback,
+        ))
 
 
 # ==========================================
@@ -647,6 +659,18 @@ async def _cmd_config(bot, args: str):
 async def _cmd_scan(bot, args: str):
     """Vollstaendige System-Analyse durchfuehren"""
     await bot.run_full_scan()
+
+
+async def _cmd_update(bot, args: str):
+    """CE365 auf neueste Version aktualisieren"""
+    from ce365.core.updater import run_update
+    run_update()
+
+
+async def _cmd_rollback(bot, args: str):
+    """Rollback zur vorherigen Version"""
+    from ce365.core.updater import run_rollback
+    run_rollback()
 
 
 async def _cmd_check(bot, args: str):
