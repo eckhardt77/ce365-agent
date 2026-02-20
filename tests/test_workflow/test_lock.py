@@ -5,7 +5,7 @@ Testet das Parsing von GO REPAIR Befehlen und Schritt-Validierung.
 """
 
 import pytest
-from ce365.workflow.lock import ExecutionLock
+from ce365.workflow.lock import ExecutionLock, _ALL_STEPS
 
 
 class TestIsGoCommand:
@@ -22,9 +22,18 @@ class TestIsGoCommand:
         assert ExecutionLock.is_go_command("  GO REPAIR: 1  ") is True
         assert ExecutionLock.is_go_command("GO  REPAIR:  1") is True
 
+    def test_go_without_steps(self):
+        """GO REPAIR ohne Schrittangabe = alle freigeben"""
+        assert ExecutionLock.is_go_command("GO REPAIR") is True
+        assert ExecutionLock.is_go_command("go repair") is True
+
+    def test_go_with_text(self):
+        """GO REPAIR mit Text statt Zahlen"""
+        assert ExecutionLock.is_go_command("GO REPAIR: Desktop-Organisieren (Plan A)") is True
+        assert ExecutionLock.is_go_command("GO REPAIR: Plan A") is True
+
     def test_invalid_commands(self):
         assert ExecutionLock.is_go_command("REPAIR: 1") is False
-        assert ExecutionLock.is_go_command("GO: 1") is False
         assert ExecutionLock.is_go_command("Hello World") is False
         assert ExecutionLock.is_go_command("") is False
 
@@ -68,18 +77,30 @@ class TestParseGoCommand:
         result = ExecutionLock.parse_go_command("GO REPAIR: 1-3,2,3")
         assert result == [1, 2, 3]
 
+    def test_go_repair_without_steps(self):
+        """GO REPAIR ohne Schritte = alle freigeben"""
+        result = ExecutionLock.parse_go_command("GO REPAIR")
+        assert result == _ALL_STEPS
+
+    def test_go_repair_with_text(self):
+        """GO REPAIR mit Text statt Zahlen = alle freigeben"""
+        result = ExecutionLock.parse_go_command("GO REPAIR: Desktop-Organisieren (Plan A)")
+        assert result == _ALL_STEPS
+
+    def test_go_repair_plan_a(self):
+        """GO REPAIR: Plan A = alle freigeben"""
+        result = ExecutionLock.parse_go_command("GO REPAIR: Plan A")
+        assert result == _ALL_STEPS
+
+    def test_go_repair_colon_text(self):
+        """GO REPAIR: beliebiger Text = alle freigeben"""
+        result = ExecutionLock.parse_go_command("GO REPAIR: Ordner anlegen und Dateien verschieben")
+        assert result == _ALL_STEPS
+
     def test_invalid_format_returns_none(self):
         assert ExecutionLock.parse_go_command("REPAIR: 1") is None
         assert ExecutionLock.parse_go_command("Hello") is None
         assert ExecutionLock.parse_go_command("") is None
-
-    def test_invalid_steps_returns_none(self):
-        assert ExecutionLock.parse_go_command("GO REPAIR: abc") is None
-        assert ExecutionLock.parse_go_command("GO REPAIR: 1,abc") is None
-
-    def test_invalid_range_returns_none(self):
-        # Reversed range (start > end)
-        assert ExecutionLock.parse_go_command("GO REPAIR: 3-1") is None
 
     def test_large_step_numbers(self):
         result = ExecutionLock.parse_go_command("GO REPAIR: 10,20,30")

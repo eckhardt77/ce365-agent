@@ -854,7 +854,7 @@ class CE365Bot:
         if not approved_steps:
             self.console.display_error(
                 "Ungültiger GO REPAIR Befehl.\n"
-                "Format: GO REPAIR: 1,2,3 oder GO REPAIR: 1-3"
+                "Formate: GO REPAIR: 1,2,3 | GO REPAIR: 1-3 | GO REPAIR (alle Schritte)"
             )
             return
 
