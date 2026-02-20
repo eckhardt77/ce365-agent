@@ -870,14 +870,21 @@ class CE365Bot:
             )
             return
 
-        if current.value not in ("plan_ready", "locked"):
+        if current.value == "locked":
+            # Bereits gelockt — Steps aktualisieren und weitermachen
+            self.state_machine.approved_steps = approved_steps
+        elif current.value == "plan_ready":
+            # Normaler Flow
+            pass
+        else:
             # Auto-Transition: Der Bot hat offensichtlich einen Plan praesentiert,
             # auch wenn die State Machine das nicht mitbekommen hat.
             self.state_machine.transition_to_plan_ready("(vom User per GO REPAIR bestätigt)")
 
-        # Lock aktivieren
+        # Lock aktivieren (nur wenn nicht schon locked)
         try:
-            self.state_machine.lock_execution(approved_steps)
+            if current.value != "locked":
+                self.state_machine.lock_execution(approved_steps)
             self.console.display_success(
                 f"✓ Execution Lock aktiviert für Schritte: {ExecutionLock.format_steps(approved_steps)}"
             )
