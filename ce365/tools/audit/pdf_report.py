@@ -7,12 +7,31 @@ Licensed under Source Available License
 Generiert professionelle PDF-Reports auf den Desktop.
 """
 
+import re
 import platform
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional
 
 from fpdf import FPDF
+
+
+# Rich-Markup Tags
+_RICH_MARKUP_RE = re.compile(r"\[/?[a-z][a-z _]*\]")
+
+
+def _clean_for_pdf(text: str) -> str:
+    """Entfernt Emojis, Rich-Markup und nicht-druckbare Zeichen fuer Helvetica"""
+    text = _RICH_MARKUP_RE.sub("", text)
+    # Nur Zeichen behalten die Helvetica (latin-1) darstellen kann
+    cleaned = []
+    for ch in text:
+        try:
+            ch.encode("latin-1")
+            cleaned.append(ch)
+        except UnicodeEncodeError:
+            pass  # Zeichen entfernen (Emoji, CJK, etc.)
+    return "".join(cleaned).strip()
 
 from ce365.tools.base import AuditTool
 
@@ -113,7 +132,7 @@ def generate_pdf_report(
         pass
 
     for line in info_lines:
-        pdf.cell(0, 6, line, new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(0, 6, _clean_for_pdf(line), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
     # -- System-Informationen --
@@ -145,12 +164,12 @@ def generate_pdf_report(
                 prefix = "[OK]"
 
             pdf.set_font("Helvetica", "B", 10)
-            pdf.cell(0, 7, f"{prefix} {title}", new_x="LMARGIN", new_y="NEXT")
+            pdf.cell(0, 7, _clean_for_pdf(f"{prefix} {title}"), new_x="LMARGIN", new_y="NEXT")
             pdf.set_text_color(0, 0, 0)
 
             if detail:
                 pdf.set_font("Helvetica", "", 9)
-                pdf.multi_cell(0, 5, detail)
+                pdf.multi_cell(0, 5, _clean_for_pdf(detail), new_x="LMARGIN", new_y="NEXT")
             pdf.ln(3)
 
     # -- Durchgefuehrte Reparaturen --
@@ -176,25 +195,18 @@ def generate_pdf_report(
 def _add_section(pdf: FPDF, title: str, content: str):
     """Section mit Titel und Inhalt zum PDF hinzufuegen"""
     pdf.set_font("Helvetica", "B", 13)
-    pdf.cell(0, 10, title, new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 10, _clean_for_pdf(title), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
     pdf.set_font("Helvetica", "", 9)
 
-    # Emojis und Rich-Markup entfernen fuer PDF
-    clean = content
-    for markup in ["[bold]", "[/bold]", "[dim]", "[/dim]", "[red]", "[/red]",
-                   "[green]", "[/green]", "[yellow]", "[/yellow]", "[cyan]", "[/cyan]",
-                   "[dim yellow]", "[/dim yellow]", "[bold cyan]", "[/bold cyan]"]:
-        clean = clean.replace(markup, "")
+    clean = _clean_for_pdf(content)
 
-    # Zeile fuer Zeile ausgeben (multi_cell fuer Umbruch)
     for line in clean.split("\n"):
         stripped = line.strip()
         if not stripped:
             pdf.ln(3)
             continue
-        # Emojis als Text beibehalten (fpdf2 unterstuetzt Unicode)
-        pdf.multi_cell(0, 5, stripped)
+        pdf.multi_cell(0, 5, stripped, new_x="LMARGIN", new_y="NEXT")
     pdf.ln(5)
 
 
