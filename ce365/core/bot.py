@@ -72,6 +72,7 @@ from ce365.tools.repair.browser_cleanup import BrowserCacheCleanupTool
 from ce365.tools.repair.disk_optimize import OptimizeDriveTool
 from ce365.tools.repair.windows_update_reset import ResetWindowsUpdateTool
 from ce365.tools.repair.cache_rebuild import RebuildCacheTool
+from ce365.tools.repair.task_scheduler import ManageScheduledTaskTool
 from ce365.tools.research.web_search import WebSearchTool, WebSearchInstantAnswerTool
 from ce365.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
 from ce365.tools.analysis.consult_specialist import ConsultSpecialistTool  # Multi-Agent
@@ -229,6 +230,7 @@ class CE365Bot:
             self.tool_registry.register(OptimizeDriveTool())
             self.tool_registry.register(ResetWindowsUpdateTool())
             self.tool_registry.register(RebuildCacheTool())
+            self.tool_registry.register(ManageScheduledTaskTool())
 
         # === Web Search + Root Cause Analysis (Pro) ===
         if check_edition_features(edition, "web_search"):
