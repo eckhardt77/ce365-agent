@@ -293,6 +293,11 @@ def main():
         help="Führt Health-Check durch (Python, Dependencies, API, Config)"
     )
     parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Zeigt Details bei --health (jedes Tool/Modul einzeln)"
+    )
+    parser.add_argument(
         "--update",
         action="store_true",
         help="Aktualisiert CE365 auf die neueste Version"
@@ -335,7 +340,7 @@ def main():
         return
 
     if args.health:
-        exit_code = run_health_check()
+        exit_code = run_health_check(verbose=args.verbose)
         sys.exit(exit_code)
 
     if args.update:
