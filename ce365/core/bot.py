@@ -562,84 +562,10 @@ class CE365Bot:
 
     async def run_full_scan(self):
         """
-        Vollstaendige System-Analyse: sammelt Daten, schickt sie an Claude
-        zur Priorisierung, zeigt Ergebnisse und bietet Reparatur + PDF an.
+        Vollstaendige System-Analyse: delegiert an die 'komplett' Routine.
         """
-        from rich.live import Live
-        from rich.text import Text
-        from rich.panel import Panel
-        from rich import box
-        from ce365.ui.console import _get_width
-
-        w = _get_width()
-
-        # Scan-Schritte definieren
-        scan_steps = [
-            ("System-Informationen", "get_system_info"),
-            ("Laufende Prozesse", "check_running_processes"),
-            ("System-Logs", "check_system_logs"),
-            ("Sicherheits-Status", "check_security_status"),
-            ("Updates", "check_system_updates"),
-            ("Autostart-Programme", "check_startup_programs"),
-            ("Backup-Status", "check_backup_status"),
-        ]
-
-        # Fortschritt anzeigen + Daten sammeln
-        results = {}
-        step_status = [(name, False) for name, _ in scan_steps]
-
-        def _build_progress_panel():
-            content = Text()
-            for i, (name, done) in enumerate(step_status):
-                icon = "✓" if done else "⏳"
-                style = "green" if done else "yellow"
-                content.append(f"  {icon} {name}\n", style=style)
-            return Panel(
-                content,
-                title="🔍 System-Analyse gestartet",
-                border_style="cyan",
-                box=box.ROUNDED,
-                padding=(1, 1),
-                width=w,
-            )
-
-        with Live(_build_progress_panel(), console=self.console.console, refresh_per_second=4) as live:
-            for i, (name, tool_name) in enumerate(scan_steps):
-                tool = self.tool_registry.get_tool(tool_name)
-                if tool:
-                    try:
-                        result = await tool.execute()
-                        results[name] = result
-                    except Exception as e:
-                        results[name] = f"Fehler: {e}"
-                else:
-                    results[name] = "Tool nicht verfügbar"
-
-                step_status[i] = (name, True)
-                live.update(_build_progress_panel())
-
-        # Ergebnisse an Claude zur Analyse schicken
-        scan_data = "\n\n---\n\n".join(
-            f"### {name}\n{data}" for name, data in results.items()
-        )
-
-        analysis_prompt = (
-            "Du hast gerade eine vollständige System-Analyse durchgeführt. "
-            "Hier sind die Ergebnisse aller Audit-Tools:\n\n"
-            f"{scan_data}\n\n"
-            "---\n\n"
-            "Bitte analysiere die Ergebnisse und erstelle eine priorisierte Übersicht:\n"
-            "1. Nummeriere alle Findings\n"
-            "2. Verwende 🔴 für kritische Probleme (sofort handeln)\n"
-            "3. Verwende 🟡 für Warnungen (sollte behoben werden)\n"
-            "4. Verwende 🟢 für OK-Bereiche (kurz zusammenfassen)\n\n"
-            "Am Ende frage: 'Welche Punkte soll ich beheben? (z.B. \"1,3\")'\n"
-            "Falls alles OK ist, sage das und biete an einen Report zu erstellen.\n"
-            "Frage am Ende auch: 'Report als PDF auf den Desktop speichern? [J/N]'"
-        )
-
-        # Als normalen Message-Flow verarbeiten
-        await self.process_message(analysis_prompt)
+        from ce365.core.routines import run_routine
+        await run_routine(self, "komplett")
 
     async def process_message(self, user_input: str):
         """

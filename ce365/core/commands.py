@@ -160,6 +160,12 @@ class SlashCommandHandler:
             description="Vollstaendige System-Analyse starten",
             handler=_cmd_scan,
         ))
+        self.register(SlashCommand(
+            name="check",
+            aliases=["routine", "routines", "pruefung"],
+            description="Audit-Routine starten (komplett/sicherheit/performance/wartung)",
+            handler=_cmd_check,
+        ))
 
 
 # ==========================================
@@ -641,3 +647,39 @@ async def _cmd_config(bot, args: str):
 async def _cmd_scan(bot, args: str):
     """Vollstaendige System-Analyse durchfuehren"""
     await bot.run_full_scan()
+
+
+async def _cmd_check(bot, args: str):
+    """Audit-Routine ausfuehren — mit Profil-Auswahl"""
+    from rich.prompt import Prompt
+    from ce365.core.routines import run_routine, get_routine_names, get_routine_menu
+
+    target = args.strip().lower() if args.strip() else None
+
+    if not target:
+        # Interaktives Auswahl-Menu
+        console = bot.console.console
+        bot.console.display_separator()
+        console.print("[bold]Audit-Routinen[/bold]\n")
+
+        menu = get_routine_menu()
+        for i, (name, label, desc) in enumerate(menu, 1):
+            console.print(f"  [cyan]{i}[/cyan]  {label}  [dim]— {desc}[/dim]")
+        console.print(f"  [cyan]0[/cyan]  Zurueck\n")
+
+        choices = [str(i) for i in range(len(menu) + 1)]
+        choice = Prompt.ask("  Wahl", choices=choices, default="0")
+        idx = int(choice)
+        if idx == 0:
+            bot.console.display_info("Zurueck zum Chat.")
+            return
+        target = menu[idx - 1][0]
+
+    if target not in get_routine_names():
+        bot.console.display_error(
+            f"Unbekannte Routine: {target}\n"
+            f"Verfuegbar: {', '.join(get_routine_names())}"
+        )
+        return
+
+    await run_routine(bot, target)
