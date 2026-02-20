@@ -245,7 +245,7 @@ async def _cmd_report(bot, args: str):
 
 
 async def _generate_pdf_report(bot):
-    """PDF-Report auf Desktop generieren"""
+    """PDF-Report auf Desktop generieren — sammelt alle Audit-Tool-Ergebnisse"""
     from ce365.tools.audit.pdf_report import generate_pdf_report
     from ce365.config.settings import get_settings
 
@@ -261,9 +261,33 @@ async def _generate_pdf_report(bot):
         except Exception:
             pass
 
+    # Alle relevanten Audit-Tools ausfuehren
+    tools_to_run = [
+        ("check_security_status", "Sicherheitsstatus"),
+        ("check_backup_status", "Backup-Status"),
+        ("check_disk_health", "Festplatten-Gesundheit"),
+        ("check_network_security", "Netzwerk-Sicherheit"),
+        ("check_system_updates", "System-Updates"),
+        ("check_running_processes", "Laufende Prozesse"),
+        ("check_battery_health", "Akku-Status"),
+    ]
+
+    sections = []
+    for tool_name, section_title in tools_to_run:
+        tool = bot.tool_registry.get_tool(tool_name)
+        if not tool:
+            continue
+        try:
+            with bot.console.show_spinner(f"Pruefe {section_title}"):
+                result = await tool.execute()
+            if result and isinstance(result, str) and len(result.strip()) > 10:
+                sections.append({"title": section_title, "content": result})
+        except Exception:
+            pass
+
     report_data = {
         "system_info": system_info,
-        "raw_analysis": "System-Report erstellt auf Anfrage.",
+        "sections": sections,
     }
 
     # Changelog-Daten hinzufuegen falls vorhanden
@@ -433,7 +457,7 @@ async def _cmd_config(bot, args: str):
 
     # .env Datei finden
     if getattr(sys, "frozen", False):
-        env_path = Path(sys.executable).parent / ".env"
+        env_path = Path(sys.executable).parent / "config" / ".env"
     else:
         env_path = Path(".env")
 

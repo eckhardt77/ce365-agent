@@ -97,6 +97,10 @@ rich_unicode_data = [(rich_unicode_dir, 'rich/_unicode_data')]
 i18n_dir = os.path.join(PROJECT_ROOT, 'ce365', 'i18n', 'languages')
 i18n_data = [(i18n_dir, 'ce365/i18n/languages')]
 
+# Font-Assets (DejaVu Sans fuer Unicode-PDF-Reports)
+font_dir = os.path.join(PROJECT_ROOT, 'ce365', 'assets')
+font_data = [(font_dir, 'ce365/assets')]
+
 # asyncmy komplett einbinden (Cython-Extensions + Submodule)
 import asyncmy
 asyncmy_dir = os.path.dirname(asyncmy.__file__)
@@ -116,6 +120,7 @@ datas += i18n_data
 datas += spacy_data
 datas += rich_unicode_data
 datas += asyncmy_data
+datas += font_data
 
 a = Analysis(
     [os.path.join(PROJECT_ROOT, 'ce365', '__main__.py')],
