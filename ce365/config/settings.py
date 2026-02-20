@@ -225,9 +225,9 @@ class Settings(BaseModel):
                 "Bitte beim ersten Start konfigurieren oder .env Datei erstellen."
             )
 
-        # Techniker-Metadaten aus Portable Config
-        tech_name = _PORTABLE_CONFIG.get("_TECHNICIAN_NAME", "")
-        company = _PORTABLE_CONFIG.get("_COMPANY", "")
+        # Techniker-Metadaten: .env > Portable Config
+        tech_name = os.getenv("TECHNICIAN_NAME", "") or _PORTABLE_CONFIG.get("_TECHNICIAN_NAME", "")
+        company = os.getenv("COMPANY", "") or _PORTABLE_CONFIG.get("_COMPANY", "")
 
         # Verzeichnisse erstellen
         settings = cls(

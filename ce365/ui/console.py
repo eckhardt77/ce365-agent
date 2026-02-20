@@ -27,6 +27,9 @@ def _get_width() -> int:
     return min(shutil.get_terminal_size().columns, 100)
 
 
+BOT_NAME = "Steve"
+
+
 class RichConsole:
     """Rich Console für Terminal UI"""
 
@@ -132,7 +135,7 @@ class RichConsole:
         md = Markdown(text)
         panel = Panel(
             md,
-            title="🤖 Steve",
+            title=f"🤖 {BOT_NAME}",
             border_style="blue",
             box=box.ROUNDED,
             padding=(1, 2),
@@ -190,7 +193,7 @@ class RichConsole:
         self.console.print()
         self.console.rule(style="dim")  # Trennlinie
         self.console.print()
-        display = f"[bold green]> Steve:[/bold green] {prompt}" if prompt else "[bold green]> Steve:[/bold green] "
+        display = f"[bold green]> {BOT_NAME}:[/bold green] {prompt}" if prompt else f"[bold green]> {BOT_NAME}:[/bold green] "
         return self.console.input(display).strip()
 
     @contextmanager

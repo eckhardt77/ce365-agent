@@ -242,15 +242,19 @@ class DatabaseManager:
     @staticmethod
     def _mask_password(url: str) -> str:
         """Password in URL maskieren für Logs"""
-        if "@" in url and ":" in url:
-            parts = url.split("@")
-            if len(parts) == 2:
-                credentials = parts[0].split("://")
-                if len(credentials) == 2:
-                    protocol = credentials[0]
-                    user_pass = credentials[1].split(":")
-                    if len(user_pass) == 2:
-                        return f"{protocol}://{user_pass[0]}:****@{parts[1]}"
+        if "@" in url and "://" in url:
+            # Split an letztem @ (Passwort kann @ nicht enthalten, Host schon nicht)
+            at_idx = url.rfind("@")
+            cred_part = url[:at_idx]      # z.B. "mysql+asyncmy://user:P@ss:wort"
+            host_part = url[at_idx + 1:]  # z.B. "host:3306/db"
+            proto_sep = cred_part.find("://")
+            if proto_sep != -1:
+                protocol = cred_part[:proto_sep]
+                user_pass = cred_part[proto_sep + 3:]  # z.B. "user:P@ss:wort"
+                colon_idx = user_pass.find(":")
+                if colon_idx != -1:
+                    user = user_pass[:colon_idx]
+                    return f"{protocol}://{user}:****@{host_part}"
         return url
 
 

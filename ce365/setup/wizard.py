@@ -519,6 +519,11 @@ class SetupWizard:
                         f'LEARNING_DB_URL={db_config["url"]}'
                     )
 
+            # Techniker-Name und Firma als env-Variablen hinzufügen
+            config += f"\n# Techniker\nTECHNICIAN_NAME={user_name}\n"
+            if company:
+                config += f"COMPANY={company}\n"
+
             # User-Info als Kommentar hinzufügen
             header = f"""# ============================================================================
 # CE365 Agent - Konfiguration

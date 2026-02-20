@@ -469,7 +469,7 @@ class CE365Bot:
 
             edition_display = edition_names.get(result["edition"], result["edition"])
 
-            self.console.display_success(f"✓ Lizenz gültig: {edition_display}")
+            self.console.display_success(f"Lizenz gültig: {edition_display}")
 
             # Offline-Hinweis wenn gecachte Lizenz verwendet
             if result.get("_offline"):
