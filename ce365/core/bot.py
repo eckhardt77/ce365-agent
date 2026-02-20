@@ -77,6 +77,8 @@ from ce365.tools.repair.windows_update_reset import ResetWindowsUpdateTool
 from ce365.tools.repair.cache_rebuild import RebuildCacheTool
 from ce365.tools.repair.task_scheduler import ManageScheduledTaskTool
 from ce365.tools.repair.power_management import RebootTool, CancelShutdownTool
+from ce365.tools.audit.directory_listing import ListDirectoryTool
+from ce365.tools.repair.batch_file_ops import BatchMoveFilesTool
 from ce365.tools.repair.software_manager import (
     InstallSoftwareTool, UninstallSoftwareTool, UpdateSoftwareTool,
 )
@@ -232,6 +234,7 @@ class CE365Bot:
         self.tool_registry.register(NetworkDiagnosticsTool())
         self.tool_registry.register(WiFiInfoTool())
         self.tool_registry.register(PrinterStatusTool())
+        self.tool_registry.register(ListDirectoryTool())
 
         # === Basis-Repair Tools (alle Editionen, Free: 5/Monat) ===
         self.tool_registry.register(ServiceManagerTool())
@@ -299,6 +302,7 @@ class CE365Bot:
             self.tool_registry.register(EditFileTool())
             self.tool_registry.register(DeleteFileTool())
             self.tool_registry.register(MoveFileTool())
+            self.tool_registry.register(BatchMoveFilesTool())
 
         # === File Reading Tools (Pro) ===
         if check_edition_features(edition, "file_reading"):

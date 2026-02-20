@@ -10,9 +10,14 @@ from typing import List
 
 class BackupCheckHook(BaseHook):
     """
-    Prueft vor jeder Reparatur ob ein aktuelles Backup vorhanden ist.
+    Prueft vor der ERSTEN Reparatur ob ein aktuelles Backup vorhanden ist.
     Warnt den User, blockiert aber NICHT die Ausfuehrung.
+    Laeuft nur 1x pro Session (nicht bei jedem einzelnen Tool-Call).
     """
+
+    def __init__(self):
+        self._already_checked = False
+        self._cached_result: HookResult | None = None
 
     @property
     def name(self) -> str:
@@ -27,6 +32,10 @@ class BackupCheckHook(BaseHook):
         return [HookEvent.PRE_REPAIR]
 
     async def execute(self, context: HookContext) -> HookResult:
+        # Nur 1x pro Session pruefen, nicht bei jedem Tool-Call
+        if self._already_checked:
+            return self._cached_result or HookResult(proceed=True)
+        self._already_checked = True
         import platform
 
         # Backup-Status pruefen (plattformuebergreifend)
@@ -38,12 +47,12 @@ class BackupCheckHook(BaseHook):
                 # Time Machine pruefen
                 result = runner.run_sync(["tmutil", "latestbackup"], timeout=5)
                 if result.success and result.stdout:
-                    return HookResult(
+                    self._cached_result = HookResult(
                         proceed=True,
                         message=f"Backup vorhanden: {result.stdout.split('/')[-1]}",
                     )
                 else:
-                    return HookResult(
+                    self._cached_result = HookResult(
                         proceed=True,  # Warnung, nicht blockieren
                         message="⚠️  Kein aktuelles Time Machine Backup gefunden! "
                                 "Erstelle ein Backup bevor du Reparaturen durchfuehrst.",
@@ -57,12 +66,12 @@ class BackupCheckHook(BaseHook):
                     timeout=10,
                 )
                 if result.success and result.stdout:
-                    return HookResult(
+                    self._cached_result = HookResult(
                         proceed=True,
                         message=f"Wiederherstellungspunkt: {result.stdout[:60]}",
                     )
                 else:
-                    return HookResult(
+                    self._cached_result = HookResult(
                         proceed=True,
                         message="⚠️  Kein Wiederherstellungspunkt gefunden! "
                                 "Erstelle einen Restore Point bevor du Reparaturen durchfuehrst.",
@@ -71,7 +80,8 @@ class BackupCheckHook(BaseHook):
         except Exception:
             pass
 
-        return HookResult(proceed=True)
+        self._cached_result = self._cached_result or HookResult(proceed=True)
+        return self._cached_result
 
 
 class VerifyRepairHook(BaseHook):
