@@ -99,6 +99,7 @@ Antworte mit einem strukturierten Diagnosebericht:
         "description": "Netzwerk-Diagnose: DNS, DHCP, WLAN, Firewall, VPN, Latenz, Paketverlust",
         "tools": [
             "get_system_info", "check_system_logs", "check_security_status",
+            "network_diagnostics", "check_wifi_info",
         ],
         "prompt": """Du bist NetDoc — ein Netzwerk-Spezialist. Du wirst von Steve (dem Orchestrator) konsultiert, um Netzwerkprobleme zu diagnostizieren.
 
@@ -137,7 +138,7 @@ Analysiere Netzwerkprobleme systematisch von Layer 1 aufwärts.
         "description": "Sicherheits-Analyse: Malware, Autostart, Zertifikate, Firewall, verdächtige Prozesse",
         "tools": [
             "get_system_info", "check_running_processes", "check_startup_programs",
-            "check_security_status", "malware_scan",
+            "check_security_status", "scan_malware",
         ],
         "prompt": """Du bist SecurityDoc — ein IT-Sicherheits-Spezialist. Du wirst von Steve (dem Orchestrator) konsultiert, um Sicherheitsprobleme zu analysieren.
 
