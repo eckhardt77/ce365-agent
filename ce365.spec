@@ -14,6 +14,7 @@ Output:
 import sys
 import os
 from pathlib import Path
+from PyInstaller.utils.hooks import collect_submodules
 
 block_cipher = None
 
@@ -64,6 +65,7 @@ hidden_imports = [
     'pymysql',
     'presidio_analyzer',
     'presidio_anonymizer',
+] + collect_submodules('presidio_analyzer') + collect_submodules('presidio_anonymizer') + [
     'spacy',
     'cryptography',
     'duckduckgo_search',
@@ -127,7 +129,6 @@ a = Analysis(
     excludes=[
         'tkinter',
         'matplotlib',
-        'numpy',
         'pandas',
         'scipy',
         'PIL',

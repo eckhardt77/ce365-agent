@@ -231,11 +231,15 @@ def _check_core_modules(verbose: bool) -> Tuple[int, int, int]:
     passed += ok_count
     failed += fail_count
 
-    # Optional: PII Detection
+    # Optional: PII Detection (prueft ob Presidio wirklich geladen wird)
     try:
-        from ce365.security.pii_detector import PIIDetector
-        _pass("PII Detection verfuegbar")
-        passed += 1
+        from ce365.security.pii_detector import PIIDetector, PRESIDIO_AVAILABLE
+        if PRESIDIO_AVAILABLE:
+            _pass("PII Detection verfuegbar (Presidio)")
+            passed += 1
+        else:
+            _warn("PII Detection: Presidio nicht importierbar")
+            warned += 1
     except Exception:
         _warn("PII Detection nicht verfuegbar (presidio/spacy)")
         warned += 1
