@@ -858,14 +858,18 @@ class CE365Bot:
             )
             return
 
-        # State Check
-        if self.state_machine.current_state.value != "plan_ready":
+        # State Check — automatisch auf PLAN_READY setzen wenn noetig
+        current = self.state_machine.current_state
+        if current.value == "completed":
             self.console.display_error(
-                f"GO REPAIR kann nur im PLAN_READY State verwendet werden.\n"
-                f"Aktueller State: {self.state_machine.current_state.value}\n"
-                f"Workflow: Audit → Analyse → Plan → GO REPAIR"
+                "Session wurde bereits abgeschlossen. Starte eine neue Session."
             )
             return
+
+        if current.value not in ("plan_ready", "locked"):
+            # Auto-Transition: Der Bot hat offensichtlich einen Plan praesentiert,
+            # auch wenn die State Machine das nicht mitbekommen hat.
+            self.state_machine.transition_to_plan_ready("(vom User per GO REPAIR bestätigt)")
 
         # Lock aktivieren
         try:

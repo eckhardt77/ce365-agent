@@ -65,8 +65,12 @@ class WorkflowStateMachine:
 
         # Repair-Tools nur nach GO REPAIR
         if self.current_state not in [WorkflowState.LOCKED, WorkflowState.EXECUTING]:
+            # Auto-Transition zu PLAN_READY wenn Bot Repair-Tools ausfuehren will
+            # Das signalisiert: "Claude hat einen Plan und braucht Freigabe"
+            if self.current_state in [WorkflowState.IDLE, WorkflowState.AUDIT, WorkflowState.ANALYSIS]:
+                self.transition_to(WorkflowState.PLAN_READY)
             return False, (
-                f"❌ Tool '{tool_name}' ist ein Repair-Tool und kann nur nach "
+                f"Tool '{tool_name}' ist ein Repair-Tool und kann nur nach "
                 "GO REPAIR Freigabe ausgeführt werden.\n"
                 "Workflow: Audit → Analyse → Plan → GO REPAIR → Ausführung"
             )
