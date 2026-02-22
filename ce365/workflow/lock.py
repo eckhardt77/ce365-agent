@@ -34,25 +34,24 @@ class ExecutionLock:
     """
 
     @staticmethod
-    def parse_go_command(command: str) -> Optional[List[int]]:
+    def parse_go_command(command: str) -> Optional[tuple]:
         """
         Parse GO REPAIR Befehl — flexibel.
 
         Unterstützte Formate:
-        - "GO REPAIR: 1,2,3"           → Schritte 1,2,3
-        - "GO REPAIR: 1-3"             → Schritte 1,2,3
-        - "GO REPAIR: 1,3-5,7"         → Schritte 1,3,4,5,7
-        - "GO REPAIR"                  → alle Schritte
-        - "GO REPAIR: Plan A"          → alle Schritte (Text ignoriert)
-        - "GO REPAIR: Desktop (Plan A)" → alle Schritte (Text ignoriert)
-        - "GO"                          → alle Schritte
-        - "ja"                          → alle Schritte (nur in PLAN_READY)
+        - "GO REPAIR: 1,2,3"           → (Schritte [1,2,3], "")
+        - "GO REPAIR: 1-3"             → (Schritte [1,2,3], "")
+        - "GO REPAIR: 1,3-5,7"         → (Schritte [1,3,4,5,7], "")
+        - "GO REPAIR"                  → (alle Schritte, "")
+        - "GO REPAIR: disable Login Items [Notion, Steam]"
+                                        → (alle Schritte, "disable Login Items [Notion, Steam]")
+        - "GO"                          → (alle Schritte, "")
 
         Returns:
-            List[int]: Freigegebene Schritt-Nummern oder None wenn kein GO-Befehl
+            tuple(List[int], str): (Freigegebene Schritte, Freitext) oder None wenn kein GO-Befehl.
+            Freitext ist leer bei nummerierten Schritten oder reinem "GO REPAIR".
         """
         stripped = command.strip()
-        normalized = stripped.upper().replace(" ", "")
 
         # Prüfe ob es ein GO REPAIR Befehl ist
         if not ExecutionLock.is_go_command(stripped):
@@ -66,9 +65,9 @@ class ExecutionLock:
                 steps_str = stripped[match.end():].strip()
                 break
 
-        # Kein Steps-Teil → alle Schritte freigeben
+        # Kein Steps-Teil → alle Schritte freigeben, kein Freitext
         if not steps_str:
-            return _ALL_STEPS[:]
+            return (_ALL_STEPS[:], "")
 
         # Versuche Zahlen zu parsen
         steps = []
@@ -98,13 +97,13 @@ class ExecutionLock:
 
             # Text (kein Zahlen-Format) → ignorieren
 
-        # Wenn Zahlen gefunden → diese verwenden
+        # Wenn Zahlen gefunden → diese verwenden, kein Freitext
         if has_numbers and steps:
-            return sorted(set(steps))
+            return (sorted(set(steps)), "")
 
-        # Keine Zahlen gefunden (z.B. "GO REPAIR: Desktop-Organisieren")
-        # → als "alle Schritte freigeben" interpretieren
-        return _ALL_STEPS[:]
+        # Keine Zahlen gefunden (z.B. "GO REPAIR: disable Login Items [Notion, Steam]")
+        # → alle Schritte als Lock, Freitext als Kontext weiterleiten
+        return (_ALL_STEPS[:], steps_str)
 
     @staticmethod
     def is_go_command(text: str) -> bool:

@@ -32,6 +32,7 @@ class WorkflowStateMachine:
         self.current_state = WorkflowState.IDLE
         self.repair_plan: Optional[str] = None
         self.approved_steps: List[int] = []
+        self.approval_text: str = ""
         self.executed_steps: List[int] = []
         self.state_history: List[tuple[WorkflowState, datetime]] = [
             (WorkflowState.IDLE, datetime.now())
@@ -87,12 +88,13 @@ class WorkflowStateMachine:
         self.repair_plan = plan
         self.transition_to(WorkflowState.PLAN_READY)
 
-    def lock_execution(self, approved_steps: List[int]):
+    def lock_execution(self, approved_steps: List[int], approval_text: str = ""):
         """
         Execution Lock aktivieren (nach GO REPAIR)
 
         Args:
             approved_steps: Liste der freigegebenen Schritt-Nummern
+            approval_text: Optionaler Freitext aus GO REPAIR Befehl
         """
         if self.current_state != WorkflowState.PLAN_READY:
             raise ValueError(
@@ -101,6 +103,7 @@ class WorkflowStateMachine:
             )
 
         self.approved_steps = approved_steps
+        self.approval_text = approval_text
         self.transition_to(WorkflowState.LOCKED)
 
     def is_step_approved(self, step_number: int) -> bool:

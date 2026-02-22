@@ -161,6 +161,8 @@ class CE365Bot:
         self.error_codes: Optional[str] = None
         self.diagnosed_root_cause: Optional[str] = None
         self.similar_case_offered: Optional[int] = None  # Case ID wenn angeboten
+        self.customer_name: Optional[str] = None
+        self.ticket_id: Optional[str] = None
 
         # Edition-Validierung VOR Tool-Registrierung:
         # Nur "free", "core" und "scale" sind gültige Editionen
@@ -866,19 +868,23 @@ class CE365Bot:
         GO REPAIR Befehl verarbeiten
 
         Flow:
-        1. Parse Command → approved_steps
+        1. Parse Command → (approved_steps, freitext)
         2. State Machine Lock aktivieren
-        3. Bestätigung anzeigen
+        3. Bestätigung anzeigen (nummeriert oder Freitext)
+        4. LLM informieren (mit Freitext als Kontext)
         """
-        # Parse Command
-        approved_steps = ExecutionLock.parse_go_command(command)
+        # Parse Command → (steps, freitext)
+        parsed = ExecutionLock.parse_go_command(command)
 
-        if not approved_steps:
+        if not parsed:
             self.console.display_error(
                 "Ungültiger GO REPAIR Befehl.\n"
-                "Formate: GO REPAIR: 1,2,3 | GO REPAIR: 1-3 | GO REPAIR (alle Schritte)"
+                "Formate: GO REPAIR: 1,2,3 | GO REPAIR: 1-3 | GO REPAIR (alle Schritte)\n"
+                "Oder: GO REPAIR: disable Login Items [Notion, Steam]"
             )
             return
+
+        approved_steps, freitext = parsed
 
         # State Check — automatisch auf PLAN_READY setzen wenn noetig
         current = self.state_machine.current_state
@@ -889,8 +895,9 @@ class CE365Bot:
             return
 
         if current.value == "locked":
-            # Bereits gelockt — Steps aktualisieren und weitermachen
+            # Bereits gelockt — Steps + Freitext aktualisieren und weitermachen
             self.state_machine.approved_steps = approved_steps
+            self.state_machine.approval_text = freitext
         elif current.value == "plan_ready":
             # Normaler Flow
             pass
@@ -902,19 +909,32 @@ class CE365Bot:
         # Lock aktivieren (nur wenn nicht schon locked)
         try:
             if current.value != "locked":
-                self.state_machine.lock_execution(approved_steps)
-            self.console.display_success(
-                f"✓ Execution Lock aktiviert für Schritte: {ExecutionLock.format_steps(approved_steps)}"
-            )
+                self.state_machine.lock_execution(approved_steps, freitext)
+
+            # Bestätigung: Freitext vs. nummerierte Schritte
+            if freitext:
+                self.console.display_success(
+                    f"✓ Execution Lock aktiviert — Freigabe: {freitext}"
+                )
+            else:
+                self.console.display_success(
+                    f"✓ Execution Lock aktiviert für Schritte: {ExecutionLock.format_steps(approved_steps)}"
+                )
             self.console.display_info(
-                "Claude kann jetzt die freigegebenen Repair-Tools ausführen."
+                "Steve kann jetzt die freigegebenen Repair-Tools ausführen."
             )
 
-            # Claude informieren
-            approval_message = (
-                f"GO REPAIR Freigabe erhalten für Schritte: {ExecutionLock.format_steps(approved_steps)}. "
-                "Führe jetzt die freigegebenen Schritte aus."
-            )
+            # LLM informieren: Freitext vs. nummerierte Schritte
+            if freitext:
+                approval_message = (
+                    f"GO REPAIR Freigabe: {freitext}. "
+                    "Führe genau das jetzt aus."
+                )
+            else:
+                approval_message = (
+                    f"GO REPAIR Freigabe erhalten für Schritte: {ExecutionLock.format_steps(approved_steps)}. "
+                    "Führe jetzt die freigegebenen Schritte aus."
+                )
             await self.process_message(approval_message)
 
         except ValueError as e:
@@ -1137,6 +1157,16 @@ class CE365Bot:
         if found_errors:
             # Nur unique Error-Codes, keine Duplikate
             self.error_codes = ", ".join(sorted(set(found_errors)))
+
+        # Kunde/Ticket aus Message extrahieren
+        import re as _re
+        customer_match = _re.search(r'(?:kunde|customer|client)\s*[:=]\s*(.+?)(?:\n|$)', user_message, _re.IGNORECASE)
+        if customer_match:
+            self.customer_name = customer_match.group(1).strip()
+
+        ticket_match = _re.search(r'(?:ticket|ticket-id|vorgangs?-?nr|incident)\s*[:=]\s*([A-Za-z0-9\-_]+)', user_message, _re.IGNORECASE)
+        if ticket_match:
+            self.ticket_id = ticket_match.group(1).strip()
 
         # Problem-Beschreibung (User-Message als Ganzes)
         if not self.problem_description:

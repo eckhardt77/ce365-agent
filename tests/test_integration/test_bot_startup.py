@@ -131,11 +131,12 @@ class TestWorkflowIntegration:
         # 4. Parse GO REPAIR
         command = "GO REPAIR: 1,2"
         assert ExecutionLock.is_go_command(command)
-        steps = ExecutionLock.parse_go_command(command)
+        steps, freitext = ExecutionLock.parse_go_command(command)
         assert steps == [1, 2]
+        assert freitext == ""
 
         # 5. Lock execution
-        sm.lock_execution(steps)
+        sm.lock_execution(steps, freitext)
 
         # 6. Repair now allowed
         can, _ = sm.can_execute_tool("cleanup_disk", True)

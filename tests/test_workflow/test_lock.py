@@ -39,63 +39,82 @@ class TestIsGoCommand:
 
 
 class TestParseGoCommand:
-    """Tests für parse_go_command()"""
+    """Tests für parse_go_command() — gibt (steps, freitext) Tuple zurück"""
 
     def test_single_step(self):
-        result = ExecutionLock.parse_go_command("GO REPAIR: 1")
-        assert result == [1]
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: 1")
+        assert steps == [1]
+        assert freitext == ""
 
     def test_multiple_steps(self):
-        result = ExecutionLock.parse_go_command("GO REPAIR: 1,2,3")
-        assert result == [1, 2, 3]
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: 1,2,3")
+        assert steps == [1, 2, 3]
+        assert freitext == ""
 
     def test_range(self):
-        result = ExecutionLock.parse_go_command("GO REPAIR: 1-3")
-        assert result == [1, 2, 3]
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: 1-3")
+        assert steps == [1, 2, 3]
+        assert freitext == ""
 
     def test_mixed_format(self):
-        result = ExecutionLock.parse_go_command("GO REPAIR: 1,3-5,7")
-        assert result == [1, 3, 4, 5, 7]
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: 1,3-5,7")
+        assert steps == [1, 3, 4, 5, 7]
+        assert freitext == ""
 
     def test_case_insensitive(self):
-        result = ExecutionLock.parse_go_command("go repair: 1,2")
-        assert result == [1, 2]
+        steps, freitext = ExecutionLock.parse_go_command("go repair: 1,2")
+        assert steps == [1, 2]
+        assert freitext == ""
 
     def test_whitespace_handling(self):
-        result = ExecutionLock.parse_go_command("GO  REPAIR:  1, 2, 3")
-        assert result == [1, 2, 3]
+        steps, freitext = ExecutionLock.parse_go_command("GO  REPAIR:  1, 2, 3")
+        assert steps == [1, 2, 3]
+        assert freitext == ""
 
     def test_sorted_output(self):
-        result = ExecutionLock.parse_go_command("GO REPAIR: 3,1,2")
-        assert result == [1, 2, 3]
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: 3,1,2")
+        assert steps == [1, 2, 3]
+        assert freitext == ""
 
     def test_deduplicated_output(self):
-        result = ExecutionLock.parse_go_command("GO REPAIR: 1,1,2,2")
-        assert result == [1, 2]
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: 1,1,2,2")
+        assert steps == [1, 2]
+        assert freitext == ""
 
     def test_range_with_duplicates(self):
-        result = ExecutionLock.parse_go_command("GO REPAIR: 1-3,2,3")
-        assert result == [1, 2, 3]
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: 1-3,2,3")
+        assert steps == [1, 2, 3]
+        assert freitext == ""
 
     def test_go_repair_without_steps(self):
-        """GO REPAIR ohne Schritte = alle freigeben"""
-        result = ExecutionLock.parse_go_command("GO REPAIR")
-        assert result == _ALL_STEPS
+        """GO REPAIR ohne Schritte = alle freigeben, kein Freitext"""
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR")
+        assert steps == _ALL_STEPS
+        assert freitext == ""
 
-    def test_go_repair_with_text(self):
-        """GO REPAIR mit Text statt Zahlen = alle freigeben"""
-        result = ExecutionLock.parse_go_command("GO REPAIR: Desktop-Organisieren (Plan A)")
-        assert result == _ALL_STEPS
+    def test_go_repair_with_freitext(self):
+        """GO REPAIR mit Freitext = alle Schritte + Freitext weiterleiten"""
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: disable Login Items [Notion, Steam]")
+        assert steps == _ALL_STEPS
+        assert freitext == "disable Login Items [Notion, Steam]"
 
-    def test_go_repair_plan_a(self):
-        """GO REPAIR: Plan A = alle freigeben"""
-        result = ExecutionLock.parse_go_command("GO REPAIR: Plan A")
-        assert result == _ALL_STEPS
+    def test_go_repair_freitext_plan(self):
+        """GO REPAIR mit natuerlichsprachlicher Anweisung"""
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: Desktop-Organisieren (Plan A)")
+        assert steps == _ALL_STEPS
+        assert freitext == "Desktop-Organisieren (Plan A)"
 
-    def test_go_repair_colon_text(self):
-        """GO REPAIR: beliebiger Text = alle freigeben"""
-        result = ExecutionLock.parse_go_command("GO REPAIR: Ordner anlegen und Dateien verschieben")
-        assert result == _ALL_STEPS
+    def test_go_repair_freitext_plan_a(self):
+        """GO REPAIR: Plan A = Freitext"""
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: Plan A")
+        assert steps == _ALL_STEPS
+        assert freitext == "Plan A"
+
+    def test_go_repair_freitext_long(self):
+        """GO REPAIR: beliebiger Text = Freitext weiterleiten"""
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: Ordner anlegen und Dateien verschieben")
+        assert steps == _ALL_STEPS
+        assert freitext == "Ordner anlegen und Dateien verschieben"
 
     def test_invalid_format_returns_none(self):
         assert ExecutionLock.parse_go_command("REPAIR: 1") is None
@@ -103,8 +122,9 @@ class TestParseGoCommand:
         assert ExecutionLock.parse_go_command("") is None
 
     def test_large_step_numbers(self):
-        result = ExecutionLock.parse_go_command("GO REPAIR: 10,20,30")
-        assert result == [10, 20, 30]
+        steps, freitext = ExecutionLock.parse_go_command("GO REPAIR: 10,20,30")
+        assert steps == [10, 20, 30]
+        assert freitext == ""
 
 
 class TestFormatSteps:
