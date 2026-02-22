@@ -1,7 +1,5 @@
 """
-Tests für LicenseValidator
-
-Testet HMAC Cache, Online/Offline Validation und Edition Features.
+Tests für LicenseValidator + Edition Features (3-Tier: free/core/scale)
 """
 
 import json
@@ -27,7 +25,7 @@ class TestHMACCache:
     def test_cache_and_load(self, license_validator):
         result = {
             "valid": True,
-            "edition": "pro",
+            "edition": "core",
             "expires_at": "never",
             "customer_name": "Test Corp"
         }
@@ -36,18 +34,17 @@ class TestHMACCache:
         loaded = license_validator._load_cached_license("TEST-KEY-123")
         assert loaded is not None
         assert loaded["valid"] is True
-        assert loaded["edition"] == "pro"
+        assert loaded["edition"] == "core"
 
     def test_wrong_key_returns_none(self, license_validator):
-        result = {"valid": True, "edition": "pro"}
+        result = {"valid": True, "edition": "core"}
         license_validator._cache_license("KEY-1", result)
         assert license_validator._load_cached_license("KEY-2") is None
 
     def test_tampered_cache_returns_none(self, license_validator):
-        result = {"valid": True, "edition": "pro"}
+        result = {"valid": True, "edition": "core"}
         license_validator._cache_license("TEST-KEY", result)
 
-        # Manipulate cache file
         cache_data = json.loads(license_validator.cache_file.read_text())
         cache_data["signature"] = "tampered_signature"
         license_validator.cache_file.write_text(json.dumps(cache_data))
@@ -55,10 +52,9 @@ class TestHMACCache:
         assert license_validator._load_cached_license("TEST-KEY") is None
 
     def test_expired_cache_returns_none(self, license_validator):
-        result = {"valid": True, "edition": "pro"}
+        result = {"valid": True, "edition": "core"}
         license_validator._cache_license("TEST-KEY", result)
 
-        # Set cache timestamp to 25 hours ago
         signed_data = json.loads(license_validator.cache_file.read_text())
         payload = json.loads(signed_data["payload"])
         payload["cached_at"] = (datetime.now() - timedelta(hours=25)).isoformat()
@@ -71,7 +67,7 @@ class TestHMACCache:
 
     def test_expired_license_returns_invalid(self, license_validator):
         yesterday = (datetime.now() - timedelta(days=1)).isoformat()
-        result = {"valid": True, "edition": "pro", "expires_at": yesterday}
+        result = {"valid": True, "edition": "core", "expires_at": yesterday}
         license_validator._cache_license("TEST-KEY", result)
 
         loaded = license_validator._load_cached_license("TEST-KEY")
@@ -92,7 +88,7 @@ class TestOnlineValidation:
         mock_response.status_code = 200
         mock_response.json.return_value = {
             "valid": True,
-            "edition": "pro",
+            "edition": "core",
             "expires_at": "never",
             "customer_name": "Test"
         }
@@ -107,7 +103,7 @@ class TestOnlineValidation:
             result = await license_validator.validate("TEST-KEY", "fingerprint-123")
 
         assert result["valid"] is True
-        assert result["edition"] == "pro"
+        assert result["edition"] == "core"
 
     @pytest.mark.asyncio
     async def test_server_error(self, license_validator):
@@ -130,11 +126,9 @@ class TestOnlineValidation:
     async def test_offline_fallback(self, license_validator):
         import httpx
 
-        # Pre-cache a valid license
-        cached_result = {"valid": True, "edition": "pro", "expires_at": "never"}
+        cached_result = {"valid": True, "edition": "core", "expires_at": "never"}
         license_validator._cache_license("TEST-KEY", cached_result)
 
-        # Simulate connection error
         with patch("httpx.AsyncClient") as mock_client_class:
             mock_client = AsyncMock()
             mock_client.post.side_effect = httpx.ConnectError("No connection")
@@ -164,35 +158,147 @@ class TestOnlineValidation:
         assert "nicht erreichbar" in result.get("error", "")
 
 
-class TestEditionFeatures:
-    """Tests für Edition Feature Checks (Community / Pro)"""
+# ==========================================================
+# Edition Features — 3-Tier Hierarchie (free < core < scale)
+# ==========================================================
 
-    def test_community_has_basic_features(self):
+class TestFreeFeatures:
+    """Free hat nur Basis-Features"""
+
+    def test_free_has_local_learning(self):
+        assert check_edition_features("free", "local_learning") is True
+
+    def test_free_has_pii_detection(self):
+        assert check_edition_features("free", "pii_detection") is True
+
+    def test_free_no_unlimited_repairs(self):
+        assert check_edition_features("free", "unlimited_repairs") is False
+
+    def test_free_no_advanced_audit(self):
+        assert check_edition_features("free", "advanced_audit") is False
+
+    def test_free_no_advanced_repair(self):
+        assert check_edition_features("free", "advanced_repair") is False
+
+    def test_free_no_web_search(self):
+        assert check_edition_features("free", "web_search") is False
+
+    def test_free_no_ssh_remote(self):
+        assert check_edition_features("free", "ssh_remote") is False
+
+    def test_free_no_hooks(self):
+        assert check_edition_features("free", "hooks") is False
+
+    def test_free_no_pdf_report(self):
+        assert check_edition_features("free", "pdf_report") is False
+
+    def test_free_no_commercial_use(self):
+        assert check_edition_features("free", "commercial_use") is False
+
+    def test_free_no_shared_learning(self):
+        assert check_edition_features("free", "shared_learning") is False
+
+    def test_free_no_mcp(self):
+        assert check_edition_features("free", "mcp_integration") is False
+
+
+class TestCoreFeatures:
+    """Core hat Free + eigene Features, aber kein Scale"""
+
+    def test_core_inherits_free(self):
+        assert check_edition_features("core", "local_learning") is True
+        assert check_edition_features("core", "pii_detection") is True
+
+    def test_core_has_unlimited_repairs(self):
+        assert check_edition_features("core", "unlimited_repairs") is True
+
+    def test_core_has_advanced_audit(self):
+        assert check_edition_features("core", "advanced_audit") is True
+
+    def test_core_has_advanced_repair(self):
+        assert check_edition_features("core", "advanced_repair") is True
+
+    def test_core_has_web_search(self):
+        assert check_edition_features("core", "web_search") is True
+
+    def test_core_has_ssh_remote(self):
+        assert check_edition_features("core", "ssh_remote") is True
+
+    def test_core_has_hooks(self):
+        assert check_edition_features("core", "hooks") is True
+
+    def test_core_has_pdf_report(self):
+        assert check_edition_features("core", "pdf_report") is True
+
+    def test_core_has_commercial_use(self):
+        assert check_edition_features("core", "commercial_use") is True
+
+    def test_core_has_system_control(self):
+        assert check_edition_features("core", "system_control") is True
+
+    def test_core_no_shared_learning(self):
+        assert check_edition_features("core", "shared_learning") is False
+
+    def test_core_no_mcp(self):
+        assert check_edition_features("core", "mcp_integration") is False
+
+    def test_core_no_shared_playbooks(self):
+        assert check_edition_features("core", "shared_playbooks") is False
+
+
+class TestScaleFeatures:
+    """Scale hat alles aus Core + eigene Features"""
+
+    def test_scale_inherits_free(self):
+        assert check_edition_features("scale", "local_learning") is True
+        assert check_edition_features("scale", "pii_detection") is True
+
+    def test_scale_inherits_core(self):
+        assert check_edition_features("scale", "unlimited_repairs") is True
+        assert check_edition_features("scale", "advanced_audit") is True
+        assert check_edition_features("scale", "ssh_remote") is True
+        assert check_edition_features("scale", "hooks") is True
+        assert check_edition_features("scale", "pdf_report") is True
+        assert check_edition_features("scale", "commercial_use") is True
+
+    def test_scale_has_shared_learning(self):
+        assert check_edition_features("scale", "shared_learning") is True
+
+    def test_scale_has_mcp(self):
+        assert check_edition_features("scale", "mcp_integration") is True
+
+    def test_scale_has_shared_playbooks(self):
+        assert check_edition_features("scale", "shared_playbooks") is True
+
+    def test_scale_has_api_access(self):
+        assert check_edition_features("scale", "api_access") is True
+
+    def test_scale_has_analytics(self):
+        assert check_edition_features("scale", "analytics_extended") is True
+
+
+class TestEdgesCases:
+    """Unbekannte Editionen und Features"""
+
+    def test_unknown_edition_gets_free_fallback(self):
+        """Unbekannte Editionen bekommen Free-Features als Fallback"""
+        assert check_edition_features("unknown", "local_learning") is True
+        assert check_edition_features("unknown", "unlimited_repairs") is False
+
+    def test_unknown_feature_returns_false(self):
+        assert check_edition_features("scale", "nonexistent_feature") is False
+
+    def test_empty_edition_gets_free_fallback(self):
+        """Leere Edition bekommt Free-Features als Fallback"""
+        assert check_edition_features("", "local_learning") is True
+        assert check_edition_features("", "ssh_remote") is False
+
+    def test_old_community_gets_free_fallback(self):
+        """Alte 'community' Edition bekommt Free-Fallback"""
         assert check_edition_features("community", "local_learning") is True
-        assert check_edition_features("community", "pii_detection") is True
         assert check_edition_features("community", "unlimited_repairs") is False
-        assert check_edition_features("community", "advanced_audit") is False
-        assert check_edition_features("community", "advanced_repair") is False
-        assert check_edition_features("community", "web_search") is False
-        assert check_edition_features("community", "root_cause_analysis") is False
-        assert check_edition_features("community", "commercial_use") is False
-        assert check_edition_features("community", "shared_learning") is False
 
-    def test_pro_features(self):
+    def test_old_pro_gets_free_fallback(self):
+        """Alte 'pro' Edition bekommt Free-Fallback (nicht Core!)"""
         assert check_edition_features("pro", "local_learning") is True
-        assert check_edition_features("pro", "pii_detection") is True
-        assert check_edition_features("pro", "unlimited_repairs") is True
-        assert check_edition_features("pro", "advanced_audit") is True
-        assert check_edition_features("pro", "advanced_repair") is True
-        assert check_edition_features("pro", "web_search") is True
-        assert check_edition_features("pro", "root_cause_analysis") is True
-        assert check_edition_features("pro", "system_report") is True
-        assert check_edition_features("pro", "driver_management") is True
-        assert check_edition_features("pro", "commercial_use") is True
-        assert check_edition_features("pro", "shared_learning") is True
-
-    def test_unknown_edition(self):
-        assert check_edition_features("unknown", "local_learning") is False
-
-    def test_unknown_feature(self):
-        assert check_edition_features("pro", "nonexistent_feature") is False
+        assert check_edition_features("pro", "unlimited_repairs") is False
