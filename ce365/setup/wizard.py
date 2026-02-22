@@ -185,7 +185,7 @@ class SetupWizard:
         self.console.print("   [dim]Welche Edition möchtest du nutzen?[/dim]\n")
 
         self.console.print("   [cyan]1[/cyan] Free (kostenlos, 11 Diagnose-Tools, 1 Repair, 5 Sessions/Monat)")
-        self.console.print("   [cyan]2[/cyan] MSP Core (€99/Seat/Monat, alle 90 Tools, Remote, PDF)")
+        self.console.print("   [cyan]2[/cyan] MSP Core (€99/Seat/Monat, alle 95 Tools, Remote, PDF)")
         self.console.print("   [cyan]3[/cyan] MSP Scale (€199/Seat/Monat, alles aus Core + Team-DB, MCP)\n")
 
         choice = Prompt.ask(
