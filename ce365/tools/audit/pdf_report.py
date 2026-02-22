@@ -103,6 +103,8 @@ def generate_pdf_report(
     report_data: Dict[str, Any],
     technician: str = "",
     company: str = "",
+    customer_name: str = "",
+    ticket_id: str = "",
     output_path: Optional[Path] = None,
 ) -> str:
     """
@@ -139,12 +141,16 @@ def generate_pdf_report(
     # -- Report-Info Block (zweispaltig) --
     pdf.set_font("DejaVu", "", 10)
 
-    # Rechte Spalte: Techniker & Firma
+    # Rechte Spalte: Techniker, Firma, Kunde, Ticket
     right_lines = []
     if company:
         right_lines.append(f"Firma: {company}")
     if technician:
         right_lines.append(f"Techniker: {technician}")
+    if customer_name:
+        right_lines.append(f"Kunde: {customer_name}")
+    if ticket_id:
+        right_lines.append(f"Ticket-ID: {ticket_id}")
     right_lines.append(f"Datum: {timestamp}")
 
     # Linke Spalte: Hardware-Info

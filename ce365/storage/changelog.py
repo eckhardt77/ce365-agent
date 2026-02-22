@@ -16,6 +16,9 @@ class ChangelogEntry:
     tool_input: Dict[str, Any]
     result: str
     success: bool
+    duration_ms: int = 0
+    snapshot_before: str = ""
+    snapshot_after: str = ""
 
 
 class ChangelogWriter:
@@ -44,6 +47,9 @@ class ChangelogWriter:
         tool_input: Dict[str, Any],
         result: str,
         success: bool,
+        duration_ms: int = 0,
+        snapshot_before: str = "",
+        snapshot_after: str = "",
     ):
         """
         Changelog-Eintrag hinzufügen (mit PII-Anonymisierung)
@@ -53,6 +59,9 @@ class ChangelogWriter:
             tool_input: Tool-Parameter
             result: Execution Result
             success: True wenn erfolgreich
+            duration_ms: Ausfuehrungsdauer in Millisekunden
+            snapshot_before: Systemzustand vor Repair
+            snapshot_after: Systemzustand nach Repair
         """
         # PII in tool_input und result anonymisieren
         anonymized_input = self._anonymize_dict(tool_input)
@@ -64,6 +73,9 @@ class ChangelogWriter:
             tool_input=anonymized_input,
             result=anonymized_result,
             success=success,
+            duration_ms=duration_ms,
+            snapshot_before=snapshot_before,
+            snapshot_after=snapshot_after,
         )
         self.entries.append(entry)
 
@@ -136,6 +148,7 @@ class ChangelogWriter:
 
         for i, entry in enumerate(self.entries, 1):
             status = "✓ ERFOLG" if entry.success else "✗ FEHLER"
+            duration_str = f"{entry.duration_ms / 1000:.1f}s" if entry.duration_ms else "N/A"
 
             lines.append(f"📝 ÄNDERUNGSLOG - Schritt {i}")
             lines.append("─" * 50)
@@ -143,7 +156,12 @@ class ChangelogWriter:
             lines.append(f"Aktion: {entry.tool_name}")
             lines.append(f"Kommando: {entry.tool_input}")
             lines.append(f"Status: {status}")
+            lines.append(f"Dauer: {duration_str}")
             lines.append(f"Output: {entry.result}")
+            if entry.snapshot_before:
+                lines.append(f"Vorher: {entry.snapshot_before}")
+            if entry.snapshot_after:
+                lines.append(f"Nachher: {entry.snapshot_after}")
             lines.append(f"Rollback: [siehe Reparatur-Plan]")
             lines.append("─" * 50)
             lines.append("")
@@ -164,6 +182,13 @@ class ChangelogWriter:
 
         writer = cls(session_id)
         writer.created_at = data["created_at"]
-        writer.entries = [ChangelogEntry(**entry) for entry in data["entries"]]
+        # Abwaertskompatibilitaet: alte Eintraege ohne neue Felder
+        entries = []
+        for entry_data in data["entries"]:
+            entry_data.setdefault("duration_ms", 0)
+            entry_data.setdefault("snapshot_before", "")
+            entry_data.setdefault("snapshot_after", "")
+            entries.append(ChangelogEntry(**entry_data))
+        writer.entries = entries
 
         return writer

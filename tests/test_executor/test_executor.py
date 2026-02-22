@@ -67,9 +67,14 @@ class TestChangelogIntegration:
         assert call_args.kwargs["success"] is True
 
     @pytest.mark.asyncio
-    async def test_no_changelog_on_audit(self, executor, mock_changelog_writer):
+    async def test_changelog_also_written_on_audit(self, executor, mock_changelog_writer):
+        """Alle Tools (auch Audit) werden ins Changelog geschrieben"""
         await executor.execute_tool("mock_audit", {})
-        mock_changelog_writer.add_entry.assert_not_called()
+        mock_changelog_writer.add_entry.assert_called_once()
+        call_args = mock_changelog_writer.add_entry.call_args
+        assert call_args.kwargs["tool_name"] == "mock_audit"
+        assert call_args.kwargs["success"] is True
+        assert "duration_ms" in call_args.kwargs
 
 
 class TestErrorHandling:

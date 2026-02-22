@@ -65,6 +65,14 @@ class IncidentReportTool(AuditTool):
                     "description": "Changelog-Eintraege (durchgefuehrte Aktionen) anhaengen",
                     "default": True,
                 },
+                "customer_name": {
+                    "type": "string",
+                    "description": "Kundenname fuer den Report (ueberschreibt Bot-Attribut)",
+                },
+                "ticket_id": {
+                    "type": "string",
+                    "description": "Ticket-/Vorgangs-Nummer (ueberschreibt Bot-Attribut)",
+                },
             },
             "required": [],
         }
@@ -72,6 +80,16 @@ class IncidentReportTool(AuditTool):
     async def execute(self, **kwargs) -> str:
         report_format = kwargs.get("format", "soap")
         include_audit_log = kwargs.get("include_audit_log", True)
+
+        # Kunde/Ticket aus Parametern oder Bot-Attributen
+        if kwargs.get("customer_name"):
+            self._override_customer = kwargs["customer_name"]
+        else:
+            self._override_customer = None
+        if kwargs.get("ticket_id"):
+            self._override_ticket = kwargs["ticket_id"]
+        else:
+            self._override_ticket = None
 
         try:
             if report_format == "soap":
@@ -152,6 +170,100 @@ class IncidentReportTool(AuditTool):
     def _get_technician(self) -> str:
         return "Steve (CE365 Agent)"
 
+    def _get_customer_name(self) -> str:
+        if hasattr(self, '_override_customer') and self._override_customer:
+            return self._override_customer
+        if self._bot and self._bot.customer_name:
+            return self._bot.customer_name
+        return ""
+
+    def _get_ticket_id(self) -> str:
+        if hasattr(self, '_override_ticket') and self._override_ticket:
+            return self._override_ticket
+        if self._bot and self._bot.ticket_id:
+            return self._bot.ticket_id
+        return ""
+
+    @staticmethod
+    def _classify_severity(result: str) -> str:
+        """Severity aus Tool-Output ableiten"""
+        result_lower = result.lower()
+        critical_keywords = [
+            "kritisch", "critical", "fehler", "error", "failed",
+            "deaktiviert", "disabled", "90%", "95%", "97%", "100%",
+        ]
+        warning_keywords = [
+            "warnung", "warning", "veraltet", "outdated",
+            "ausstehend", "pending", "langsam", "slow",
+        ]
+
+        if any(kw in result_lower for kw in critical_keywords):
+            return "KRITISCH"
+        if any(kw in result_lower for kw in warning_keywords):
+            return "WARNUNG"
+        return "OK"
+
+    @staticmethod
+    def _format_duration(duration_ms: int) -> str:
+        """Duration in Millisekunden als lesbaren String formatieren"""
+        if duration_ms <= 0:
+            return ""
+        if duration_ms < 1000:
+            return f"{duration_ms}ms"
+        return f"{duration_ms / 1000:.1f}s"
+
+    def _generate_auto_recommendations(self) -> list:
+        """Empfehlungen automatisch aus Findings ableiten"""
+        recommendations = []
+
+        for entry in self._get_changelog_entries():
+            result_lower = entry.result.lower()
+
+            # Disk voll
+            if any(pct in result_lower for pct in ["90%", "95%", "97%", "98%", "99%"]):
+                recommendations.append(
+                    "SSD-Upgrade oder regelmaessige Disk-Bereinigung einplanen"
+                )
+
+            # Updates ausstehend
+            if "update" in entry.tool_name.lower() and (
+                "ausstehend" in result_lower or "pending" in result_lower
+            ):
+                recommendations.append(
+                    "Automatische Updates aktivieren oder Update-Zeitplan einrichten"
+                )
+
+            # Security deaktiviert
+            if "security" in entry.tool_name.lower() and (
+                "deaktiviert" in result_lower or "disabled" in result_lower
+            ):
+                recommendations.append(
+                    "Sicherheitsfeatures (Firewall, Defender/Gatekeeper) aktivieren"
+                )
+
+            # S.M.A.R.T. Warnung
+            if "disk_health" in entry.tool_name.lower() and (
+                "warning" in result_lower or "failing" in result_lower
+            ):
+                recommendations.append(
+                    "Festplatte zeigt Verschleiss — geplanten Austausch einplanen"
+                )
+
+            # Backup fehlt
+            if "backup" in entry.tool_name.lower() and (
+                "nicht konfiguriert" in result_lower
+                or "no backup" in result_lower
+                or "kein backup" in result_lower
+            ):
+                recommendations.append(
+                    "Backup-Strategie einrichten (Time Machine / Windows Backup)"
+                )
+
+        # Deduplizieren
+        if recommendations:
+            return list(dict.fromkeys(recommendations))
+        return ["Keine kritischen Empfehlungen — System in gutem Zustand"]
+
     # ------------------------------------------------------------------
     # SOAP Report
     # ------------------------------------------------------------------
@@ -165,6 +277,14 @@ class IncidentReportTool(AuditTool):
         lines.append(f"Session:    {self._get_session_id()}")
         lines.append(f"Datum:      {self._get_session_date()}")
         lines.append(f"Techniker:  {self._get_technician()}")
+
+        customer = self._get_customer_name()
+        if customer:
+            lines.append(f"Kunde:      {customer}")
+        ticket = self._get_ticket_id()
+        if ticket:
+            lines.append(f"Ticket-ID:  {ticket}")
+
         lines.append(f"System:     {self._get_os_info()}")
         lines.append(f"Dauer:      {self._get_session_duration()}")
         lines.append(f"Status:     {self._get_workflow_state()}")
@@ -185,7 +305,7 @@ class IncidentReportTool(AuditTool):
         lines.append("")
         lines.append("O — OBJECTIVE (Messwerte & Befunde)")
         lines.append("-" * 60)
-        lines.extend(self._build_objective_section())
+        lines.extend(self._build_objective_section(use_markdown=False))
 
         # A — Assessment
         lines.append("")
@@ -203,7 +323,14 @@ class IncidentReportTool(AuditTool):
         lines.append("")
         lines.append("P — PLAN (Durchgefuehrte / Geplante Massnahmen)")
         lines.append("-" * 60)
-        lines.extend(self._build_plan_section())
+        lines.extend(self._build_plan_section(use_markdown=False))
+
+        # Empfehlungen
+        lines.append("")
+        lines.append("EMPFEHLUNGEN")
+        lines.append("-" * 60)
+        for rec in self._generate_auto_recommendations():
+            lines.append(f"  - {rec}")
 
         # Audit Log
         if include_audit_log:
@@ -215,7 +342,11 @@ class IncidentReportTool(AuditTool):
                 lines.append("=" * 60)
                 for i, entry in enumerate(changelog_entries, 1):
                     status = "OK" if entry.success else "FEHLER"
-                    lines.append(f"  {i}. [{entry.timestamp[:19]}] {entry.tool_name} — {status}")
+                    duration = self._format_duration(entry.duration_ms)
+                    duration_str = f" ({duration})" if duration else ""
+                    lines.append(
+                        f"  {i}. [{entry.timestamp[:19]}] {entry.tool_name} — {status}{duration_str}"
+                    )
 
         lines.append("")
         lines.append("=" * 60)
@@ -238,6 +369,14 @@ class IncidentReportTool(AuditTool):
         lines.append(f"| **Session** | `{self._get_session_id()}` |")
         lines.append(f"| **Datum** | {self._get_session_date()} |")
         lines.append(f"| **Techniker** | {self._get_technician()} |")
+
+        customer = self._get_customer_name()
+        if customer:
+            lines.append(f"| **Kunde** | {customer} |")
+        ticket = self._get_ticket_id()
+        if ticket:
+            lines.append(f"| **Ticket-ID** | `{ticket}` |")
+
         lines.append(f"| **System** | {self._get_os_info()} |")
         lines.append(f"| **Dauer** | {self._get_session_duration()} |")
         lines.append(f"| **Status** | {self._get_workflow_state()} |")
@@ -259,7 +398,7 @@ class IncidentReportTool(AuditTool):
         lines.append("")
         lines.append("## Befunde & Messwerte")
         lines.append("")
-        lines.extend(self._build_objective_section())
+        lines.extend(self._build_objective_section(use_markdown=True))
 
         # Diagnose
         lines.append("")
@@ -277,7 +416,14 @@ class IncidentReportTool(AuditTool):
         lines.append("")
         lines.append("## Durchgefuehrte Massnahmen")
         lines.append("")
-        lines.extend(self._build_plan_section())
+        lines.extend(self._build_plan_section(use_markdown=True))
+
+        # Empfehlungen
+        lines.append("")
+        lines.append("## Empfehlungen")
+        lines.append("")
+        for rec in self._generate_auto_recommendations():
+            lines.append(f"- {rec}")
 
         # Ergebnis
         lines.append("")
@@ -302,12 +448,13 @@ class IncidentReportTool(AuditTool):
                 lines.append("")
                 lines.append("## Audit Log")
                 lines.append("")
-                lines.append("| # | Zeitstempel | Aktion | Status |")
-                lines.append("|---|-------------|--------|--------|")
+                lines.append("| # | Zeitstempel | Aktion | Status | Dauer |")
+                lines.append("|---|-------------|--------|--------|-------|")
                 for i, entry in enumerate(changelog_entries, 1):
                     status = "OK" if entry.success else "FEHLER"
+                    duration = self._format_duration(entry.duration_ms)
                     lines.append(
-                        f"| {i} | {entry.timestamp[:19]} | {entry.tool_name} | {status} |"
+                        f"| {i} | {entry.timestamp[:19]} | {entry.tool_name} | {status} | {duration or '—'} |"
                     )
 
         lines.append("")
@@ -320,7 +467,7 @@ class IncidentReportTool(AuditTool):
     # Shared section builders
     # ------------------------------------------------------------------
 
-    def _build_objective_section(self) -> list:
+    def _build_objective_section(self, use_markdown: bool = False) -> list:
         """Baut die Objective/Befunde Sektion aus Audit-Tool-Ergebnissen."""
         lines = []
 
@@ -328,12 +475,23 @@ class IncidentReportTool(AuditTool):
         audit_entries = [e for e in changelog_entries if not self._is_repair_tool(e.tool_name)]
 
         if audit_entries:
+            if use_markdown:
+                lines.append("| Severity | Tool | Befund |")
+                lines.append("|----------|------|--------|")
+
             for entry in audit_entries:
-                # Kurzzusammenfassung des Tool-Ergebnisses
+                severity = self._classify_severity(entry.result)
                 result_preview = entry.result[:200].replace("\n", " ")
                 if len(entry.result) > 200:
                     result_preview += "..."
-                lines.append(f"- **{entry.tool_name}**: {result_preview}")
+
+                if use_markdown:
+                    severity_icon = {"KRITISCH": "KRITISCH", "WARNUNG": "WARNUNG", "OK": "OK"}
+                    lines.append(
+                        f"| {severity_icon[severity]} | {entry.tool_name} | {result_preview} |"
+                    )
+                else:
+                    lines.append(f"  [{severity}] {entry.tool_name}: {result_preview}")
         else:
             # Fallback: Session-Messages durchsuchen nach Tool Results
             if self._session:
@@ -353,7 +511,7 @@ class IncidentReportTool(AuditTool):
 
         return lines
 
-    def _build_plan_section(self) -> list:
+    def _build_plan_section(self, use_markdown: bool = False) -> list:
         """Baut die Plan/Massnahmen Sektion aus Changelog-Entries."""
         lines = []
 
@@ -361,16 +519,38 @@ class IncidentReportTool(AuditTool):
         repair_entries = [e for e in changelog_entries if self._is_repair_tool(e.tool_name)]
 
         if repair_entries:
+            if use_markdown:
+                lines.append("| # | Tool | Status | Dauer | Vorher | Nachher |")
+                lines.append("|---|------|--------|-------|--------|---------|")
+
             for i, entry in enumerate(repair_entries, 1):
                 status = "Erfolgreich" if entry.success else "Fehlgeschlagen"
-                lines.append(f"{i}. **{entry.tool_name}** — {status}")
-                # Kurze Beschreibung der Eingabe
-                if entry.tool_input:
-                    params = ", ".join(
-                        f"{k}={v}" for k, v in entry.tool_input.items() if v
+                duration = self._format_duration(entry.duration_ms)
+
+                if use_markdown:
+                    status_icon = "OK" if entry.success else "FEHLER"
+                    before = entry.snapshot_before[:60].replace("\n", " ") if entry.snapshot_before else "—"
+                    after = entry.snapshot_after[:60].replace("\n", " ") if entry.snapshot_after else "—"
+                    lines.append(
+                        f"| {i} | {entry.tool_name} | {status_icon} | {duration or '—'} | {before} | {after} |"
                     )
-                    if params:
-                        lines.append(f"   Parameter: {params}")
+                else:
+                    duration_str = f" ({duration})" if duration else ""
+                    lines.append(f"{i}. {entry.tool_name} — {status}{duration_str}")
+                    # Kurze Beschreibung der Eingabe
+                    if entry.tool_input:
+                        params = ", ".join(
+                            f"{k}={v}" for k, v in entry.tool_input.items() if v
+                        )
+                        if params:
+                            lines.append(f"   Parameter: {params}")
+                    # Vorher/Nachher
+                    if entry.snapshot_before:
+                        before_short = entry.snapshot_before[:100].replace("\n", " ")
+                        lines.append(f"   Vorher: {before_short}")
+                    if entry.snapshot_after:
+                        after_short = entry.snapshot_after[:100].replace("\n", " ")
+                        lines.append(f"   Nachher: {after_short}")
         else:
             lines.append("Keine Repair-Aktionen durchgefuehrt.")
 

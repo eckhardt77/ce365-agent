@@ -1,9 +1,22 @@
+import time
 from typing import Dict, Any, Optional
 from ce365.tools.registry import ToolRegistry
 from ce365.workflow.state_machine import WorkflowStateMachine
 from ce365.workflow.hooks import HookManager, HookEvent, HookContext
 from ce365.storage.changelog import ChangelogWriter
 from ce365.core.usage_tracker import UsageTracker
+
+# Mapping: Repair-Tool → (Audit-Tool, Beschreibung) fuer Vorher/Nachher-Snapshots
+REPAIR_TO_AUDIT_MAP = {
+    "cleanup_disk": ("get_system_info", "disk_usage"),
+    "flush_dns_cache": ("network_diagnostics", "dns"),
+    "install_system_updates": ("check_system_updates", "updates"),
+    "run_sfc_scan": ("run_sfc_scan", "sfc"),
+    "manage_service": ("check_running_processes", "services"),
+    "disk_cleanup": ("get_system_info", "disk_usage"),
+    "reset_network_stack": ("network_diagnostics", "network"),
+    "clear_browser_cache": ("get_system_info", "disk_usage"),
+}
 
 
 class CommandExecutor:
@@ -85,28 +98,44 @@ class CommandExecutor:
             if pre_result.modified_input is not None:
                 tool_input = pre_result.modified_input
 
-        # === Tool ausfuehren ===
+        # === Vorher-Snapshot (nur fuer gemappte Repair-Tools) ===
+        snapshot_before = ""
+        if is_repair_tool and tool_name in REPAIR_TO_AUDIT_MAP:
+            snapshot_before = await self._take_snapshot(tool_name)
+
+        # === Tool ausfuehren mit Zeitmessung ===
         try:
+            start_time = time.monotonic()
             result = await tool.execute(**tool_input)
+            duration_ms = int((time.monotonic() - start_time) * 1000)
             success = True
 
-            # Changelog schreiben + Usage tracking (nur fuer Repair-Tools)
-            if is_repair_tool:
-                # Remote-Prefix im Changelog
-                from ce365.core.command_runner import get_command_runner
-                runner = get_command_runner()
-                log_tool_name = tool_name
-                if runner.is_remote:
-                    log_tool_name = f"[REMOTE:{runner.remote_host}] {tool_name}"
+            # Nachher-Snapshot (nur wenn Vorher-Snapshot existiert)
+            snapshot_after = ""
+            if is_repair_tool and snapshot_before:
+                snapshot_after = await self._take_snapshot(tool_name)
 
-                self.changelog_writer.add_entry(
-                    tool_name=log_tool_name,
-                    tool_input=tool_input,
-                    result=result,
-                    success=True,
-                )
-                if self.usage_tracker:
-                    self.usage_tracker.increment_repair()
+            # Remote-Prefix im Changelog
+            from ce365.core.command_runner import get_command_runner
+            runner = get_command_runner()
+            log_tool_name = tool_name
+            if runner.is_remote:
+                log_tool_name = f"[REMOTE:{runner.remote_host}] {tool_name}"
+
+            # Changelog schreiben fuer ALLE Tools (Audit + Repair)
+            self.changelog_writer.add_entry(
+                tool_name=log_tool_name,
+                tool_input=tool_input,
+                result=result,
+                success=True,
+                duration_ms=duration_ms,
+                snapshot_before=snapshot_before,
+                snapshot_after=snapshot_after,
+            )
+
+            # Usage tracking (nur fuer Repair-Tools)
+            if is_repair_tool and self.usage_tracker:
+                self.usage_tracker.increment_repair()
 
             # === POST-Hooks ===
             if self.hook_manager:
@@ -129,16 +158,17 @@ class CommandExecutor:
             return success, result
 
         except Exception as e:
+            duration_ms = int((time.monotonic() - start_time) * 1000)
             error_result = f"Fehler bei Ausfuehrung von '{tool_name}': {str(e)}"
 
-            # Fehler auch loggen (fuer Repair-Tools)
-            if is_repair_tool:
-                self.changelog_writer.add_entry(
-                    tool_name=tool_name,
-                    tool_input=tool_input,
-                    result=str(e),
-                    success=False,
-                )
+            # Fehler loggen (fuer alle Tools)
+            self.changelog_writer.add_entry(
+                tool_name=tool_name,
+                tool_input=tool_input,
+                result=str(e),
+                success=False,
+                duration_ms=duration_ms,
+            )
 
             # POST-Hooks auch bei Fehler ausfuehren
             if self.hook_manager:
@@ -153,3 +183,23 @@ class CommandExecutor:
                 await self.hook_manager.run_hooks(post_event, post_context)
 
             return False, error_result
+
+    async def _take_snapshot(self, repair_tool_name: str) -> str:
+        """Snapshot vom relevanten Audit-Tool fuer Vorher/Nachher-Vergleich"""
+        mapping = REPAIR_TO_AUDIT_MAP.get(repair_tool_name)
+        if not mapping:
+            return ""
+
+        audit_tool_name, _ = mapping
+        audit_tool = self.tool_registry.get_tool(audit_tool_name)
+        if not audit_tool:
+            return ""
+
+        try:
+            result = await audit_tool.execute()
+            # Kuerzen auf max 500 Zeichen fuer kompakte Snapshots
+            if len(result) > 500:
+                return result[:500] + "..."
+            return result
+        except Exception:
+            return ""
