@@ -92,6 +92,7 @@ from ce365.tools.research.web_search import WebSearchTool, WebSearchInstantAnswe
 from ce365.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
 from ce365.tools.analysis.consult_specialist import ConsultSpecialistTool  # Multi-Agent
 from ce365.tools.audit.incident_report import IncidentReportTool  # SOAP Incident Report
+from ce365.tools.audit.memory_dump import AnalyzeMemoryDumpsTool  # Memory Dump Analyse
 from ce365.core.agents import SpecialistAgent, SPECIALISTS  # Multi-Agent System
 
 # License & Usage
@@ -263,6 +264,7 @@ class CE365Bot:
             self.tool_registry.register(BatteryHealthTool())
             self.tool_registry.register(ListBackupsTool())
             self.tool_registry.register(VerifyBackupTool())
+            self.tool_registry.register(AnalyzeMemoryDumpsTool())
 
         # === Erweiterte Repair Tools (Pro) ===
         if check_edition_features(edition, "advanced_repair"):
