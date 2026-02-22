@@ -77,7 +77,7 @@ class LicenseValidator:
         Returns:
             {
                 "valid": bool,
-                "edition": str,  # "community", "pro"
+                "edition": str,  # "free", "core", "scale"
                 "expires_at": str,  # ISO timestamp oder "never"
                 "max_systems": int,  # 0 = unlimited
                 "registered_systems": int,  # Anzahl registrierter Systeme
@@ -406,26 +406,23 @@ async def validate_license(
 
 def check_edition_features(edition: str, feature: str) -> bool:
     """
-    Prüft ob Edition ein Feature unterstützt
+    Prüft ob Edition ein Feature unterstützt (hierarchisch: scale > core > free)
 
     Args:
-        edition: "community", "pro"
+        edition: "free", "core", "scale"
         feature: Feature-Name (siehe features_map)
 
     Returns:
         True wenn Feature verfügbar
     """
     features_map = {
-        "community": [
+        "free": [
             "local_learning",  # Lokales Learning (SQLite)
             "pii_detection",  # PII Detection
-            # Basis-Audit (7 Tools), 5 Remediation Runs/Monat
-            # Nicht-kommerzielle Nutzung
+            # Basis-Audit (11 Tools), 1 Repair TOTAL, 5 Sessions/Monat
         ],
-        "pro": [
-            "local_learning",
-            "pii_detection",
-            "unlimited_repairs",  # Unbegrenzte Remediation Runs
+        "core": [
+            "unlimited_repairs",  # Unbegrenzte Repairs
             "advanced_audit",  # Stress-Tests, Malware, Temp, Drivers, Report
             "advanced_repair",  # SFC, Network, Updates, Startup, Restore
             "web_search",  # Web-Suche fuer Problemloesung
@@ -433,14 +430,30 @@ def check_edition_features(edition: str, feature: str) -> bool:
             "system_report",  # HTML System-Report
             "driver_management",  # Treiber-Check
             "commercial_use",  # Kommerzielle Nutzung erlaubt
-            "shared_learning",  # Gemeinsame Wissensdatenbank (PostgreSQL)
             "hooks",  # Workflow-Hooks (PRE/POST Repair, Session)
             "file_reading",  # Dateien lesen (Log-Analyse, Config)
             "ssh_remote",  # SSH/Remote-Zugriff
-            "mcp_integration",  # MCP-Server-Anbindung
             "system_control",  # Reboot, Software, User, File Management
-            # 1 Seat per License
+            "pdf_report",  # PDF Incident Reports
+        ],
+        "scale": [
+            "shared_learning",  # Gemeinsame Wissensdatenbank (PostgreSQL)
+            "mcp_integration",  # MCP-Server-Anbindung
+            "shared_playbooks",  # Coming Q2
+            "api_access",  # Coming Q2
+            "analytics_extended",  # Coming Q2
         ],
     }
 
-    return feature in features_map.get(edition, [])
+    # Hierarchisch prüfen: scale enthält core enthält free
+    hierarchy = {
+        "free": ["free"],
+        "core": ["free", "core"],
+        "scale": ["free", "core", "scale"],
+    }
+
+    tiers = hierarchy.get(edition, ["free"])
+    for tier in tiers:
+        if feature in features_map.get(tier, []):
+            return True
+    return False

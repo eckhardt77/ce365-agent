@@ -278,7 +278,7 @@ async def _run_with_license_session(bot):
     try:
         # Session starten (nur Pro mit Lizenz + Server-URL)
         settings = get_settings()
-        if settings.edition == "pro" and settings.license_key and settings.license_server_url:
+        if settings.edition in ("core", "scale") and settings.license_key and settings.license_server_url:
             from ce365.core.license import SessionManager
             session_manager = SessionManager(
                 settings.license_server_url, settings.license_key
@@ -413,9 +413,9 @@ def main():
             console.print("[dim]Auf dem Techniker-PC: pip3 install ce365-agent && ce365 --generate-package[/dim]\n")
             sys.exit(1)
         settings = get_settings()
-        if settings.edition != "pro":
-            console.print("\n[red]❌ Kunden-Paket-Generator ist nur in der Pro Edition verfügbar.[/red]")
-            console.print("[dim]Upgrade auf Pro: https://agent.ce365.de/#preise[/dim]\n")
+        if settings.edition not in ("core", "scale"):
+            console.print("\n[red]❌ Kunden-Paket-Generator erfordert MSP Core oder Scale.[/red]")
+            console.print("[dim]Upgrade: https://agent.ce365.de/#pricing[/dim]\n")
             sys.exit(1)
         from ce365.setup.package_generator import run_generate_package
         success = run_generate_package()

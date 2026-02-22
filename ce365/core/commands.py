@@ -823,7 +823,7 @@ async def _cmd_connect(bot, args: str):
 
     settings = get_settings()
     if not check_edition_features(settings.edition, "ssh_remote"):
-        bot.console.display_error("Remote-Zugriff ist ein Pro-Feature.")
+        bot.console.display_error("Remote-Zugriff erfordert MSP Core oder Scale.")
         return
 
     if not args.strip():
@@ -1029,7 +1029,7 @@ async def _cmd_mcp(bot, args: str):
 
     settings = get_settings()
     if not check_edition_features(settings.edition, "mcp_integration"):
-        bot.console.display_error("MCP-Integration ist ein Pro-Feature.")
+        bot.console.display_error("MCP-Integration erfordert MSP Scale.")
         return
 
     if not hasattr(bot, "mcp_manager") or bot.mcp_manager is None:

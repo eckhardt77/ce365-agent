@@ -158,18 +158,18 @@ class CE365Bot:
         self.similar_case_offered: Optional[int] = None  # Case ID wenn angeboten
 
         # Edition-Validierung VOR Tool-Registrierung:
-        # Nur "community" und "pro" sind gültige Editionen
-        if settings.edition not in ("community", "pro"):
-            settings.edition = "community"
+        # Nur "free", "core" und "scale" sind gültige Editionen
+        if settings.edition not in ("free", "core", "scale"):
+            settings.edition = "free"
 
-        # Pro ohne gültige Credentials → Downgrade auf Community
-        if settings.edition == "pro" and (not settings.license_key or not settings.license_server_url):
-            settings.edition = "community"
+        # Core/Scale ohne gültige Credentials → Downgrade auf Free
+        if settings.edition in ("core", "scale") and (not settings.license_key or not settings.license_server_url):
+            settings.edition = "free"
             self._edition_downgraded = True
         else:
             self._edition_downgraded = False
 
-        # Usage Tracker (Community: 5 Repair Runs/Monat)
+        # Usage Tracker (Free: 1 Repair total, 5 Sessions/Monat)
         self.usage_tracker = UsageTracker(edition=settings.edition)
 
         # Session Management (Pro: Heartbeat)
@@ -347,10 +347,17 @@ class CE365Bot:
         # Update-Check (passiv, 1x pro Tag)
         self._check_for_updates()
 
-        # Pro: Session starten + Heartbeat
+        # Core/Scale: Session starten + Heartbeat
         settings = get_settings()
-        if settings.edition == "pro" and settings.license_server_url:
+        if settings.edition in ("core", "scale") and settings.license_server_url:
             await self._start_session()
+
+        # Free: Session-Counter prüfen
+        if settings.edition == "free":
+            if not self.usage_tracker.can_start_session():
+                self.console.display_error(self.usage_tracker.get_session_limit_message())
+                return
+            self.usage_tracker.increment_session()
 
         # ToS Akzeptanz prüfen (nur beim ersten Start)
         if not self._check_tos_acceptance():
@@ -550,19 +557,19 @@ class CE365Bot:
         """
         settings = get_settings()
 
-        # Edition wurde in __init__ downgraded (Pro ohne Credentials)
+        # Edition wurde in __init__ downgraded (Core/Scale ohne Credentials)
         if self._edition_downgraded:
             self.console.display_error(
-                "❌ Pro Edition erfordert einen gültigen Lizenzschlüssel und Lizenzserver.\n"
+                "❌ MSP Core/Scale erfordert einen gültigen Lizenzschlüssel und Lizenzserver.\n"
                 "   Setze LICENSE_KEY und LICENSE_SERVER_URL in der .env Datei.\n"
-                "   Oder nutze EDITION=community für die kostenlose Version."
+                "   Oder nutze EDITION=free für die kostenlose Version."
             )
             import sys
             sys.exit(1)
 
-        # Community braucht keine Lizenz
-        if settings.edition == "community":
-            self.console.display_info("📦 Edition: Community (keine Lizenz erforderlich)")
+        # Free braucht keine Lizenz
+        if settings.edition == "free":
+            self.console.display_info("📦 Edition: Free (keine Lizenz erforderlich)")
             return
 
         try:
@@ -585,8 +592,9 @@ class CE365Bot:
 
             # Edition-Info anzeigen
             edition_names = {
-                "community": "Community",
-                "pro": "Pro",
+                "free": "Free",
+                "core": "MSP Core",
+                "scale": "MSP Scale",
             }
 
             edition_display = edition_names.get(result["edition"], result["edition"])

@@ -64,9 +64,9 @@ class PackageGenerator:
             from ce365.config import settings as settings_module
             settings_module._settings = None  # Singleton zurücksetzen
             settings = settings_module.get_settings()
-            if settings.edition != "pro":
-                console.print("[red]❌ Kunden-Paket-Generator ist nur in der Pro Edition verfügbar.[/red]")
-                console.print("[dim]Upgrade auf Pro: https://agent.ce365.de/#preise[/dim]\n")
+            if settings.edition not in ("core", "scale"):
+                console.print("[red]❌ Kunden-Paket-Generator erfordert MSP Core oder Scale.[/red]")
+                console.print("[dim]Upgrade: https://agent.ce365.de/#pricing[/dim]\n")
                 return False
         except Exception:
             pass  # Wenn Settings nicht laden → Prerequisites-Check greift
@@ -188,7 +188,7 @@ class PackageGenerator:
             pass
 
         provider = config.get("LLM_PROVIDER", "anthropic")
-        edition = config.get("EDITION", "community")
+        edition = config.get("EDITION", "free")
         has_password = bool(config.get("TECHNICIAN_PASSWORD_HASH"))
         has_license = bool(config.get("LICENSE_KEY"))
 

@@ -146,8 +146,8 @@ def _check_config(verbose: bool) -> Tuple[int, int, int, Optional[Any]]:
         _fail(f"API-Key fuer {provider} nicht konfiguriert ({env_name})")
         failed += 1
 
-    # Pro: Lizenzschluessel
-    if settings.edition == "pro":
+    # Core/Scale: Lizenzschluessel
+    if settings.edition in ("core", "scale"):
         if settings.license_key and settings.license_key.startswith("CE365-"):
             _pass(f"Lizenzschluessel: {settings.license_key[:12]}...")
             passed += 1
@@ -610,7 +610,7 @@ def _check_network(verbose: bool, settings: Optional[Any]) -> Tuple[int, int, in
         failed += 1
 
     # Pro: Lizenzserver
-    if settings.edition == "pro" and settings.license_server_url:
+    if settings.edition in ("core", "scale") and settings.license_server_url:
         try:
             import httpx
             ls_url = settings.license_server_url.rstrip("/") + "/health"

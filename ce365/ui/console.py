@@ -60,7 +60,7 @@ class RichConsole:
         info = Text()
         info.append(f"v{__version__}", style="dim cyan")
         info.append(" · ", style="dim")
-        edition_style = "dim green" if _edition.lower() == "pro" else "dim yellow"
+        edition_style = "dim green" if _edition.lower() in ("core", "scale") else "dim yellow"
         info.append(f"{_edition} Edition", style=edition_style)
         info.append(" · ", style="dim")
         info.append("Windows & macOS", style="dim green")

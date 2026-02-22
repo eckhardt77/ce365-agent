@@ -138,6 +138,15 @@ except ImportError:
     SECRETS_MANAGER_AVAILABLE = False
 
 
+def _migrate_edition(edition: str) -> str:
+    """Migriert alte Edition-Werte auf neue 3-Tier-Bezeichnungen"""
+    migration_map = {
+        "community": "free",
+        "pro": "core",
+    }
+    return migration_map.get(edition, edition)
+
+
 class Settings(BaseModel):
     """Globale Einstellungen für CE365 Agent"""
 
@@ -179,7 +188,7 @@ class Settings(BaseModel):
     license_server_url: str = ""  # URL zum Lizenzserver
 
     # License
-    edition: str = "community"  # "community", "pro"
+    edition: str = "free"  # "free", "core", "scale"
     license_key: str = ""  # Lizenzschlüssel
 
     # Technician Security
@@ -259,7 +268,7 @@ class Settings(BaseModel):
             # License Server
             license_server_url=os.getenv("LICENSE_SERVER_URL", ""),
             # License Settings
-            edition=os.getenv("EDITION", "community"),
+            edition=_migrate_edition(os.getenv("EDITION", "free")),
             license_key=os.getenv("LICENSE_KEY", ""),
             # Security Settings
             technician_password_hash=os.getenv("TECHNICIAN_PASSWORD_HASH", ""),

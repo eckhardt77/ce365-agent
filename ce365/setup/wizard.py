@@ -73,16 +73,16 @@ class SetupWizard:
         if not api_key:
             return False
 
-        # 4. Lizenzschlüssel (für Pro) - ERFORDERLICH
+        # 4. Lizenzschlüssel (für Core/Scale) - ERFORDERLICH
         license_key = ""
-        if edition == "pro":
+        if edition in ("core", "scale"):
             license_key = self._ask_license_key()
             if not license_key:
                 return False
 
-        # 5. Learning Database (optional für Pro)
+        # 5. Learning Database (optional für Core/Scale)
         db_config = {}
-        if edition == "pro":
+        if edition in ("core", "scale"):
             db_config = self._ask_database()
             if db_config is None:
                 return False
@@ -124,8 +124,8 @@ class SetupWizard:
         # 6. Success!
         self._show_success(user_name)
 
-        # 7. Kunden-Paket generieren? (nur Pro, nur pip-Installation)
-        if self._edition == "pro" and not getattr(sys, "frozen", False):
+        # 7. Kunden-Paket generieren? (nur Core/Scale, nur pip-Installation)
+        if self._edition in ("core", "scale") and not getattr(sys, "frozen", False):
             self._offer_package_generation()
 
         return True
@@ -184,18 +184,20 @@ class SetupWizard:
         self.console.print("\n[bold]2. Edition[/bold]")
         self.console.print("   [dim]Welche Edition möchtest du nutzen?[/dim]\n")
 
-        self.console.print("   [cyan]1[/cyan] Community (kostenlos, Basis-Diagnose, 5 Repair Runs/Monat)")
-        self.console.print("   [cyan]2[/cyan] Pro (€99/Seat/Monat, alle Tools, Shared Learning, kommerziell)\n")
+        self.console.print("   [cyan]1[/cyan] Free (kostenlos, 11 Diagnose-Tools, 1 Repair, 5 Sessions/Monat)")
+        self.console.print("   [cyan]2[/cyan] MSP Core (€99/Seat/Monat, alle 90 Tools, Remote, PDF)")
+        self.console.print("   [cyan]3[/cyan] MSP Scale (€199/Seat/Monat, alles aus Core + Team-DB, MCP)\n")
 
         choice = Prompt.ask(
             "   Deine Wahl",
-            choices=["1", "2"],
+            choices=["1", "2", "3"],
             default="1"
         )
 
         edition_map = {
-            "1": "community",
-            "2": "pro",
+            "1": "free",
+            "2": "core",
+            "3": "scale",
         }
 
         return edition_map[choice]
@@ -240,7 +242,7 @@ class SetupWizard:
 
             if validation.get("valid"):
                 customer = validation.get("customer_name", "")
-                edition = validation.get("edition", "pro")
+                edition = validation.get("edition", "core")
                 self.console.print(f"\n   [green]✓ Lizenz gültig! ({edition.title()})[/green]")
                 if customer:
                     self.console.print(f"   [dim]Registriert auf: {customer}[/dim]")
@@ -430,7 +432,7 @@ class SetupWizard:
         provider: str = "anthropic",
         api_key: str = "",
         briefing: str = "",
-        edition: str = "community",
+        edition: str = "free",
         license_key: str = "",
         db_config: dict = None,
         technician_password: str = None,
@@ -445,8 +447,8 @@ class SetupWizard:
             provider: LLM Provider (anthropic/openai/openrouter)
             api_key: API Key für den gewählten Provider
             briefing: Use-Case Beschreibung
-            edition: Edition (community/pro)
-            db_config: Datenbank-Konfiguration (optional, Pro)
+            edition: Edition (free/core/scale)
+            db_config: Datenbank-Konfiguration (optional, Core/Scale)
 
         Returns:
             True wenn erfolgreich

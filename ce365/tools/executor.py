@@ -14,7 +14,7 @@ class CommandExecutor:
     - Tool Execution mit State Machine Validation
     - PRE/POST Hooks fuer Workflow-Automatisierung
     - Changelog Writing fuer Repair-Tools
-    - Usage Tracking (Community: 5 Repair Runs/Monat)
+    - Usage Tracking (Free: 1 Repair total, 5 Sessions/Monat)
     - Error Handling
     """
 
@@ -59,7 +59,7 @@ class CommandExecutor:
         if not can_execute:
             return False, error_msg
 
-        # Usage Limit pruefen (Community: 5 Repair Runs/Monat)
+        # Usage Limit pruefen (Free: 1 Repair total)
         if is_repair_tool and self.usage_tracker and not self.usage_tracker.can_run_repair():
             return False, self.usage_tracker.get_limit_message()
 
