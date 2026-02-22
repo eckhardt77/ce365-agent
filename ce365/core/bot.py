@@ -93,6 +93,10 @@ from ce365.tools.analysis.root_cause import RootCauseAnalyzer  # NEU
 from ce365.tools.analysis.consult_specialist import ConsultSpecialistTool  # Multi-Agent
 from ce365.tools.audit.incident_report import IncidentReportTool  # SOAP Incident Report
 from ce365.tools.audit.memory_dump import AnalyzeMemoryDumpsTool  # Memory Dump Analyse
+from ce365.tools.audit.sip_gatekeeper import SIPGatekeeperAuditTool  # SIP & Gatekeeper Deep Audit
+from ce365.tools.audit.tcc_privacy import TCCPrivacyAuditTool  # TCC Privacy Audit
+from ce365.tools.audit.mdm_enrollment import MDMEnrollmentAuditTool  # MDM & Enrollment Audit
+from ce365.tools.audit.apple_intelligence import AppleIntelligenceAuditTool  # Apple Intelligence & Shortcuts
 from ce365.core.agents import SpecialistAgent, SPECIALISTS  # Multi-Agent System
 
 # License & Usage
@@ -265,6 +269,10 @@ class CE365Bot:
             self.tool_registry.register(ListBackupsTool())
             self.tool_registry.register(VerifyBackupTool())
             self.tool_registry.register(AnalyzeMemoryDumpsTool())
+            self.tool_registry.register(SIPGatekeeperAuditTool())
+            self.tool_registry.register(TCCPrivacyAuditTool())
+            self.tool_registry.register(MDMEnrollmentAuditTool())
+            self.tool_registry.register(AppleIntelligenceAuditTool())
 
         # === Erweiterte Repair Tools (Pro) ===
         if check_edition_features(edition, "advanced_repair"):

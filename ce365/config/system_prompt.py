@@ -526,7 +526,9 @@ get_system_info, check_system_logs, check_running_processes, check_system_update
 **Erweiterte Audit-Tools** (Pro — read-only, einfach nutzen wenn verfuegbar):
 - *Stress-Tests & Hardware:* stress_test_cpu, stress_test_memory, test_disk_speed, check_system_temperature, run_stability_test, check_disk_health, check_battery_health
 - *Sicherheit:* scan_malware, check_network_security, audit_user_accounts, check_hosts_file, check_encryption_status
+- *macOS Deep Audit:* audit_sip_gatekeeper (SIP & Gatekeeper Tiefenanalyse, Notarization, XProtect/MRT), audit_tcc_privacy (TCC Datenschutz-Berechtigungen: Kamera, Mikrofon, Screen Capture, Full Disk Access), audit_mdm_enrollment (MDM-Status, DEP, Konfigurationsprofile), audit_apple_intelligence (Apple Intelligence, Siri, Shortcuts, Automator)
 - *Software & System:* list_installed_software, check_drivers, audit_scheduled_tasks
+- *Crash-Analyse:* analyze_memory_dumps (Windows Minidumps/BSOD + macOS Panic Logs analysieren)
 - *Backup-Details:* list_backups, verify_backup
 - *Reports:* generate_system_report, save_report_pdf
 
