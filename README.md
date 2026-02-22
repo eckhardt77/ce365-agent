@@ -27,8 +27,8 @@ Der Setup-Wizard fuehrt dich durch Provider-Auswahl und API-Key-Konfiguration.
 
 ### Community (Kostenlos)
 
-- 7 Diagnose-Tools (System Info, Logs, Prozesse, Updates, Backup, Security, Startup)
-- 3 Basis-Repair-Tools (Service Manager, Disk Cleanup, DNS Flush)
+- 11 Diagnose-Tools (System Info, Logs, Prozesse, Updates, Backup, Security, Startup u.a.)
+- 4 Basis-Repair-Tools (Service Manager, Disk Cleanup, DNS Flush, Autostart)
 - 5 Repairs / Monat
 - PII-Erkennung (Microsoft Presidio) — DSGVO-konform
 - Lokales Learning System (SQLite)
@@ -45,7 +45,7 @@ Der Setup-Wizard fuehrt dich durch Provider-Auswahl und API-Key-Konfiguration.
 - **SOAP Incident Reports** — Professionelle Einsatzberichte per `/report`
 - **Slash-Commands** — `/help`, `/stats`, `/provider`, `/model`, `/report`, `/privacy`
 - **Provider Hot-Swap** — Provider mitten in der Session wechseln per `/provider`
-- 30+ Tools (Advanced Audit, Repair, Stress Tests, Drivers, Malware Scan)
+- 95 Tools (Advanced Audit, Repair, Stress Tests, Drivers, Malware Scan)
 - Web-Recherche + KI Root-Cause-Analyse
 - Shared Learning (PostgreSQL)
 - Kommerzielle Nutzung
@@ -173,7 +173,7 @@ ce365 --uninstall        # Deinstallation
 ce365-agent/
   ce365/
     core/           Bot, Providers, License, Session, Agents, Commands
-    tools/          30+ Audit-, Repair-, Research-, Analyse-Tools
+    tools/          95 Audit-, Repair-, Research-, Analyse-Tools
     config/         Settings, System-Prompt, Secrets
     workflow/       State Machine, Execution Lock
     learning/       Case Library, Similarity Matching
@@ -181,11 +181,7 @@ ce365-agent/
     i18n/           Mehrsprachigkeit (DE + EN)
     ui/             Rich Terminal UI
     setup/          Setup-Wizard
-  license-server/   FastAPI Lizenzserver (Stripe, Brevo)
-  website/          Landing Page (DE + EN)
-  scripts/          Build- und Deployment-Tools
-  docs/             Dokumentation
-  tests/            Test-Suite
+  tests/            Test-Suite (427 Tests)
 ```
 
 ---
